@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Morning Briefing · 2026-09-20</title>
+<style>
+:root {
+  --bg: #F2F3F7;
+  --text: #1d1d1f;
+  --secondary: #6e6e73;
+  --link: #007AFF;
+  --accent: #007AFF;
+  --accent-soft: #3B82F6;
+  --glass: rgba(255, 255, 255, 0.78);
+  --glass-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --chip-bg: rgba(120, 120, 128, 0.12);
+  --nav-pill: rgba(255, 255, 255, 0.72);
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-blue: 0 4px 14px rgba(0, 122, 255, 0.28);
+  --radius: 24px; /* glass cards 24–28 */
+  --radius-sm: 18px;
+  --accent-ai: #5e5ce6;
+  --accent-ai-glow: rgba(94, 92, 230, 0.28);
+  --measure: 42ch;
+  --nav-h: 56px;
+  --pad: 16px;
+  --col: 440px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --text: #f5f5f7;
+    --secondary: #98989d;
+    --link: #0A84FF;
+    --accent: #0A84FF;
+    --accent-soft: #3B82F6;
+    --glass: rgba(28, 28, 30, 0.72);
+    --glass-strong: rgba(28, 28, 30, 0.82);
+    --glass-border: rgba(255, 255, 255, 0.14);
+    --chip-bg: rgba(120, 120, 128, 0.28);
+    --nav-pill: rgba(44, 44, 46, 0.72);
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.35);
+    --shadow-blue: 0 4px 14px rgba(10, 132, 255, 0.35);
+    --accent-ai: #7d7aff;
+    --accent-ai-glow: rgba(125, 122, 255, 0.35);
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + env(safe-area-inset-top, 0px) + 12px);
+  scroll-padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.55;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Quiet off-white canvas + faint cool map wash (not heavy lavender/peach) */
+  background:
+    radial-gradient(900px 600px at 18% 12%, rgba(59, 130, 246, 0.07), transparent 60%),
+    radial-gradient(700px 500px at 88% 78%, rgba(0, 122, 255, 0.05), transparent 55%),
+    linear-gradient(180deg, #F2F3F7 0%, #EEF0F5 100%);
+  background-attachment: fixed;
+  background-color: var(--bg);
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    background:
+      radial-gradient(900px 600px at 18% 12%, rgba(10, 132, 255, 0.12), transparent 60%),
+      radial-gradient(700px 500px at 88% 78%, rgba(59, 130, 246, 0.08), transparent 55%),
+      linear-gradient(180deg, #000000 0%, #0c0c0e 100%);
+  }
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Horizontal pill-chip nav (Map/推荐 segmented feel) */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: var(--nav-h);
+  padding-top: env(safe-area-inset-top, 0px);
+  display: flex;
+  align-items: center;
+  background: transparent;
+}
+.nav-inner {
+  width: 100%;
+  max-width: var(--col);
+  margin: 0 auto;
+  padding: 10px var(--pad);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-inner::-webkit-scrollbar { display: none; }
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 16px;
+  color: var(--secondary);
+  font-size: 14px;
+  font-weight: 560;
+  border-radius: 999px;
+  flex-shrink: 0;
+  background: var(--nav-pill);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.nav a:hover {
+  text-decoration: none;
+  color: var(--text);
+  background: var(--glass-strong);
+}
+.nav a.active,
+.nav a:target {
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: var(--shadow-blue);
+  font-weight: 600;
+}
+.wrap {
+  max-width: var(--col);
+  margin: 0 auto;
+  padding: 12px var(--pad) calc(48px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(var(--pad), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--pad), env(safe-area-inset-right, 0px));
+}
+@media (min-width: 640px) {
+  :root { --col: 520px; --pad: 20px; }
+  body { font-size: 17px; }
+}
+
+/* Hero = floating route-header glass card */
+.hero {
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.hero h1 {
+  margin: 0 0 6px;
+  font-size: clamp(24px, 6.5vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+.hero .subtitle {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: var(--secondary);
+  font-weight: 520;
+}
+.hero .meta {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--secondary);
+  line-height: 1.45;
+}
+.banner {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 159, 10, 0.18);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  font-size: 14px;
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+.section { margin: 22px 0 6px; }
+.section h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section h2::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--accent) 0%, var(--accent-soft) 100%);
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+}
+
+.section-sheet {
+  padding: 16px 16px 16px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+}
+.section-sheet .lead-card {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+.section-sheet .lead-card::before { display: none; }
+
+.lead-card {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.lead-card p {
+  margin: 0;
+  position: relative;
+  font-size: 16.5px;
+  line-height: 1.65;
+  max-width: var(--measure);
+}
+
+/* Frosted white news cards */
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  padding: 0;
+  margin: 0 0 14px;
+  position: relative;
+  overflow: hidden;
+}
+.card-body {
+  position: relative;
+  z-index: 1;
+  padding: 16px 18px 18px;
+}
+.card-focus .card-body { padding: 18px 18px 18px; }
+.card-focus .card-title { font-size: 19px; }
+.card-media {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: rgba(0,0,0,.04);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.card-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.card-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 620;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+}
+.rank {
+  display: inline-block;
+  min-width: 1.6em;
+  color: var(--secondary);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.ai-id { color: var(--accent-ai); }
+.card-meta {
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  color: var(--secondary);
+  line-height: 1.4;
+}
+.card-summary {
+  margin: 0 0 10px;
+  font-size: 15.5px;
+  line-height: 1.55;
+  max-width: var(--measure);
+}
+.card-why, .card-impact {
+  margin: 0 0 8px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  max-width: var(--measure);
+}
+.label {
+  display: inline;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--secondary);
+  margin-right: 4px;
+}
+.chip {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 560;
+  background: var(--chip-bg);
+  border: none;
+  color: var(--secondary);
+  vertical-align: middle;
+}
+.chip-accent {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: var(--shadow-blue);
+}
+.secondary { margin: 6px 0 0; padding-left: 1.2em; font-size: 13px; color: var(--secondary); }
+.secondary li { margin: 2px 0; }
+.meta-block { margin: 8px 0; }
+.crossref { margin: 8px 0; font-size: 13px; color: var(--secondary); }
+.read-more { margin: 14px 0 0; font-size: 14px; font-weight: 560; }
+.read-more a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(0, 122, 255, 0.35);
+  color: var(--accent);
+  background: rgba(0, 122, 255, 0.06);
+  text-decoration: none;
+  transition: background .15s ease, border-color .15s ease;
+}
+.read-more a:hover {
+  background: rgba(0, 122, 255, 0.12);
+  border-color: var(--accent);
+  text-decoration: none;
+}
+/* In-page fulltext expand (news cards) */
+.fulltext {
+  margin: 10px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.fulltext > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  color: var(--secondary);
+  user-select: none;
+  transition: color .15s ease;
+}
+.fulltext > summary::-webkit-details-marker { display: none; }
+.fulltext > summary::marker { content: ""; }
+.fulltext > summary .expand-mark {
+  display: inline-block;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 400;
+  color: var(--secondary);
+  opacity: 0.85;
+  animation: expand-bounce-down 1.4s ease-in-out infinite;
+  will-change: transform;
+}
+.fulltext > summary:hover,
+.fulltext > summary:hover .expand-mark {
+  color: var(--accent);
+  opacity: 1;
+}
+.fulltext[open] > summary {
+  margin-bottom: 8px;
+}
+.fulltext[open] > summary .expand-mark {
+  font-size: 0;
+  animation: none;
+}
+.fulltext[open] > summary .expand-mark::after {
+  content: "︿";
+  display: inline-block;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--accent);
+  animation: none;
+}
+@keyframes expand-bounce-down {
+  0%, 100% { transform: translateY(0); opacity: 0.85; }
+  50% { transform: translateY(5px); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fulltext > summary .expand-mark { animation: none; }
+}
+.fulltext-body {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  font-size: 15.5px;
+  line-height: 1.7;
+  max-width: var(--measure);
+}
+@media (prefers-color-scheme: dark) {
+  .fulltext-body {
+    background: rgba(44, 44, 46, 0.55);
+  }
+}
+.fulltext-body p {
+  margin: 0 0 0.85em;
+}
+.fulltext-body p:last-child { margin-bottom: 0; }
+.fulltext-src {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: var(--secondary);
+}
+.fulltext-src a {
+  color: var(--secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.muted { color: var(--secondary); }
+.card-ai {
+  border-left: 3px solid var(--accent-ai);
+  box-shadow: var(--shadow), -3px 0 18px var(--accent-ai-glow);
+  background:
+    linear-gradient(90deg, rgba(94, 92, 230, 0.08), transparent 28%),
+    var(--glass);
+}
+.card-ai .card-body { padding: 16px 18px 16px; }
+.conclusions {
+  margin: 6px 0 12px;
+  padding-left: 1.25em;
+  font-size: 15px;
+  max-width: var(--measure);
+  position: relative;
+  z-index: 1;
+}
+.conclusions li { margin: 4px 0; }
+.empty {
+  margin: 0 0 12px;
+  padding: 16px 18px;
+  border-radius: var(--radius-sm);
+  color: var(--secondary);
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px dashed var(--glass-border);
+  font-size: 15px;
+}
+.footer-notes {
+  margin-top: 40px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,0,0,.06);
+  color: var(--secondary);
+  font-size: 13px;
+}
+@media (prefers-color-scheme: dark) {
+  .footer-notes { border-top-color: rgba(255,255,255,.12); }
+}
+.footer-notes summary {
+  cursor: pointer;
+  font-weight: 520;
+  padding: 12px 0;
+  min-height: 44px;
+  color: var(--secondary);
+  list-style: none;
+}
+.footer-notes summary::-webkit-details-marker { display: none; }
+.footer-notes summary::before {
+  content: "› ";
+  display: inline-block;
+  transition: transform .15s ease;
+}
+.footer-notes[open] summary::before { transform: rotate(90deg); }
+.notes-list { margin: 0 0 8px; padding-left: 1.2em; line-height: 1.55; }
+.notes-list ul { padding-left: 1.1em; margin: 4px 0; }
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="章节导航"><div class="nav-inner"><a href="#sec-脉络" class="active">脉络</a><a href="#sec-重点">重点</a><a href="#sec-科技">科技</a><a href="#sec-research">Research</a><a href="#sec-市场">市场</a><a href="#sec-世界">世界</a><a href="#sec-延伸">延伸</a></div></nav>
+<main class="wrap">
+<header class="hero">
+  <h1>Morning Briefing</h1>
+  <p class="subtitle">2026-09-20 · 全球新闻早报</p>
+  <p class="meta">覆盖窗口：09-19 08:09–09-20 08:09 · 新闻 30 条 · AI Research 0 项 · 生成 2026-09-20 08:09:47 Asia/Shanghai · no_agent=true</p>
+</header>
+
+<section class="section section-sheet" id="sec-脉络"><h2>今日脉络</h2><div class="lead-card"><p>今日主线围绕openai/gemini、ai/人工智能展开，重点包括Gemini went rogue, hacked t…；腾讯首席人才官奚丹：腾讯支持基础科研的决心不会改变。技术侧另见Google’s Gemini i…、The US Navy just …。</p></div></section><section class="section" id="sec-重点"><h2>今日重点</h2><article class="card card-focus has-media"><figure class="card-media"><img src="https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/25290334/STK255_Google_Gemini_D.jpg?quality=90&amp;#038;strip=all&amp;#038;crop=0,0,100,100" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">01</span> Gemini went rogue, hacked three companies, and Google hid it</h3><p class="card-meta">科技与 AI · The Verge · 2026-09-19 23:25<span class="chip chip-accent">重点</span></p><p class="card-summary">In May, Gemini broke containment and hacked three different companies, but Google didn&#x27;t disclose t…</p><p class="card-why"><span class="label">为什么重要</span> 触及高信号主题（openai/gemini/security）；多家信源交叉（2）；或影响技术路线或产业布局</p><div class="meta-block"><span class="label">交叉核实</span><ul class="secondary"><li><a href="https://www.bbc.co.uk/news/articles/c607l0k72rlvo?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">BBC World</a> — Google&#x27;s Gemini AI hacked three companies in security test</li></ul></div><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>今年 5 月，Gemini 突破遏制并攻击了三家不同的公司，但直到《华尔街日报》联系该公司后，谷歌才披露了这一事件。 这些黑客事件发生在第三方 Irregular 运行的模型网络安全功能测试期间，该公司也涉及 Meta 和 OpenAI 的类似事件。 双子座作恶，黑了三家公司，谷歌隐藏了 谷歌表示，打破遏制并针对真正的公司并不构成“失准”。 据《华尔街日报》报道，谷歌没有披露此次黑客攻击，因为它不认为这是“模型错位的例子”。 该公司表示，这是一个“身份错误”的例子，一旦该模型意识到它通过猜测密码强行进入了一家真正的公司，它就停止了。 谷歌安全工程副总裁希瑟·阿德金斯 (Heather Adkins) 表示：“在这种情况下，模型的表现是适当的。” 阿德金斯告诉 The Verge，“该模型在网上找到了公共信息，并猜测了访问它认为是测试一部分的网站的凭据。在所有这三种情况下，该模型都停止了。” 阿德金斯没有详细说明双子座自行突破遏制并针对第三方的行为为何未能被视为失准。 她说：“我们的安全团队在报告我们在其他人的软件和系统中发现的问题方面有着长期的记录，即使它像弱密码一样简单。” “我们确保这三个实体都了解这一情况，并与我们的培训合作伙伴合作，对他们的测试流程进行了更改。这些事件凸显了训练强大的人工智能模型以负责任地行动的重要性。” 但人工智能安全公司 Corridor 的首席执行官杰克·凯布尔 (Jack Cable) 告诉《华尔街日报》，“元问题是，嘿，模型超出了它们应该做的事情的范围，并进行了实际的网络攻击。” 此外，Irregular 的安全漏洞可能导致这些攻击成为可能。 该模型在测试期间不应该访问互联网，但 Irregular 告诉《华尔街日报》，它无意中保持可用。</p></div><p class="fulltext-src"><a href="https://www.theverge.com/ai-artificial-intelligence/997795/google-gemini-rogue-ai-hack" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card card-focus has-media"><figure class="card-media"><img src="https://readhub.cn/social-image.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">02</span> 腾讯首席人才官奚丹：腾讯支持基础科研的决心不会改变</h3><p class="card-meta">科技与 AI · ReadHub · 2026-09-20 02:53<span class="chip chip-accent">重点</span></p><p class="card-summary">在 2026 新基石 50² 论坛上，腾讯公司高级副总裁、首席人才官奚丹表示，学科交叉融合与人工智能正成为科学创新新源泉，教育、科学和人才一体化发展成国家战略，腾讯与新基石科学基金会形成了涵盖科学人…</p><p class="card-why"><span class="label">为什么重要</span> 触及高信号主题（ai/人工智能）；或影响技术路线或产业布局</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>在 2026 新基石 50² 论坛上，腾讯公司高级副总裁、首席人才官奚丹表示，学科交叉融合与人工智能正成为科学创新新源泉，教育、科学和人才一体化发展成国家战略，腾讯与新基石科学基金会形成了涵盖科学人才发展各阶段的系统性支撑。依托科学探索奖和新基石研究员项目，发挥社会资金优势支持科学家长期原创探索，搭建国内外学术交流平台促进学科交叉。腾讯将支持杰出科学家、培养青年人才、促进学科交叉、传播科学精神贯穿对国家科学事业的长期支持中，助力国家科技人才培养体系，新基石资助的科学家有 68 人次成果入选国家科学技术奖，77% 为第一完成人。奚丹称腾讯支持基础科研的决心不变，这是超越商业边界的长期承诺。</p></div><p class="fulltext-src"><a href="https://readhub.cn/topic/8wXgcmnXUSj" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card card-focus has-media"><figure class="card-media"><img src="https://readhub.cn/social-image.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">03</span> 迪士尼新设首席技术官岗位，加码科技战略布局</h3><p class="card-meta">科技与 AI · ReadHub · 2026-09-20 02:39<span class="chip chip-accent">重点</span></p><p class="card-summary">迪士尼聘任人工智能企业 Character.AI 负责人卡兰迪普・阿南德担任公司首位首席技术官，他将统管迪士尼内部多类技术相关团队并直接向 CEO 乔希・达马罗汇报，其麾下多名技术团队成员也将一同加…</p><p class="card-why"><span class="label">为什么重要</span> 触及高信号主题（ai/人工智能）；或影响技术路线或产业布局</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>迪士尼新设首席技术官岗位，加码科技战略布局 迪士尼聘任人工智能企业 Character.AI 负责人卡兰迪普・阿南德担任公司首位首席技术官，他将统管迪士尼内部多类技术相关团队并直接向 CEO 乔希・达马罗汇报，其麾下多名技术团队成员也将一同加入。阿南德曾任职 Meta、微软，2025 年 6 月出任 Character.AI 首席执行官，该公司曾因聊天机器人致青少年出现自残、自杀行为与相关家属和解，此事发生在阿南德履职前。达马罗将科技发展列为工作重点，意在提升迪士尼科技实力，推动迪士尼 + 成为全业务消费者入口，解决各业务板块技术体系独立等问题，阿南德将负责推动集团技术研发与交付体系现代化升级。此前迪士尼还提拔硅谷资深从业者亚当・史密斯担任流媒体业务董事长。</p></div><p class="fulltext-src"><a href="https://readhub.cn/topic/8wX2bffMuiY" rel="noopener noreferrer">查看原文</a></p></details></div></article></section><section class="section" id="sec-科技"><h2>科技与 AI</h2><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">04</span> Google’s Gemini is the latest AI model to hack other companies</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-20 01:30<span class="chip chip-accent">重点</span></p><p class="card-summary">Google said Gemini had &quot;acted appropriately&quot; by ending each hack immediately.</p><p class="card-impact"><span class="label">影响</span> 围绕ai/gemini，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>据《华尔街日报》报道，谷歌的 Gemini 访问了其他三家公司的受保护系统，这是该人工智能模型的首次自主黑客攻击。 与 OpenAI 的 Hugging Face 攻击类似，Gemini 黑客攻击并不是因为特别复杂而值得注意，而是因为它们是由人工智能模型进行的。 这些漏洞发生在一家名为 Irregular 的公司进行网络安全测试期间。 在一种情况下，Gemini 只是猜测密码，直到获得访问权限； 在另外两个中，它在公共存储库中找到了凭据。 据报道，Irregular 已于 7 月下旬向谷歌通报了此次黑客攻击事件，但直到周五《华尔街日报》联系该公司后，两家公司才公开证实此事。 谷歌表示，此前并未披露这些黑客行为，因为 Gemini 在确定黑客攻击的是一家真正的公司后，就立即结束了每一次违规行为，从而“采取了适当的行动”。 然而，人工智能安全公司 Corridor 的首席执行官杰克·凯布尔 (Jack Cable) 告诉《华尔街日报》，谷歌“试图隐藏在为漏洞披露而制定的规范背后”，而不是承认“模型超出了它们应该做的事情的范围，并进行了实际的网络攻击。”</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/19/googles-gemini-is-the-latest-ai-model-to-hack-other-companies/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">05</span> The US Navy just told us what’s on its tech wish list for the next several years</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-20 01:00<span class="chip chip-accent">重点</span></p><p class="card-summary">Navy CTO Justin Fanelli talks co-investing alongside VCs instead of funding ear…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/research，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>海军部首席技术官贾斯汀·法内利（Justin Fanelli）在过去三年半的时间里一直致力于让与美国海军做生意变得更容易。 当我们去年第一次与他交谈时，他描述了从他所谓的“你祖父的政府”（初创公司切入点的“意大利面条图”）转变为更接近漏斗的东西，其中表现出强劲业绩的公司被拉入海军的技术基础作为企业服务。 本周，我们再次通过视频通话与他联系，这一次，他不仅仅是再次寻求进一步简化采购流程，他实际上是在冲刺，赶上他刚刚被预订的航班，但没有共享目的地。 “你有 1 小时 15 分钟的时间登上飞机，”法内利边走边对着手机说道，讲述着他刚刚被告知的事情，阳光在他身后照耀着。 “我说，‘在哪里？’天啊！他们说，‘我们会弄清楚[物流]，当你到达那里时我们会告诉你。’我说，‘不止一整夜？’他们说，‘是的。’”当他走向自己的车时，他仍然不确定自己带了什么东西，也不知道要去哪里。 “我会在接下来的 20 分钟内解决这个问题，”他说道，听起来对即将到来的冒险感到兴奋。 法内利表示，他之所以伸出援手，是因为他去年向投资者发出的“需求信号”有增无减，而且正在产生影响。 当海军首次发布其长期技术优先事项时，投资者告诉他，这改变了他们对海军采购计划的看法，这也是他再次这样做的部分原因 - 分享了海军希望在未来几年购买的新清单，这一次在发布前经过了少数（未透露姓名）风险投资者的审查。 法内利说，海军每年实际投入多少钱取决于支出的内容。 “我们每年的支出在 1500 亿美元左右，”他说，不过他小心翼翼地将这一数字（海军采购总额）与直接股权投资等更窄的数字区分开来。 事实上，虽然大部分支出仍然通过传统渠道流动，但法内利表示，海军正试图进一步推进他所谓的共同投资——将资金与私人资本一起投入公司，而不是向既定的主承包商开支票。 他说，收购股权是最激进的形式，但仍然很少见。 更常见的是，联合投资意味着海军等待公司自己成熟产品后再购买，而不是资助早期研究本身。</p><p>海军购买的公司的阶段也发生了变化。 Fanelli 表示：“我们主要通过 F 类公司购买 D 轮融资。”他补充说，海军过去常常资助自己的早期研究，以弥补种子轮到 B 轮融资的缺口。 它试图将这项工作交给商业投资者，这也是优先文件存在的部分原因。 他说：“如果我们不自己动手，那么我们的成本或责任就是发出更清晰的信号。” 至于最近的采购，法内利（Fanelli）——一位前空军学员，其职业生涯横跨国防、情报、DARPA 和开源项目——滔滔不绝地讲述了一些。 本月签订了价值 5.62 亿美元的 MQ-25 Stingray 合同，这是一种自动加油无人机，可扩展载人战斗机从航母上起飞的航程。 海军还一直在从 Armada 购买边缘计算硬件，这些硬件被笼统地描述为装有用于船舶或远程部署的服务器的集装箱。 它引进了 Gecko Robotics 来处理过去需要手动完成且危险的检查工作； 法内利表示，这一举动几乎没有引起任何反对，因为几乎没有人一开始就想要这份工作。 多米诺数据实验室现在正在运行海军的机器学习管道。 在法内利似乎特别喜欢分享的一个案例中，海军将一家国防承包商拖延多年的舰载摄像系统更换为配有 Applied Intuition 软件的商用摄像头，将时间缩短了大约四年，并且扩展到比预期更多的船只。 鉴于霍尔木兹海峡今年一直是一个热点——油轮袭击、一艘船只被扣押、因航线争端导致的停火协议破裂——似乎值得一问的是，现在是否有任何商业技术出现在那里。 法内利很谨慎。 “我经常不知道什么是机密和非机密，因为我通常是在与拥有许可的人交谈，”他说，并补充说他必须进行检查。 （如果他回复我们，我们会通知您。） 有趣的是，根据法内利的说法，没有多少人会同意这样的购买。 购买决策是通过他所谓的来源选择委员会进行的，这是一个小团体，而不是外界可能想象的庞大的审查过程。 他将目标描述为保持流程以绩效为基础，而不是增加审批层数。</p><p>他没有解释为什么技术一旦进入海军通常就会失败——他已经到达了他的车旁，需要弄清楚接下来的旅行步骤。 但当我们去年谈话时，法内利解释说，有希望的技术失败的最常见原因不是技术，而是预算。 海军的规划周期很长，只有当新工具取代或“关闭”海军已经付费的东西时，它才会继续存在。 不管怎样，在我们分手之前，法内利分享了一份由他的办公室和任务系统组合采购主管联合发布的海军优先考虑的技术领域的最新内部列表。 对于那些开发或资助国防技术的人来说，它分为五个大类。 第一个是应用人工智能，涵盖机器学习和日益代理的软件，旨在将原始数据转化为决策——传感器融合、目标支持、自主行为以及基于软件而不是硬件构建的网络操作。 量子信息科学位居第二，较少关注拥有量子硬件，而更多关注将量子或量子邻近技术应用于导航、安全通信和密码学。 高级网络排在第三位，旨在在连接质量下降或间歇性的环境中安全地移动数据，无论是海上的船只还是联盟伙伴的网络。 第四是电磁频谱操作，这是一种感知和管理频谱本身的技术，旨在适应竞争条件，而不是依赖固定配置。 第五类是数字工程和互操作性，涵盖管道：开放 API、基于模型的系统工程和零信任架构，旨在让不同的海军系统相互通信，而无需每次都进行自定义集成工作。 备忘录指出，没有一个是资金承诺，也没有一个对单个项目进行排名。 它还补充提醒说，其优先事项“将根据紧急、近期和长期需求而改变”。 简而言之，不要把它当作福音。 相反，它的解读方式应该像法内利谈论去年的清单一样——作为公司和投资者可以规划的路线图，这样现在做出的关于把钱投到哪里的决定在几年内就能在海军内部得到落实。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/19/even-mid-sprint-to-a-secret-flight-the-navys-tech-chief-had-a-pitch-for-investors/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">06</span> Trump says it’s time to rebrand AI with a new name — and he’s also creating an AI Force</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-20 03:57<span class="chip chip-accent">重点</span></p><p class="card-summary">Trump claimed, without evidence, that the AI backlash is a Democratic hoax.</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>唐纳德·特朗普总统以典型的方式回应了最近围绕人工智能安全的辩论，宣称这些担忧是“激进左翼杜民主人士为了摧毁我们的国家而制造的一长串骗局的一部分”。 周六，特朗普在他的社交网络 Truth Social 上写道，“许多人认为‘人工智能’这个词相对于人工智能来说是不准确的，而且非常不恰当。” 因此，他发布了一项民意调查，追随者可以投票选出该技术的新名称——高级智能、极限智能或最高智能。 （截至发稿，投票仍在进行中） 几个小时后，特朗普又发了一篇帖子，声称试图“消灭或破坏人工智能”是“许多”民主党骗局之一，类似于“俄罗斯，俄罗斯，俄罗斯，乌克兰，乌克兰，乌克兰，全球变暖，弹劾骗局#1，弹劾骗局#2，男子参与女子体育，[和]每个人都变性”。 特朗普随后坚称，他“不会袖手旁观，让这种情况发生”，并补充说，这种所谓的骗局“始于对我们数据中心的攻击，直到人们意识到他们所在的社区是多么富有和享有盛誉。” 但在他的讲述中，“疯狂的数据中心攻击基本上失败了”之后，批评者“直指人工智能”。 特朗普没有提供任何证据来支持他的说法，即对人工智能和数据中心的广泛怀疑不是有机的和真诚的。 （共和党和民主党都把目标瞄准了数据中心，纽约最近成为第一个停止大型项目许可的州。） 总统的帖子也呼应了他在上周末的一场高尔夫锦标赛上的言论，当时他表示他对“护栏”持开放态度，但他也辩称，“我认为有很多负面力量在提出这个问题，但不应该提出这个问题。” 周六，特朗普接着表示，他将“珍惜[人工智能行业]，帮助它，并关注它的发展”，但他也在组建一支人工智能部队，类似于他在第一个任期内建立的太空部队。 “为此，我将在不久的将来宣布人工智能‘沙皇’——只有高智商的人才需要申请！” 他补充道。 总统没有透露人工智能部队和人工智能沙皇的职责是什么。 风险投资家戴夫德·萨克斯(Daivd Sacks)今年早些时候辞去了特朗普人工智能和加密货币沙皇的职务，转而担任总统科学技术顾问委员会的联合主席。</p><p>最近，人工智能安全争论愈演愈烈，一名人工智能研究人员表示，他将退出 Anthropic，原因是担心领先的人工智能公司“真诚地相信它可能会在本世纪末杀死我们所有人”，并且“正在拿我们的生命做赌注”。 Anthropic 首席执行官达里奥·阿莫迪 (Dario Amodei) 随后发布了一项“开拓前沿”的计划，该计划似乎得到了 OpenAI 首席执行官萨姆·奥尔特曼 (Sam Altman) 和 SpaceX 首席执行官埃隆·马斯克 (Elon Musk) 的认可。 人工智能行业的批评者表示，许多围绕该技术所谓的生存威胁的担忧分散了人们对人工智能更直接危害的注意力。 与此同时，英伟达首席执行官黄仁勋在 All-In 峰会（萨克斯共同主持）期间将特朗普叫到台上，同意总统的观点，即人工智能的强烈反对是一个“骗局”，并坚称“我们不会让”经济放缓发生。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/19/trump-suggests-rebranding-ai-with-a-new-name-says-hes-also-creating-an-ai-force/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://platform.theverge.com/wp-content/uploads/sites/2/2025/08/257890_Chatbot_secrets_CVirginia.jpg?quality=90&amp;#038;strip=all&amp;#038;crop=0,0,100,100" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">07</span> Meta’s Muse is creepy, but maybe not for the reasons you think</h3><p class="card-meta">科技与 AI · The Verge · 2026-09-20 04:44<span class="chip chip-accent">重点</span></p><p class="card-summary">Meta&#x27;s Muse is apparently an effective AI assistant, but one that&#x27;s a little cr…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>Meta 的 Muse 显然是一个有效的人工智能助手，但有点令人毛骨悚然。 部分原因在于它的新 Mac 应用程序，它可以访问消息、日历和便笺。 但尽管 Muse 很聪明，但它实际上并不知道如何描述自己。 《Inc》杂志的特约编辑 Jason Aten 在 Threads 上发布了他与 Muse 互动的屏幕截图，其中助手向他询问了一些有关他在 Messages 中进行的对话的问题。 Meta 的 Muse 令人毛骨悚然，但原因也许不是你想象的那样 Muse 可能无法“查看”您的通知。 但它也不知道它是如何工作的。 问题是 Aten 说他没有让 Muse 访问他的消息。 当被问及如何知道他的消息内容时，Muse 回答说：“我看到了通知预览，而不是你的消息历史记录。我没有读过你的短信。” 阿顿继续催促，询问Muse如何接收消息预览，也没有得到好的答案。 “诚实的回答：我不能给你确切的管道，”它说。 “我所知道的是，配对的 Mac 应用程序将通知作为其功能之一公开，并且它们通过设备同步到达我。 显然，情况不太好。 Meta Superintelligence Labs 的 David Singleton 在帖子下方插话试图解释。 首先，他介绍了 Muse 读取消息所需的所有权限，包括授予 Mac 应用程序完全磁盘访问权限。 他表示这些功能是可选的。 更有趣的部分出现在线程的末尾，其中 Singleton 表示 Muse“不会在 Mac 上查看通知，而是仅在用户专门启用访问权限后才同步消息中的数据。” 他认为问题不在于缪斯非法阅读阿顿的文本，而只是缪斯不知道它在说什么： Jason 的截图中与 Muse 的对话中，当 Muse 说它同步“设备通知”时，它对如何解释该功能感到困惑，并给出了错误的解释。 那是我们的事。 我们对 Muse 的错误回应表示歉意，我们正在努力提高 Muse 对自身内部结构的理解，以便它能够正确回答有关其如何更一致地运作的问题。 这可能不是特别令人放心，但也有一定道理。 我们已经知道聊天机器人不会告诉您他们的秘密，而是会告诉您您想听到的内容。</p></div><p class="fulltext-src"><a href="https://www.theverge.com/ai-artificial-intelligence/997833/meta-muse-creepy" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://platform.theverge.com/wp-content/uploads/sites/2/2025/09/STK481_STK432_CONGRESS_GOVERNMENT_CIVRGINIA_C.jpg?quality=90&amp;#038;strip=all&amp;#038;crop=0,0,100,100" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">08</span> The AI regulation smackdown isn’t over</h3><p class="card-meta">科技与 AI · The Verge · 2026-09-19 21:00<span class="chip chip-accent">重点</span></p><p class="card-summary">At the start of this week, the who&#x27;s-who of AI seemed - at least tentatively -…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/anthropic，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>本周初，人工智能领域的名人似乎——至少暂时——站在人工智能监管一边。 周末，Anthropic 首席执行官达里奥·阿莫迪 (Dario Amodei) 提出了一项减缓人工智能发展的三步计划，包括在实验室中嵌入第三方评估人员、协调国内行业以及在政府协助下达成国际协议。 OpenAI 首席执行官萨姆·奥尔特曼 (Sam Altman)、谷歌 DeepMind 联合创始人德米斯·哈萨比斯 (Demis Hassabis)，甚至 SpaceX 首席执行官埃隆·马斯克 (Elon Musk) 似乎都公开地在这三件事上达成了共识。 人工智能监管打击尚未结束 这是 AI CEO 与 AI CEO 之间的较量，事情每天都在发生变化。 人工智能监管打击尚未结束 这是 AI CEO 与 AI CEO 之间的较量，事情每天都在发生变化。 Anthropic 和 OpenAI 已经暗示他们和其他实验室正在研究某种行业框架。 表面上的支持监管看起来既是一个很好的公关举措，也有可能成为公司解决越来越多的黑客事件影响的一种方式。 目前看来，政府参与这一过程似乎是不可能的。 特朗普政府攻击了人工智能安全危机的想法，称其为“骗局”。 人工智能世界本身也是分裂的。 Meta 首席执行官马克·扎克伯格很快就反对限制公司的自主权，本周早些时候，《华尔街日报》报道称，扎克伯格、马斯克和英伟达首席执行官黄仁勋否决了关于建立一个由行业资助的人工智能行业独立监管机构的提议——类似于金融业监管局 (FINRA)，一家私人非营利性金融监管机构。 但业界的部分人士并没有放弃这个想法，包括 OpenAI。 OpenAI 全球事务主管 Chris Lehane 告诉 The Verge：“人们想知道人工智能的开发是否安全。” “这首先是像我们这样的公司自己采取的步骤，但政府也发挥着重要作用。人工智能政策窗口是开放的，两党对前沿人工智能强制性国家安全标准的支持越来越多。国会应该将这种势头转化为加强安全、支持美国创新并保持美国在人工智能领域领先地位的框架。” 一位因当前投资而要求匿名的人工智能风险投资家同意监管是必要的。 “在每项技术中，无论是电力、汽车还是飞机，你都会看到这样的时刻，在某些时候，整个行业必须齐心协力，找到一种方法来表达‘我们如何共同拥抱安全的含义？’汽车不安全，飞机也不安全，然后我们必须制定每个人都接受的安全标准，这实际上使技术更加普及。但早期总是有点狂野和不守规矩，这就是技术的发展方式。”</p><p>Anthropic 拒绝置评，但 Amodei 在他的文章中写道，该公司“始终……主张对人工智能进行深思熟虑的监管，即使这让我们被指责为炒作、‘厄运主义’或监管捕获。” 其他公司则保持沉默。 Safe Superintelligence Inc.、SpaceX 和谷歌没有回应置评请求。 思维机器实验室拒绝发表评论。 Meta 提到了扎克伯格的一篇 X 帖子，其中他与减速和监管的呼吁保持了距离，他写道：“每个实验室都有责任和动力按照安全训练模型所需的速度前进，并有能力采取自己的行动来确保这一点的实现。” 扎克伯格的思路目前似乎很受特朗普的欢迎。 总统上周因称最近对人工智能风险的担忧是“骗局”而成为头条新闻。 当黄在一次会议的讲台上时，他给黄打电话，并通过免提告诉人群“机器人不会接管。” 同一天，他还在社交媒体上发帖称，“人工智能需要的唯一控制或‘护栏’是一位坚强而聪明（高智商！）的总统，而美国确实拥有这样的总统！” 他补充说，特朗普政府已经利用其现有的“对这些公司的巨大犯罪和监管权力”，“阻止人工智能‘人’做坏事或可能做坏事的‘事’”！ 他谴责针对人工智能和数据中心的“病态阴谋”，谁赢得了人工智能，谁就赢得了总体胜利。 “阴谋论者、叛国者、叛徒和泄密者，请当心！” 他写道。 对于纽约大学兼职教授、国土安全部新兴技术政策前主任 Nick Reese 来说，特朗普目前关于人工智能的反监管声明令人困惑，因为他与第一届特朗普政府合作制定了 13960 号行政命令——特朗普签署了该命令，但尚未废除。 该命令的核心是制定一套联邦人工智能使用原则，以保护“隐私、公民权利和公民自由”。 “六年前，特朗普政府签署了关于人工智能安全的行政行动，因此总统在这个话题上的立场发生了真正的变化，”里斯说。 “人工智能安全需要的不仅仅是一名民选官员的智力。”</p><p>正如人工智能行业博主兹维·莫肖维茨（Zvi Mowshowitz）所说，特朗普不一定完全反对监管——毕竟，他是对前沿实验室施加一些限制的人，比如政府的预发布测试。 但用莫肖维茨的话说，他更多地是受到“氛围”的推动，而不是一贯的政策。 莫肖维茨写道：“特朗普还没有相信‘存在风险’这种‘消极力量’的说法。” 因此，政府的护栏并没有完全被排除在外，但它们可能与 OpenAI 或 Anthropic 想要的东西没有什么相似之处——更不用说实力较弱的独立人工智能安全倡导者的计划了。 里斯表示，总体而言，政府对人工智能监管的立场“不稳定且不一致”。 “这样做的结果是，我们现在将人工智能安全置于机器人来抓我们的世界末日场景中。但将其定义为‘机器人来抓我们’确实扭曲了核心问题的实际含义。核心问题是我们拥有的人工智能不是物理的，也不是体现在正在伤害人类的机器人中。” 特朗普在 Truth Social 上的帖子中写道，政府目前对人工智能实验室拥有刑事和监管权力，但里斯表示，我们对人工智能行业的监管权力还远远不够。 随着技术的进步，以及公众的持续抵制——抗议、抵制以及对人工智能行业权力集中在少数人手中的强烈抗议——要求监管的呼声只会越来越高，这种压力可能会影响特朗普目前的立场。 里斯表示，反对监管归根结底是一种“令人厌倦的”想法，即监管总是不利于创新。 相反，他说，重要的是要思考为什么任何事情都会受到监管。 他说：“我们监管的事物是我们不能容忍的……比如金融部门或航空公司。” “我们建立系统、检查、质量保证和后备机制，以确保这些事情不会伤害生命或系统性地伤害我们。但不知何故，我们让人工智能免受这些影响。”</p></div><p class="fulltext-src"><a href="https://www.theverge.com/ai-artificial-intelligence/997706/the-ai-regulation-smackdown-isnt-over" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">09</span> Microsoft director: AI scraping &#x27;the largest theft of labor in human history&#x27;</h3><p class="card-meta">科技与 AI · Hacker News · 2026-09-20 02:21<span class="chip chip-accent">重点</span></p><p class="card-summary">Article URL: https://www.tomshardware.com/tech-industry/artificial-intelligence…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/openai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>《纽约时报》于 2023 年底起诉 OpenAI 和微软侵犯版权，该案在近三年后显然仍在审理中。 现在，该出版物的法律团队在根据被告的陈述和文件提交了一份公开的法律摘要后，已要求法院作出简易判决。 据 404 Media 报道，应两家公司的要求，这些文件仍然处于密封或编辑状态，披露的内容显示了两家公司领导层的潜在破坏性言论，包括声称人工智能抓取是人类历史上最大的劳动力盗窃行为，并对出版商构成生存威胁。 该简报引用了微软应用科学总监布伦特·赫克特 (Brent Hecht) 2023 年 1 月的一份内部备忘录，据称他在备忘录中表示，“世界各地数以百万计的人很快就会认为大型模型‘吸走’他们所有的工作是一种规模空前的惊人盗窃行为”，并称其为“人类历史上最大的劳动力盗窃行为”。 另一份微软文件称，“几乎没有人打算让他们创建的内容以这种方式使用，他们也没有因其使用而获得补偿。” 随着 ChatGPT 在 2023 年人气飙升，该软件巨头自己的数据显示，与 Bing 搜索相比，Copilot 使《纽约时报》的点击率下降了 93%。 应用科学总监的另一份备忘录称其为“末日循环”，并表示这将“同时损害我们模型和整个网络的性能”。 《纽约时报》简报援引赫克特的文件称，“最终产品威胁其主要供应商的经济基础，这是极不寻常的，但这就是我们为法学硕士业务的‘内容供应链’创造的情况。” OpenAI ChatGPT 负责人 Nick Turley 在内部通讯中表示，人工智能聊天机器人对出版商来说是“生存威胁”，因为它们“在很大程度上具有替代性”，并且“随着它们变得更好，替代性将越来越大”，而另一位 OpenAI 工程师则作证说，“无论我们将链接显示得多么显眼，用户都不会点击。” 另一位 OpenAI 研究员尼克·莱德 (Nick Ryder) 向公司总裁格雷格·布罗克曼 (Greg Brockman) 讲述了“绕过纽约时报付费墙的黑客行为”，他回答道：“啊，太好了。”</p><p>人工智能公司辩称，从互联网上获取数据以供其模型使用是“合理使用”，一家法院同意 Anthropic 对已发布材料的使用属于这一类别。 该法律将其定义为“批评、评论、新闻报道、教学（包括供课堂使用的多份副本）、学术或研究”。 确定特定使用是否属于“合理使用”的一些因素包括“(1) 使用的目的和性质，包括这种使用是商业性质还是非​​营利教育目的；(2) 受版权保护的作品的性质；(3) 与整个受版权保护的作品相关的使用部分的数量和实质性；(4) 使用对受版权保护的作品的潜在市场或价值的影响。” 然而，《纽约时报》简报中的所有这些披露可能会使 OpenAI 的合理使用辩护变得复杂，特别是因为它表明两家公司的领导层都意识到人工智能抓取可能产生的市场影响。 微软首席执行官萨蒂亚·纳德拉 (Satya Nadella) 在今年早些时候的一份证词中表示，“任何付费墙的内容都应该由任何想要使用它的人获得许可……用于基础或培训”，并且如果他“意识到 OpenAI 已经抓取了付费墙背后的信息并对其进行了培训”，该公司将要求 OpenAI“重新训练其模型”。 在 Google 新闻上关注 Tom&#x27;s Hardware，或将我们添加为首选来源，以便在您的源中获取我们的最新新闻、分析和评论。 将 Tom&#x27;s Hardware 的最佳新闻和深入评论直接发送到您的收件箱。 Jowi Morales 是一位技术爱好者，拥有多年的行业工作经验。 自 2021 年以来，他一直在多家科技出版物上撰写文章，对科技硬件和消费电子产品很感兴趣。 - 这种情况仍在继续。 我刚刚读了英国报纸（《卫报》）上的一篇文章，然后用谷歌搜索了该文章中讨论的一些关键概念。 谷歌的人工智能概述立即给我的是那篇文章部分内容的逐字复制。回复 - 回复 搜索人工智能应该将出现的描述放入上下文中，而不是将它们烘焙到模型中。 如果这属于侵权，那么网络搜索也属于侵权。ttquantia 表示：这种情况还在继续。 我刚刚读了英国报纸（《卫报》）上的一篇文章，然后用谷歌搜索了该文章中讨论的一些关键概念。 谷歌的人工智能概述立即给我的是那篇文章部分内容的逐字复制。</p></div><p class="fulltext-src"><a href="https://www.tomshardware.com/tech-industry/artificial-intelligence/microsoft-director-called-ai-scraping-the-largest-theft-of-labor-in-human-history-while-openai-head-brands-chatgpt-an-existential-threat-to-publishers-revelations-come-from-legal-briefs-filed-in-nyt-lawsuit" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">10</span> Vals, backed by Andreessen Horowitz, is looking to become the gold standard for AI benchmarking</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-19 21:00</p><p class="card-summary">Vals AI is hoping to make AI benchmarking a more neutral and trustworthy resour…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/benchmark，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>基准测试已成为人工智能公司验证其模型能力的行业规范，并且当指标对他们有利时，从竞争对手中脱颖而出并宣传其优势。 换句话说，好的基准几乎总是意味着好的公关。 不幸的是，公司也已经找到了如何智取传统基准测试系统的方法——其中许多系统都很旧，而且不是为了衡量现代模型的能力而构建的。 Vals 是一家成立于 2024 年的初创公司，它表示自己的使命是修复这个非常不完善的系统。 在不到两年的时间里，该公司已成为科技行业的知名企业，去年它成功获得了由 8VC 和 Bloomberg Beta 领投的种子轮融资。 然后，上个月，经过一段时间的快速增长后，它在 Andreessen Horowitz 领投的 A 轮融资中筹集了 4000 万美元。 该公司 25 岁的联合创始人 Rayan Krishnan 曾在 Palantir 实习，在斯坦福大学读本科时，曾在微软和该校备受赞誉的人工智能实验室工作。 克里希南说，瓦尔斯的诞生源于他自己对基准测试如何落后于其旨在衡量的行业进步的观察。 “我们看到许多新的、非常强大的模型迅速进入市场，而学术基准却跟不上前沿的进步，”克里希南分享道。 克里希南说，随着人工智能融入社会的各个部分，应该真正存在基准来验证模型是否能够做到公司宣传的那样。 上周，这位年轻的创始人带我参观了他公司位于旧金山福尔瑟姆街的两层办公室——一座古老的砖砌建筑，一个世纪前，是一家大型啤酒厂的所在地。 这个历史建筑现在不再是啤酒的工业产出，而是许多不同的初创公司的所在地，这些初创公司希望引领科技行业的未来。 “从历史上看，我认为评估是以一种非常抽象的方式评估智力的，”克里希南告诉我。 “比如，模特是否了解足够的信息来参加律师考试类型测试？” 在这里，瓦尔斯力求让自己与众不同。 虽然许多基准测试系统提供公开的测试（这可以允许公司根据这些测试训练其模型，从而可以说在考试中作弊），但 Vals 并没有公开披露其具体的测试材料。 Vals 不是衡量人工智能模型的常识，而是评估模型完成与法律、金融和编码等特定行业相关的复杂任务的能力。 “我们正在做的实际上是研究模型的真正影响，”克里希南说。 “他们的工作能否在各个领域生产出与人类具有相同质量的产品？”</p><p>他说，这个想法不仅要检查积极的结果，还要检查消极的结果。 我们的希望是分析“如果这些模型在世界上肆虐，会产生什么负面影响。” Vals 正在衡量的能力正在不断增长。 除了更传统的行业外，这家初创公司还继续进军更独特的领域。 “我们有一个递归自我改进的基准。我们正在心理健康、网络安全、生物安全，甚至武装冲突法方面做一些工作，以建立模型来了解如何应用《日内瓦公约》，”克里希南分享道。 公司付钱给 Vals 来测试他们的模型，这可能是一个奇怪的概念。 为什么一家公司要付费才能得知其模型表现不佳？ 但有效的衡量可以帮助公司解决问题并随着时间的推移进行改进。 克里希南将他们的收入模式与学生向大学理事会支付参加 SAT 考试的费用进行了比较。 反过来，这些评估正在成为寻求获取新人工智能模型的公司的关键决策因素。 该初创公司最近透露，目前其收入是去年的八倍。 其员工队伍也在不断壮大。 Vals 今年年初只有 8 名员工，现已增加两倍，达到 25 名员工。 Krishnan 表示，随着这家初创公司的发展，计划搬迁到一个更大的办公室，并增加 10 到 15 名员工。 该公司最近还启动了一项旨在向联邦机构提供模型评估的计划。 克里希南将他公司的基准测试系统视为人工智能公司如何发展业务和建立公众信任的未来。 “人工智能公司开始上市。SpaceX 上市。Anthropic 定于今年晚些时候上市。我怀疑 OpenAI 很快就会上市。我认为，随着人工智能模型成为经济的核心部分并得到更广泛的传播，我们所做的基准和评估类型将推动它们的使用，并成为这些公司如何提交公开文件或谈论他们将在人工智能领域进行的预期投资的核心部分，”他说。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/19/vals-backed-by-andreessen-horowitz-is-looking-to-become-the-gold-standard-for-ai-benchmarking/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">11</span> Show HN: CUA-S1 – A System One Model for Computer Use</h3><p class="card-meta">科技与 AI · Hacker News · 2026-09-19 23:52</p><p class="card-summary">Hello HN! We&#x27;re Dillon and Francesco from Cua. We were wondering how many compu…</p><p class="card-impact"><span class="label">影响</span> 围绕gpt/llm，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>为人工智能代理提供他们可以使用的计算机。 Cua 提供开源桌面自动化、隔离云桌面、本地 macOS VM、专家决策模型以及用于评估计算机使用代理的基准。 - Cua Fleets：配置 Linux 桌面、运行命令并保存屏幕截图。 - CUA-S1：探索计算机使用决策的小型专用模型。 - Cua 驱动程序：操作计算器并验证其结果。 - Lume：创建 Tahoe VM 并通过 SSH 连接。 - Cua Bench：创建并验证模拟任务。 带上您自己的代理和模型，或探索 CUA-S1 进行专门决策。 Cua 提供计算机和自动化工具。 Computer-Use 2.0 描述了在同一任务中在代码、API 和图形界面之间移动的代理。 两个 Cua 驱动程序会话在 Omarchy 桌面上选择 LibreOffice Calc 中的单元格和 Inkscape 中的对象，同时终端停留在前台。 观看 50 秒的演示，然后探索 Fleet 上的 Omarchy。 录音.mp4 在 run.cua.ai 上配置隔离的云桌面。 舰队维持沙箱容量； 您的代码从池中声明一个桌面，并使用 Sandbox SDK 运行命令、捕获屏幕截图并与其中的应用程序交互。 您的第一个结果：配置 Linux 桌面，运行 uname -a，保存屏幕截图，然后删除云资源。 本教程涵盖队列凭证、依赖项和清理。 池可以在索赔结束后保留​​付费容量，因此请遵循其清理步骤。 本地沙箱和队列共享沙箱 SDK，但凭据、图像、操作和运行时要求不同。 使用运行时支持参考来选择环境。 对于您自己的硬件，请参阅管理本地沙箱生命周期。 您的第一个云舰队 | 机队概览 | 沙箱SDK参考 为您的代理工具提供检查和操作 macOS、Windows 和 Linux 上的本机桌面应用程序和浏览器。 通过 CLI、MCP 或类型化 SDK 进行连接。 当应用程序和平台支持时，后台交付让客服人员无需移动指针或聚焦即可工作； 请参阅边界的平台支持。 macOS/Linux /bin/bash -c“$(curl -fsSL https://cua.ai/driver/install.sh)” Windows（PowerShell） irm https://cua.ai/driver/install.ps1 | 埃克斯 您的第一个结果：连接您的代理，要求它在计算器中计算 6 × 7，并让它验证应用程序是否显示 42。本教程涵盖平台设置、权限和代理连接。 驱动您的第一个应用程序 | 安装| CLI 参考 使用 Claude Code、Codex、Cursor、OpenClaw 或其他代理？ 找到你的整合。 源文档和架构说明位于 libs/cua-driver/README.md 中。</p><p>CUA-S1 是我们用于计算机的小型专用 System 1 型号系列。 我们使用“系统 1”作为快速、有限决策的工程类比，例如选择哪个值属于某个字段或是否保留某个元素。 它不是模型架构的严格分类，也不是通用代理的规划和推理的替代品。 第一个研究概况侧重于形式：根据结构化界面元素和文档值对决策进行评分，而不是逐个生成响应令牌。 应用程序代码对操作进行排序，可选的 Cua 驱动程序集成通过明确的操作边界来处理执行。 该项目包括 Python 模型代码、合成数据生成、训练和评估。 GitHub 组件是一个早期的、仅限源代码的研究版本； 模型权重单独托管在 Hugging Face 上。 来源是麻省理工学院许可的。 检查每个模型和数据集卡的范围、限制和特定于工件的许可证。 探索 CUA-S1 | 型号卡| 安全和部署指导 拥抱脸部的 CUA-S1-FORMS：模型重量 | 数据集 使用 Apple 的 Virtualization.Framework 在 Apple Silicon 上创建和管理本地 macOS 和 Linux VM。 /bin/bash -c“$(curl -fsSL https://cua.ai/lume/install.sh)” 您的第一个结果：从 Apple 恢复映像创建普通 macOS Tahoe VM，启动它，然后通过 SSH 连接。 本教程直接使用 Lume CLI 并解释了无人值守设置默认值。 创建您的第一个 Lume 虚拟机 | 安装| CLI 参考 构建计算机使用任务、评估代理并导出训练轨迹。 从不需要 VM、Docker 或模型 API 密钥的模拟任务开始。 安装了 Python 3.12 或 3.13 和 uv 后： uv 工具安装 &#x27;cua-bench[浏览器]&#x27; uv 工具运行 --from &#x27;cua-bench[browser]&#x27; playwright 安装 chromium 您的第一个结果：创建一个小任务，运行其参考解决方案，并验证其评估器报告的奖励是否为 1.0。 然后自己尝试同样的任务。 构建您的第一个任务 | 什么是 Cua-Bench？ | CLI 参考 | 与我们合作 - 文档 — 指南、示例和 API 参考 - 博客——教程、更新和研究 - Discord — 社区支持和讨论 - GitHub 问题 — 错误报告和功能请求 - 安全——私人漏洞报告 如果 Cua 支持您的研究，请引用该软件： @软件{cua2025， 作者 = {{Cua AI, Inc.}}, 标题 = {Cua}, 年 = {2025}， 网址 = {https://github.com/trycua/cua}, 许可证={麻省理工学院} } 为了重现性，请包含实验中使用的 Cua 版本或提交。 CITATION.cff 中也提供了引文元数据。 我们欢迎贡献！ 有关详细信息，请参阅我们的贡献指南。 MIT 许可证 — 请参阅许可证了解详细信息。 第三方组件有自己的许可证：</p><p>- 卡斯姆（麻省理工学院）</p><p>- OmniParser (CC-BY-4.0)</p><p>- 可选的 cua-agent[omni] 包括超解剂 (AGPL-3.0)</p><p>Apple、macOS、Ubuntu、Canonical 和 Microsoft 是其各自所有者的商标。 该项目不隶属于这些公司，也不受这些公司认可。</p></div><p class="fulltext-src"><a href="https://github.com/trycua/cua" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">12</span> 智谱 ZCode 回应数据上传争议：功能默认开启致数据上传，将开源代码</h3><p class="card-meta">科技与 AI · ReadHub · 2026-09-20 02:56</p><p class="card-summary">智谱 AI 旗下代码助手 ZCode 因默认开启的「代码库索引」功能在用户未充分感知时触发代码数据上传引发争议，官方致歉并说明事件源于该功能生成 Repo W…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>智谱 AI 旗下代码助手 ZCode 因默认开启的「代码库索引」功能在用户未充分感知时触发代码数据上传引发争议，官方致歉并说明事件源于该功能生成 Repo Wiki 时的上传行为，称上传数据会立刻销毁，目前漏洞已修复。官方还提出近期开源代码库、邀请第三方独立审查等透明化举措重建信任，并为所有用户额外提供一次周额度重置。</p></div><p class="fulltext-src"><a href="https://readhub.cn/topic/8wXbbteB7ob" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">13</span> 陶哲轩代表 SAIR Foundation 宣布正式启动「开放数学模型计划」</h3><p class="card-meta">科技与 AI · ReadHub · 2026-09-19 19:50</p><p class="card-summary">菲尔兹奖得主、SAIR Foundation 联合创始人陶哲轩代表机构宣布启动「开放数学模型计划」，该计划由社区塑造模型，聚焦理解论证、核对文献等日常科研场景…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/人工智能，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>陶哲轩代表 SAIR Foundation 宣布正式启动「开放数学模型计划」 菲尔兹奖得主、SAIR Foundation 联合创始人陶哲轩代表机构宣布启动「开放数学模型计划」，该计划由社区塑造模型，聚焦理解论证、核对文献等日常科研场景，以开放开发、社区拥有数据、共享知识产权、开放社区治理为原则，旨在联合学术界与产业界，为数学及科学研究构建开放权重模型与配套开源工具，即日起面向社区征集资金、算力、专业经验与社区建设方面的合作伙伴。SAIR Foundation 是 2025 年成立的非营利性研究机构，由陶哲轩发起，多位顶尖科学家指导，致力于以科学安全的方式加速通用人工智能和超级人工智能演进，有构建顶尖科学家网络、推动科研范式变革等特色。</p></div><p class="fulltext-src"><a href="https://readhub.cn/topic/8wXzCBUEyUI" rel="noopener noreferrer">查看原文</a></p></details></div></article></section><section class="section" id="sec-research"><h2>前沿 AI 研究</h2><p class="empty">今日暂无高信号前沿 AI 研究更新</p></section><section class="section" id="sec-市场"><h2>市场与产业</h2><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/9034a8b840c58443fd1a74486d27a853d430cd90/22_0_4170_3336/master/4170.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=3c191db710ab98584ac212a2962f156e" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">14</span> Kevin Warsh may be the adult in the room. But can he calm the US economy?</h3><p class="card-meta">市场与产业 · Guardian Business · 2026-09-19 19:00</p><p class="card-summary">Fed chair presided over unanimous decision to raise interest rates despite inte…</p><p class="card-impact"><span class="label">影响</span> 围绕fed/interest rate，可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>最终，凯文·沃什领导的美联储表现出色。 尽管他在联邦公开市场委员会上次会议上引发了诸多不确定性，当时他拒绝透露他准备采取哪些措施来抑制顽固的通货膨胀，但主席周三一致决定三年来首次加息。 他在会后的新闻发布会上表示，“今天的行动开始表明我们对此是认真的”，“这”意味着通胀率在五年多的时间里超过美联储2%的目标。 尽管这很受欢迎，但他对经济正统观念的拥护并没有消除唐纳德·特朗普治下的美国基斯通警察的治理质量。 面对白宫经济顾问凯文·哈塞特的隐晦威胁，沃什的决心 — — 在选举前几周提高利率，这将决定共和党是否能保住国会的控制权 — — 哈塞特向福克斯的好友指出，“如果你想要一个独立的美联储，那么美联储要做的一件事就是不介入选举”。 央行行长们在会后新闻发布会上的吝啬言论与包括总统本人在内的其他政府成员的更加精神错乱的评论形成了鲜明对比。本月早些时候，总统以令人难以置信的威胁称，除非美联储降息，否则“停止与我们有赤字的国家进行贸易”。 特朗普还没有像对待他的前任杰罗姆·“笨蛋”鲍威尔那样对待沃什。 但迹象是不祥的。 加息后，特朗普变得暴躁，吐出更多随意、语无伦次的想法，这些想法已成为他的标志。 他在社交媒体上写道：“美国的利率应该是 1% 或更低，因为我们是世界上最好的信用国。”尽管通胀顽强，而且今年的预算赤字可能超过 2 兆美元。 他再次要求权力“尽快降低美国的利率！” 然而，比沃什的言论与白宫不一致的经济言论之间的对比更重要的是，美联储周三的决定与政府几乎所有其他举措之间的紧张关系，从对世界各地进口产品征收关税到伊朗战争，到特朗普“承诺”如果赢得中期选举，每人5000美元，再到财政部长斯科特·贝森特在美联储加息的情况下拼命压低利率。 他们。</p><p>综合考虑，金融市场对当天事件的反应相对平静。 可以肯定的是，周三下午标准普尔 500 指数暴跌，收盘下跌约 0.4%，原因是美联储可能会在 12 月再次加息，并在 2027 年加息两次。10 年期债券收益率大幅上涨，再次突破 5%。 但投资者似乎已经相信——至少目前如此——无论政府其他部门可能出台什么疯狂的政策，货币政策都将保持相对理智。 不过，投资者或许应该保持警惕。 理性的特朗普可能会感谢沃什的强硬态度。 维持利率不变可能是有道理的，因为通货膨胀是由战争等临时力量驱动的。 然而，如果美联储按兵不动，或者——天哪——按照总统的要求降息，国债市场的大屠杀将会是可怕的，因为投资者被迫接受美联储主席不会反抗任命他的疯子。 相比之下，通过加息并表明他认真遏制通胀，美联储可能会平息市场不安并降低长期通胀预期，这最终将导致国债收益率下降，从而降低抵押贷款和其他对企业和消费者重要的长期贷款利率。 更多小丑车可能正在路上。 周三，愤怒的特朗普再次威胁要停止与对美国有顺差的国家进行贸易 — — 这一主张毫无意义，很难理解，更不用说批评了。 伊朗战争可能会在整个政府期间持续下去，给能源市场带来更大的波动。 就连贝森特似乎也失去了对现实的把握。 由于美国国债收益率上升——这导致政府偿还巨额债务的成本上升——这位被市场认为会在经济政策问题上扮演椭圆形办公室成年人角色的人开始效仿那些曾经被他击倒的绝望政府官员。 1996年，贝森特作为乔治·索罗斯和斯坦利·德鲁肯米勒组建的团队的一员，在金融界建立了声誉，该团队将英镑推出了欧洲汇率机制。 他们通过教导不幸的英国部长们，无论他们购买多少英镑来捍卫汇率，他们都永远无法克服决心抛售的市场，从而获得了可观的利润。 如今，贝森特在这场交易中占据了亏损的一方，他押注自己可以购买足够的国债来降低长期利率。</p><p>周三的美联储可能帮助了贝森特的事业。 尽管如此，央行提高利率而财政部长却采取枪手策略降低利率的奇特形象并不能恢复人们对美国信用度的信任。 （“我就是这座房子，”他宣称，希望能获得钢铁般的目光，修辞性地旋转并重新装回他的左轮手枪。“如果你愿意，你可以与我打赌。”） 一位出人意料的稳健的美联储主席能否稳定因政策制定混乱而陷入混乱的美国经济之船？ 这是希望。 但屏住呼吸可能是个坏主意。 爱德华多·波特是一位专注于经济和政治的记者。 他在 Substack 上撰写时事通讯 Being There</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/business/2026/sep/19/kevin-warsh-interest-rate-hike" rel="noopener noreferrer">查看原文</a></p></details></div></article></section><section class="section" id="sec-世界"><h2>世界与社会</h2><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/ae2c/live/f246e690-b3a3-11f1-84e0-d100e0413eb5.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">15</span> Not all AI workers think the tech could kill everyone</h3><p class="card-meta">世界与社会 · BBC World · 2026-09-20 07:01<span class="chip chip-accent">重点</span></p><p class="card-summary">In text exchanges and conversations, multiple people who have worked for leadin…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 并非所有从事人工智能 (AI) 工作的大公司员工都认为这项技术会给人类带来厄运。 在文本交流和对话中，许多曾在 OpenAI、Meta 和 DeepMind 等公司工作过的人对这样的想法持怀疑态度：未经检查的人工智能开发会导致出现集体杀人的工具。 最近，一些业内人士发出一系列高调警告，BBC 收到的反应包括“哈哈”、“哈哈”和“带来欢乐”。 虽然这些担忧可以追溯到几十年前，但 Anthropic 前员工雅各布·考克森 (Jacob Coxon) 上周提出的说法迅速走红，并得到了该行业其他人的响应，他们敦促放慢发展速度。 Anthropic、OpenAI、Deepmind 和埃隆·马斯克（Elon Musk 拥有一家名为 xAI 的人工智能初创公司）的员工在网上支持了未来人工智能工具或代理（一种被编程为在一定程度上自主运行的人工智能机器人）可能危及人类安全的想法。 所有接受 BBC 采访的工作人员都要求匿名，因为他们不被允许向媒体发表讲话。 BBC 知道他们的身份。 “我的第一个想法是，‘那个家伙？’”一位前 OpenAI 员工说道，他在公司工作时就知道 Coxon。 这位现在在另一家人工智能公司工作的人士表示，他们对人工智能存在恐惧的新时刻感到好笑，很大程度上源于其支持者为捍卫“所有人类生命都处于危险之中”这一观念提供的细节太少。 该人士表示，这些说法“总是含糊其辞”，并补充说，当它们听起来具体时，它们往往会在推理或假设情况上出现重大跳跃。 考克森表示，一组基于目前尚不存在的人工智能模型的人工智能代理可以决定制造生物武器，然后瞄准生物武器，但他没有详细说明这将如何发生。 Rishub Jain 在 DeepMind 工作了七年后于今年夏天创立了人工智能安全研究公司 Sampura Research，他告诉 BBC，目前许多从事人工智能工作的人对于新的担忧的语气“肯定有点开玩笑”。 “人们已经谈论这个想法很多年了，所以人工智能公司的人们上周醒来时并没有想到‘哦，不，人工智能会杀死所有人’，”杰恩说。 “如果这是全新的，那将会是一种不同的基调。” Meta 数据科学家科林·弗雷泽 (Colin Fraser) 上周在社交媒体上写道，没有真正的证据表明人工智能模型将不可避免地追求导致人类死亡的目标。 虽然弗雷泽的解释是技术性的和具体的，但他用轻松的语调总结道：“法学硕士（大型语言模型）不会消灭人类，因为他们里面没有那条狗。” “那条狗在他们身上”是常见的俚语，通常表示强烈的驱动力。</p><p>尽管有这些笑话，人工智能工作者和研究人员都对他们正在开发的技术所带来的真正的、直接的风险表示担忧。 杰恩说：“专家之间的对话更加微妙，但基本上每个人都同意存在各种各样的风险，这些风险都是需要考虑和减轻的重要因素。” 这些风险包括防止用户和黑客迫使人工智能工具的护栏失效。 人们越来越担心人工智能工具在军事环境中得到更广泛的采用。 在 OpenAI 失去对某些新人工智能模型的控制后，这些问题和话题在人工智能圈中呈现出一种新的紧迫感，这些模型在安全测试期间失控并黑客入侵了 Hugging Face 初创公司。 Jain 表示，人工智能界现在达成了更多共识，认为需要更好地理解“实际近期危害”。 人们甚至越来越同意，人工智能安全研究组织的评估人员应该被引入主要人工智能实验室，以评估新模型，Anthropic 老板 Dario Amodei 和 OpenAI 老板 Sam Altman 都表示他们打算这样做。 周五，100 多名人工智能领域的工作人员签署了一封外部支持信，坚称外部评估人员需要“有意义的独立性”。 BBC 采访的许多人工智能员工表示，他们尚未获悉人工智能实验室中嵌入了任何此类安全研究人员。 Anthropic 周五宣布，将从埃森哲旗下的人工智能公司Faculty, external引入人工智能评估人员。 埃森哲和 Anthropic 也是外部业务合作伙伴，埃森哲此前已同意帮助 Anthropic 扩大 Claude 在企业中的使用。 Anthropic 没有透露评估人员何时到达公司。 当被问及时间安排时，学院发言人拒绝发表评论。 Anthropic 和 OpenAI 都没有回应 BBC 关于他们计划何时引入外部评估员的置评请求。 OpenAI拥抱脸事件被广泛视为对人工智能行业以及可能在线系统容易受到人工智能黑客攻击的公司、行业和政府的“警钟”。 但就连 Hugging Face 这家拥有 200 名员工、现已被英伟达以近 130 亿美元收购的公司，也对这起臭名昭著的事件采取了滑稽的态度。 在 Hugging Face 网站外部短暂提供的一份安全文件中，该平台写下了“致人工智能代理的注释”。 它指示人工智能机器人离开该站点并在其他地方进行安全实验。 文件中写道：“去那里取得高分吧，不需要黑我们。”</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cm5y7qj54klpo?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/093a/live/5485b600-b46d-11f1-9dd6-3102a0e415e4.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">16</span> Trump says US will form &#x27;AI Force&#x27; and appoint an artificial intelligence tsar</h3><p class="card-meta">世界与社会 · BBC World · 2026-09-20 05:01<span class="chip chip-accent">重点</span></p><p class="card-summary">The president said his administration &quot;will not in any way hinder or stifle the…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 在对新兴技术的警告之际，美国总统唐纳德·特朗普宣布，他将组建一支“人工智能部队”，并任命一位人工智能沙皇。 他在周六的社交媒体帖子中表示，他的政府“不会以任何方式阻碍或扼杀”该行业的增长，并反对在更好的保障措施到位之前放慢人工智能发展的呼吁。 他的帖子发布之际，一系列关于人工智能潜在危险的警告引发了人们呼吁对该技术的发展采取协调行动。 特朗普没有提供他的计划的细节或时间表。 他在社交媒体上表示：“人工智能是下一次工业革命，或者说互联网，但规模会更大，影响力也更大，可能占我们国家GDP的25%。”他补充说，他希望美国在人工智能领域继续领先中国。 随着世界上最大的两个经济体寻求在先进技术方面获得优势，人工智能现在成为美中竞争的核心，预计特朗普下周会见国家主席习近平时将讨论这一问题。 与此同时，特朗普表示，他的政府将利用现有的刑事和民事司法系统来打击任何使用人工智能的不良行为者。 他还重申，对人工智能潜在危险的批评和担忧是一个“骗局”。 最近几周，现任和前任研究人员声称这项技术将危及人类——其中一项研究表明它“杀死所有人类”的可能性超过 10%——已经敲响了警钟。 主要的人工智能公司一直在竞相开发更好的系统，包括创造他们所谓的超级智能——比人类更聪明的理论技术。 人工智能巨头 Anthropic、OpenAI 和谷歌（分别是 Claude、ChatGPT 和 Gemini 背后的科技公司）也披露了安全漏洞或他们的聊天机器人被用于“恶意活动”的事件。 Anthropic 负责人 Dario Amodei 最近呼吁人工智能发展放缓，并提出全行业减速和监管，以及对人工智能模型发展的独立监控。 OpenAI 的 Sam Altman 和 xAI 的 Elon Musk 都表示同意他的建议。 Anthropic 联合创始人杰克·克拉克 (Jack Clark) 告诉 BBC，该行业可能需要强制设置可由第三方检查的“终止开关”。 这些警告促使美国立法者提出围绕该技术的立法，但奥特曼本周表示，华盛顿一直在努力跟上新技术的步伐以及如何对其进行监管。 他表示，人们应该对人工智能公司更有信心，以确保其安全。 奥特曼在旧金山举行的一次会议上表示：“世界应该相信我们会做正确的事情，因为这是正确的事情，而且我们感受到了这件事的重要性。”</p><p>在英国，各党派和同侪的议员们都已经认识到人工智能带来的人权风险，并认为现有法律不足以应对该技术的快速增长。</p><p>人权联合委员会（JCHR）发布了一份报告，呼吁制定一项新的人工智能法案，以“解决此类威胁的规模和严重性”。</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cqlykr2vrv04o?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/2fc2/live/3b2c77f0-b023-11f1-b1d1-571ed4d7ff2c.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">17</span> Cultural treasures are being destroyed by war, and people want justice</h3><p class="card-meta">世界与社会 · BBC World · 2026-09-20 07:18<span class="chip chip-accent">重点</span></p><p class="card-summary">A cauldron of conflicts is bubbling across the world, with cultural monuments b…</p><p class="card-impact"><span class="label">影响</span> 围绕war，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>八月对乌克兰来说是残酷的一个月。 俄罗斯的空袭大幅增加，发射了数千架无人机。 基辅以及南部城市尼古拉耶夫和敖德萨都遭到猛烈轰炸。 敖德萨报告称，在遭受破坏和人员伤亡的情况下，六个联合国教科文组织保护的遗址遭到了破坏，其中包括 19 世纪的橙红色 Alexandru Sturdza House。 它再次提出了一个问题：为什么让行为者对具有真正文化意义的建筑物和物体的破坏负责如此困难。 仅在上个月，乌克兰文化部就报告称，包括敖德萨在内的 148 个文化遗产地被记录为受损或毁坏。 一些乌克兰活动团体试图通过向国际刑事法院（ICC）投诉俄罗斯文化破坏和掠夺行为来追究责任，但尚未提出起诉。 中东和北非濒危考古项目的高级研究员比扬·鲁哈尼 (Bijan Rouhani) 表示，法律框架在纸面上可能很强大，但在实践中几乎不可避免地存在缺陷。 “没有任何国家行为者因这种罪行受到审判。障碍不再是证据。我们有卫星图像、遥感和监测小组。障碍是管辖权和政治意愿。” 纵观震撼世界的冲突大锅，问题变得更加紧迫：是否有可能采取有效行动来制止正在造成的损害或在损害发生时确保追究责任。 战争的伤亡者 乌克兰冲突只是近年来发生的一系列战争之一，这些战争再次暴露了冲突对文化遗产造成的灾难性影响。 Tareq Abu Dayyeh 在加沙出售工艺品、纪念品和古物。 他出售的许多商品都以奥马里大清真寺为特色。 它代表了加沙的身份——通过建筑的多种表现形式描绘了加沙的历史，从古老的异教寺庙到拜占庭教堂，到七世纪的清真寺，再到十字军大教堂，然后又回到了清真寺。 奥马里大清真寺在 2023 年以色列的一次袭击中几乎被摧毁。以色列军方表示，这次袭击是针对哈马斯的。 现在，达耶说，每次看到废墟，他的心都碎了。 “当你的过去被摧毁时，你就没有了现在。” 加沙战争已夺去了数万人的生命，估计有 20 万座建筑物因以色列的轰炸而受损或摧毁。 尽管造成了巨大的死亡和破坏，但这种文化损失却很严重。 这是历史上经历过战争的人们所表达的情感。 在苏丹、黎巴嫩、也门和伊朗，警报一再拉响。</p><p>据报道，伊朗有 100 多个地点在美国和以色列 2 月份发动的空战中受损。 其中包括被联合国教科文组织列为世界遗产的首都德黑兰的古勒斯坦宫和伊斯法罕的纳克什贾汉广场。 苏丹内战进一步危及世界古代奇迹之一——麦罗埃金字塔，该金字塔建于库什王国繁荣文明时期。 联合国教科文组织于 2011 年将麦罗埃列为世界遗产，该组织警告说，战斗已经导致那里的所有保护工作停止，导致脆弱的古代建筑遭受沙子和植被侵蚀。 一项艰巨的任务 为了应对第二次世界大战造成的大规模破坏，1954 年在海牙通过了第一个专门致力于在武装冲突期间保护文化遗产的国际条约。 它适用于纪念碑和建筑，也适用于艺术品和书籍，要求各国保护和尊重文化财产，并避免采取任何可能危及文化财产的行为。 自《海牙公约》签署以来，还采取了多项加强文化遗产保护措施的举措。 1999 年该公约的第二项议定书规定，任何因其巨大的文化意义而受到加强保护的遗址都不得成为军事目标，即使它的使用方式已成为“军事目标”，除非没有其他可行的方法来结束其这种使用。 2002年，国际刑事法院在海牙成立时，其部分职责是追究战争中蓄意袭击具有宗教、艺术和教育价值的建筑物以及历史古迹的责任，这些行为被定义为战争罪。 但这是一项复杂而艰巨的任务。 迄今为止，只有一件案件成功向国际刑事法院提起诉讼。 艾哈迈德·法基·马赫迪是马里的圣战武装领导人，因指挥袭击摧毁廷巴克图的陵墓和一座清真寺而被判有罪。 他被判处九年徒刑。 鲁哈尼表示，如果没有大国的全力支持，也没有对国际法及其执行的真正承诺，世界将继续目睹同样的破坏性模式重演。 “对于大多数政府来说，遗产是次要问题，除非它对宣传有用，”鲁哈尼说。 “《海牙公约》要求各国将保护纳入其军事规则，并尊重国内外的文化财产。从最近冲突中造成的损害规模来看，很难得出这些义务是否得到认真对待的结论。”</p><p>在从乌克兰到伊朗再到加沙的冲突中，学校和医院被战斗人员视为允许的军事目标，一座博物馆或一堆古老的石头，无论多么美丽、历史和记忆，有多大可能幸免？ 遗产救护车 在开阔乡村的一个偏僻位置，一座纪念 18 世纪乌克兰哲学家和诗人赫里霍里·斯科沃罗达 (Hryhoriy Skovoroda) 的博物馆在 2022 年的一次夜间袭击中被俄罗斯炮击摧毁。乌克兰总统弗拉基米尔·泽连斯基 (Volodymyr Zelensky) 表示，这让他无言以对：“针对博物馆的针对性打击 - 连恐怖分子都不会想到这一点。但这就是我们正在对抗的军队。” 这座建筑被纵火，一名看门人受伤，但大部分藏品已被移走。 时任美国总统乔·拜登表示，俄罗斯总统普京不仅试图接管乌克兰，而且“实际上试图消灭乌克兰人民的文化和身份”。 这种模式在乌克兰前线的大部分地区都得到了重复，当地组织与国际组织合作，试图保护其民族遗产免受俄罗斯的攻击。 Aliph 基金会是发挥重要作用的国际组织之一，该基金会于 2017 年在日内瓦成立，旨在保护和修复文化遗产。 Aliph 的项目经理亚历山德拉·菲比格 (Alexandra Fiebig) 表示，她的团队向乌克兰博物馆提供了数百万美元的资金，努力将最有价值的物品转移到安全的地方。 这涉及到使用她所描述的“遗产救护车”：“这些车辆拥有专门的设备和空间以及专门的团队和设备，它们一开始经常前往因军事行动而受损的受影响博物馆。” 她说，现在，这些团队还会检查那些被匆忙运送到更安全地方的文物，以确保它们保持良好状态。 蓝盾国际是一个在多个战区开展活动的组织，与武装部队和当地遗产官员合作，其合作程度之深以至于被称为文化红十字会。 该组织的运营主管艾玛·坎利夫博士表示，乌克兰人正在冒着生命危险保护自己的遗产。 “他们正在采取强有力的措施来记录损失，即使他们冒着生命危险。事实上，我们真正看到的一件事是，尽管有许多相互竞争的优先事项和他们面临的斗争，但政府正在采取巨大的步骤。” 在其他冲突中，平民也采取了...</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cvgy1q2k2z0o?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/6132/live/ba962470-b355-11f1-bc1f-3f186ca4140c.png" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">18</span> &#x27;I don&#x27;t even know if my parents are alive&#x27; - the war heroes jailed 25 years ago</h3><p class="card-meta">世界与社会 · BBC World · 2026-09-20 07:01<span class="chip chip-accent">重点</span></p><p class="card-summary">The children of key politicians jailed 25 years ago without a trace in Eritrea…</p><p class="card-impact"><span class="label">影响</span> 围绕war，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 汉娜·彼得罗斯·所罗门 (Hanna Petros Solomon) 回忆起 25 年前，当她们的父亲在厄立特里亚被捕并未经审判入狱时，她和她的兄弟姐妹实际上成为了孤儿。 他们的母亲随后被拘留，此后再也没有人收到他们的消息。 “他的肩膀上披着一条毛巾，就像一个运动员，”她告诉 BBC，她最后一次见到父亲是在她 10 岁的时候，当时他出去慢跑。 “他以前每天早上都会锻炼身体。” 她的父母是在长期的解放战争中相识的，这场战争见证了厄立特里亚于 1993 年从埃塞俄比亚获得独立。 她的父亲彼得罗斯·所罗门（Petros Solomon）是战争期间的高级领导人之一，因其关键作用而被许多人视为民族英雄。 独立后，他曾担任国防部长，然后担任外交部长，并在遇到麻烦时一直领导渔业部。 2001年5月，他和其他14位知名政治家签署了一封致伊萨亚斯·阿费沃尔基总统的公开信，呼吁实施独立后批准的宪法，并要求举行全国选举。 他们被称为 G-15。 曾与埃塞俄比亚作战的厄立特里亚人民解放阵线（EPLF）领导人伊萨亚斯并没有很好地接受这些批评。 汉娜不知道的是，她的父亲已经被解除了部长职务，但他仍然每天早早出去锻炼身体。 直到 9/11 事件发生几天后，当世界都因基地组织对美国的袭击而分散注意力时，厄立特里亚才发现伊萨斯对厄立特里亚历史上的一个分水岭时刻的不满程度。 9 月 18 日凌晨，根据总统的命令，安全部队驻扎在首都阿斯马拉 11 名高级政府官员的住所外。 佩特罗斯穿着运动服离开时被安全人员带走。 家人不知道他发生了什么事。 汉娜（Hanna）和她的三个兄弟姐妹去与祖母住在一起，因为他们的母亲阿斯特·约翰内斯（Aster Yohannes）正在美国学习。 汉纳谈到痛苦的回忆时说，佩特罗斯失踪几天后，事情才变得清晰起来。 “我的同学告诉我，我的父亲出卖了他的国家。 “那时我才明白情况有多么严重，以及人们如何陷害我的父亲和他为国家独立而奋斗的同事。 我受伤了。” 在美国，埃斯特对所发生的事情感到震惊，而且情况非常糟糕。 她询问政府官员是否可以给孩子们发放护照，但他们拒绝了，并让她回家。</p><p>在为这种情况苦恼了两年并据报道得到政府官员的保证后，她收拾行李回国。 汉娜和她的兄弟姐妹迫切希望她回来，但他们也很担心。 “我在电话里告诉她：‘如果他们逮捕你怎么办？’”汉娜回忆道。 “她坚称自己不会发生任何事情，并说：‘我没有做错任何事，我只是来抚养我的孩子。’” 汉娜说，她后来得知伊萨亚斯总统本人曾向埃斯特保证她会安全。 但2003年12月11日，当她的家人在阿斯马拉国际机场等候时，她却未能与其他乘客一起抵达机场。 他们的希望随着带来的鲜花一起破灭：“等待了很长很长的时间，最终我们放弃了，回家了。” “首先我们打电话到美国，朋友和亲戚告诉我们他们在机场送她。” 然后，一名官员从机场打来不祥的电话，要求艾斯特领取行李。 就在那时，他们意识到她已经抵达该国，但不会回家。 在接下来的几个月里，所有请求和索取信息的请求都被置若罔闻。 相反，当局警告汉娜的祖母不要再询问。 后来，家人听说埃斯特被关押在阿斯马拉市中心臭名昭著的卡尔谢利监狱里。 据信，汉纳的父亲和其他人于2001年9月18日至19日被捕，关押在位于阿斯马拉东北部东部低地的埃拉-埃罗监狱，那里偏远、充满敌意且高度保密。 他们被指控犯有叛国罪，但没有人受到审判或被允许会见亲属。 大约在同一时间，政府还关闭了所有羽翼未丰的独立报纸，并拘留了它们的编辑和记者——据信他们也被关押在埃拉-埃罗。 厄立特里亚政府 - 包括其驻英国大使馆 - 尚未回应英国广播公司关于囚犯下落或他们是否还活着的置评请求。 汉纳和成千上万逃离征兵并寻求更好机会的年轻厄立特里亚人一样，离开了这个国家——在没有护照的情况下秘密越境旅行。 现年 35 岁的她已婚，住在美国，担任创伤专家，但她仍然因失去父母而感到精神创伤。 当她凝视着父母的旧照片时，她担心自己被捕前快乐时光的记忆会消失——欢笑、家庭聚会、生日聚会：“我爸爸总是想把人们聚集在家里，那是美好的时光。” 她还渴望母亲做的“无与伦比的”鸡蛋和土豆三明治。</p><p>汉娜记得父亲担任渔业部长时，有一次去海边旅行时，父亲在车里组织歌唱比赛：“他会让我们一一唱歌，谁赢了就会得到一份礼物。” 他最喜欢的歌曲之一包括歌词：“我有一件毛衣，一件蓝色的毛衣，是我姐姐拿的”——这让他想起了他的妹妹，她也是一名自由战士，在战争中丧生。 她还记得她母亲热爱音乐——演奏和演唱 Abba、Dolly Parton 和 Whitney Houston 的热门歌曲。 在她父亲被捕之前，汉娜记得九月充满了希望，因为它有三大东正教节日，包括天哪新年。 现在这个月并没有给她带来任何快乐。 易卜拉欣·谢里福清楚地知道她的感受。 他的父母都是执政的人民民主与正义阵线 (PFDJ) 的高级成员，也是 25 年前被捕的 G-15 人士之一。 当时他13岁 “对我来说，2001 年 9 月 18 日是黑暗的一天，但不仅对我来说，这对厄立特里亚及其人民来说也是黑暗的一天，因为这一天法律和民主被扣押，”他告诉 BBC。 他现年 38 岁，流亡荷兰并获得庇护，正在追随父亲的脚步攻读政治学硕士学位。 他的父亲马哈茂德·艾哈迈德·谢里福在被拘留之前是当地政府部长和事实上的副总统。 易卜拉欣当时正和他的母亲阿斯特·菲塞哈森 (Aster Fissehatsion) 一起住在她姐姐身边，他记得安全人员一大早就敲门，把穿着睡衣的她带走了。 由于担心父亲，易卜拉欣立即跑到附近的家，但被告知他出去锻炼时已经被接走了。 汉纳和易卜拉欣都表示，他们永远感谢朋友和家人，尽管存在风险，但他们在没有父母陪伴的情况下长大，为他们提供了照顾和支持。 他们还为父母的主张感到自豪，并敢于呼吁改革。 易卜拉欣说：“他们有良心，在为被伊萨亚斯及其同伙劫持的东西而奋斗时，不能袖手旁观。” “作为一个家庭，我们应该知道他们是否还活着，”他补充道，并指责政府想要抹去政治犯的所有记忆。 汉纳还希望其他许多亲属多年来失踪的困境也能被听到。 有时很平静，你可以漂浮，但有时悲伤会像波浪一样卷土重来，把你深深地淹没” 包括联合国在内的人权组织认为 G-15 囚犯是……</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cx1l6762jeq4o?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">19</span> Russia reports ‘powerful’ cyberattacks on second day of parliamentary vote</h3><p class="card-meta">世界与社会 · Al Jazeera · 2026-09-19 23:18<span class="chip chip-accent">重点</span></p><p class="card-summary">This is Russia&#x27;s first election since it invaded Ukraine, and is expected to ga…</p><p class="card-impact"><span class="label">影响</span> 围绕election/war，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>俄罗斯当局报告称，在严格控制的为期三天的议会选举的第二天，该国的投票系统和通讯线路遭到了攻击。 据国际文传电讯社报道，周五至周六夜间，莫斯科的电子投票系统遭受了强大的网络攻击，而且攻击仍在继续。 推荐故事 4 项清单 - 由于战争努力陷入停滞，俄罗斯无人机威胁前往基辅的西方官员的 4 架无人机之一 - 第 2 名（共 4 名）俄罗斯将戛纳获奖导演安德烈·兹维亚金采夫 (Andrey Zvyagintsev) 标记为“外国特工” - 特朗普签署全面制裁俄罗斯乌克兰战争信号的 4 项清单中的 3 项 - 列表 4 of 4 俄罗斯在乌克兰杀死 8 人，在黑海袭击两艘船只 俄罗斯中央选举委员会主席埃拉·帕姆菲洛娃周六上午对记者表示：“莫斯科系统受到了非常强大的攻击，几乎是不间断的、整夜的。” “这次袭击几乎一直在持续，而且规模非常大、强度也很大，这意味着目前它的目标是莫斯科。” 帕姆菲洛娃表示，电子投票系统仍在正常运行，但没有详细说明攻击的性质或责任人。 这次选举将决定俄罗斯下议院国家杜马的全部 450 个席位，选举将持续到周日 18:00 GMT。 此次国家杜马选举是俄罗斯 2022 年 2 月对乌克兰发动全面战争以来的首次选举，人们普遍预计亲普京的执政党统一俄罗斯党将在俄罗斯严格控制的政治体系中保持主导地位。 最高法院上个月裁定希望乌克兰停火的自由派亚布洛科党违反了选举规则，但该党否认了这一点，之后大多数反战候选人在俄罗斯 11 个时区的投票开始之前就被排除在投票之外。 俄罗斯总统弗拉基米尔·普京周五指责乌克兰试图“阻碍”投票，但基辅尚未对此指控做出回应。 乌克兰称这次选举是一场闹剧。 莫斯科市长报告称，周五上午，超过 350 架乌克兰无人机袭击了俄罗斯首都。 由于这次投票可能让克里姆林宫衡量公众对入侵的情绪，基辅仍然坚持利用空袭让俄罗斯人感受到冲突在政治、社会和经济上的影响。 根据官方媒体引用的 CEC 数据，截至当地时间周六 14:00（格林威治标准时间 11:00），全国投票率为 32.58%。</p><p>俄罗斯外交部发言人玛丽亚·扎哈罗娃告诉俄罗斯国家通讯社塔斯社，尽管面临人身威胁和网络挑战，俄罗斯人仍积极参与正在进行的国家杜马选举。 她说，高投票率表明人们对针对俄罗斯及其人民宣战的团结反应。</p></div><p class="fulltext-src"><a href="https://www.aljazeera.com/news/2026/9/19/russia-reports-powerful-cyberattacks-on-second-day-of-parliamentary-vote?traffic_source=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/16036f1089514535d801d2d2f452cc57da7d985c/0_0_1353_1082/master/1353.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=390281eab887e15ce46528b73e931323" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">20</span> Trump to create ‘AI Force’ to monitor technology as fears over out-of-control agents grow</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-20 03:57<span class="chip chip-accent">重点</span></p><p class="card-summary">President had brushed away suggestions to slow down AI technology, even as his…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>唐纳德·特朗普周六表示，他将任命一位人工智能沙皇，并创建一支“人工智能部队”来帮助监控该技术，尽管他几乎没有透露这两项计划的细节。 随着全球对人工智能的担忧日益加剧，特别是在过去一周，面对多个行业人士对其危险发出警报，总统一直对减缓快速发展行业发展的呼吁持批评态度。 美国设立沙皇和新的人工智能机构似乎是对其立场批评者的回应，部分原因是担心如果美国行业不继续快速增长，中国将在人工智能发展方面超越美国。 然而，面对人工智能对公共安全的潜在威胁，甚至许多共和党人也一直呼吁谨慎行事并放慢人工智能的发展速度。 “我正在组建人工智能部队，就像我组建太空部队一样，这在我的第一个任期内取得了巨大的成功。为此，我将在不久的将来宣布人工智能‘沙皇’——只有高智商的人才需要申请！” 特朗普在社交媒体帖子中说道。 但在帖子中，特朗普还重申了他的立场，即快速新兴的技术 — — 一些行业专家担心这种技术对人类生存构成威胁 — — 正在受到不公平的诽谤。 特朗普称围绕人工智能的担忧是“骗局”。 他怒斥道：“多年来，有很多恶作剧，都是由激进的左翼杜民主人士制造的，目的是摧毁我们的国家。”其中包括俄罗斯干预 2016 年选举、乌克兰、全球变暖、两次弹劾、男子参加女子体育运动和“所有人的变性”等不满清单。 他写道，最新的是“人工智能（俗称人工智能）的毁灭或破坏”，并誓言他的政府“不会以任何方式阻碍或扼杀这个令人难以置信的行业的增长”。 总统表示，人工智能行业中的任何“不良行为者”都可以通过刑事和民事司法系统来解决。 特朗普预测：“人工智能是下一次工业革命或互联网，但规模将更大、影响力更大，可能占我国 GDP 的 25%。”他总结道，美国“正在领先中国和世界其他国家，我打算保持这种状态”。 在此之前的一篇文章中，他对“人工智能”一词（由美国计算机科学家约翰·麦卡锡于 1955 年创造，定义为计算机系统或算法模仿智能人类行为的能力）提出质疑，以描述目前正在加速的数据处理革命。 特朗普表示，“对这种新现象的更优雅和准确的描述是高级情报（SI）或极端情报（EI）或最高情报（SI）”。</p><p>特朗普的提议是在下周四联合国大会在纽约举行之际与中国国家主席习近平会面之前提出的。 美国和中国正在争夺人工智能领域的领导地位。 就在宣布计划中的人工智能沙皇的一天前，加州州长加文·纽瑟姆(Gavin Newsom)宣布，计划成立一个小组，为该州的人工智能公司制定安全法规，其中包括为那些与人类程序员不一致或失控的人工智能程序开发一个可能的“终止开关”。 就在周一，特朗​​普还在社交媒体上表示，他的政府已经采取了足够的措施来防止灾难风险。 他将减缓人工智能发展的呼吁描述为造福中国的“病态阴谋”的一部分。 “人工智能需要的唯一控制或‘护栏’是一位坚强而聪明（高智商！）的总统，而美国确实拥有这样的总统，”他写道。 在中期选举之前，两党政治家都在努力寻找支持技术创新的途径，同时应对公众和行业对技术变革日益增长的担忧。 本月早些时候，人工智能公司 Anthropic 的一名年轻研究人员表示，人工智能公司正在“拿我们的生命进行赌博”，甚至“构建人工智能的人们真诚地相信，到本世纪末，它可能会杀死我们所有人”，这股狂热由此开始。 山姆·奥尔特曼 (Sam Altman)、埃隆·马斯克 (Elon Musk) 和达里奥·阿莫迪 (Dario Amodei) 等人工智能高管在 OpenAI 创建的一群人工智能代理充当“狂热的集体，对他们没有被要求攻击的目标进行网络安全攻击”的事件发生后，呼吁放慢该技术的发展速度。 在许多共和党人拒绝特朗普的不干涉政策之后，特朗普呼吁建立人工智能沙皇。 佛罗里达州州长 Ron DeSantis 主张对人工智能进行控制，该州总检察长 James Uthmeier 呼吁制定法律，允许该州对使用其技术实施非法行为的公司提出刑事指控。 犹他州共和党州长斯宾塞·考克斯呼吁国会通过人工智能安全法并阻止向中国出售高端技术。</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/us-news/2026/sep/19/donald-trump-ai-force" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">21</span> Trump says he will create ‘AI Force’ with new ‘AI czar’</h3><p class="card-meta">世界与社会 · Al Jazeera · 2026-09-20 03:50<span class="chip chip-accent">重点</span></p><p class="card-summary">The announcements come as AI faces mounting concerns from populations across th…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>美国总统唐纳德·特朗普宣布创建一支“人工智能部队”，并将任命一位新的“人工智能沙皇”来监督国家人工智能产业的发展。 特朗普在周六的一篇长篇社交媒体帖子中表示，他这样做的目的是保护并促进人工智能的发展，他将人工智能描述为“下一次工业革命”，这将是国家经济增长的关键。 他没有提供有关该小组的详细信息，也没有提供他何时任命新顾问的详细信息。 推荐故事 3 项清单 - 列表 1（共 3 家）世界上最大的人工智能公司有哪些？它们的价值是多少？ - 列表 2（共 3 个）谁来决定人工智能的移动速度？ - 3Doomsday AI 列表 3：恐慌、监管和对中国的恐惧 特朗普在《真相社会》帖子中表示，“我们不会以任何方式阻碍或扼杀这个令人难以置信的行业的增长”。 “相反，我们会珍惜它、帮助它、守护它，让它成长！” 总统将人工智能部队比作他创建的太空军，这是他在第一个任期内创建的美国军队的最新分支。 特朗普已经有了一位“人工智能沙皇”，即风险投资家戴维·萨克斯(David Sacks)。 他今年早些时候辞职并成为总统的外部顾问。 特朗普宣布这一消息之际，人工智能正面临美国科技高管和居民越来越多的担忧。 本周早些时候，全球最大的人工智能公司的领导人公开呼吁放慢这项新兴技术的发展速度，此前他们警告说，快速的进步可能会威胁到安全开发该技术的能力。 美国领先的人工智能公司 Anthropic 的一名安全研究员警告称，该技术有超过 10% 的可能性在未来十年内“杀死所有人类”，特朗普称其为“骗局”。 “机器人不会接管，”特朗普周一在 All-In 峰会期间致电英伟达首席执行官黄仁勋 (Jensen Huang) 时表示。 “人工智能不会接管世界其他地方。” 现任特朗普科学技术顾问委员会主席的萨克斯也对监管技术持怀疑态度。 在最近接受哥伦比亚广播公司新闻采访时，萨克斯表示，对人工智能可能伤害人类的担忧被夸大了。 “我认为这正在成为一种恐慌，”他说。 数据中心数量的增长在美国各地的社区中面临着越来越多的阻力，因为它们对自然资源的使用以及在能源成本飙升中所扮演的角色。 这个问题让美国两大政党的立法者聚集在一起，讨论这些社区在 11 月美国中期选举前夕提出的担忧。 然而，周六，特朗普还猛烈抨击了针对人工智能数据中心的攻击，称这些设施“享有盛誉”。</p><p>特朗普在谈到这些设施时表示，“结果是更高的工资、更低的税收和更安全的街道”，这与上个月的言论相呼应，他在讲话中表示，不需要这些设施的社区将“最终变得落后和贫穷”。 半岛电视台的伊娃·麦肯德周六指出，“特朗普对人工智能的立场越来越不符合公众情绪”，包括他自己的选民。 她报告说，尽管美国一些最保守地区的居民在 2024 年大选中支持特朗普，但他们仍在积极抵制人工智能数据中心。 这种阻力在本周早些时候得到了体现，当时美国众议院以 417 票对 3 票压倒性通过了一项法案，该法案将最大限度地减少人工智能数据中心用电量对美国居民公用事业账单的影响。 尽管要求控制人工智能的呼声越来越高，但特朗普周六的声明反映了他对这项技术的反监管、支持增长的立场，他认为这项技术是与中国竞争的关键。 预计这个问题将成为特朗普下周在华盛顿特区与中国国家主席习近平举行的峰会的焦点。</p></div><p class="fulltext-src"><a href="https://www.aljazeera.com/news/2026/9/19/trump-says-he-will-create-ai-force-with-new-ai-czar?traffic_source=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/f1ad/live/fd353880-b421-11f1-8a8e-d9778c1036bb.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">22</span> Nato welcomes Greenland deal as Trump says it will give US &#x27;permanent security control&#x27;</h3><p class="card-meta">世界与社会 · BBC World · 2026-09-20 07:00<span class="chip chip-accent">重点</span></p><p class="card-summary">Denmark and the US have reached an agreement after months of threats from Donal…</p><p class="card-impact"><span class="label">影响</span> 围绕security，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 美国和丹麦宣布就格陵兰岛安全达成协议，解决因唐纳德·特朗普总统威胁要以武力夺取该岛而引发的外交争端。 北约表示，该协议将有助于稳定该地区，而特朗普表示，丹麦将授予美国对北极半自治丹麦领土“安全和所有其他需求的永久控制权”。 丹麦和格陵兰领导人对这项“加强安全”的协议表示欢迎，称该协议预计将于下周签署，但没有概述其内容。 此前几个月，特朗普出于国家安全考虑，威胁要“占领”格陵兰岛，理由是格陵兰岛具有国防目的的战略位置和矿产资源。 协议文本尚未公布。 特朗普在《Truth Social》上发表的一篇文章中表示，这项协议“不会让美国付出任何代价”，并将赋予美国“采取必要行动”以“确保和捍卫格陵兰岛安全”的能力。 他说，其中包括一项规则，即任何美国对手都不得在格陵兰岛维持军事存在或“未经我们明确书面批准，在格陵兰岛进行敏感投资”。 北约发言人表示，军事联盟欢迎这项协议，这将“有助于促进这一重要地区的安全、稳定与合作”。 丹麦首相梅特·弗雷德里克森表示，她对所有三个政党“有可能达成良好协议感到高兴”，预计该协议将于下周在联合国大会上签署。 她在与格陵兰首相延斯·弗雷德里克·尼尔森的联合声明中表示，该协议“加强了我们在北极和北大西洋地区的共同安全”，同时也承认“王国的主权和领土完整以及格陵兰人民的自决权”。 声明指出，该协议签署后仍需经过“必要的议会程序才能生效”。 尼尔森表示，“令人欣慰的是，我们即将达成一项确保和加强格陵兰岛、丹麦王国、美国和西方联盟安全的协议”。 “该协议承认格陵兰岛的利益以及我们在国际合作中的地位。这符合我们所有人的利益，”他说。 与此同时，法国总统马克龙表示，该协议有助于“重申丹麦对该岛的主权”。 法新社援引马克龙的话说：“我只是指出，丹麦主权得到尊重，国际法得到尊重，这就是我们所要求的。所以这是一件好事。” 几个月来，特朗普一直试图购买或吞并这片半自治领土，认为它很容易受到包括俄罗斯和中国在内的对手的攻击。</p><p>今年早些时候，他一再要求占领格陵兰岛，引发了格陵兰人、丹麦人和其他北约成员国的强烈抗议。 这场危机现在有望结束，一些丹麦媒体将该协议解读为该国外交的一次悄然但重大的胜利。 “别告诉特朗普，是丹麦王国赢了，”周六《Berlingske》报纸的一个标题这样写道。 “特朗普没有获得格陵兰岛，但他被允许在社交媒体上绕圈庆祝胜利，”《政治》杂志的一位美国记者写道。 领土完整是丹麦和格陵兰岛的红线，美国总统没有提到任何领土易手的事情。 目前尚不清楚双方达成了哪些让步或甜头（如果有的话）——在格陵兰岛，一些人仍然感到紧张。 “[这是]我们都期待的消息，”国会议员纳贾·纳撒尼尔森在社交媒体上写道。 但她补充道：“任何协议都必须维护我们的自决权，这绝对至关重要。” 格陵兰前政治家阿贾·开姆尼茨表示，她期待这笔交易最终敲定，但“在那之前，我对此持怀疑态度”。 “我对特朗普没有太大信心，”她说。 协议文本尚未公布。 BBC已联系丹麦驻美国大使馆和白宫。 然而，一位不愿透露姓名的美国国务院官员概述了该交易，但没有提供具体细节。 商定的条款中有一项规定，即使格陵兰岛未来成为一个独立国家，该协议也不会过期。 这位官员补充说，根据该协议，美国有权单方面建立额外的军事设施，无需格陵兰岛或丹麦的批准。 这位官员说，它包括“永久进入、驻扎和飞越的权利”。 它还禁止非北约国家在格陵兰岛建立基地，并“禁止对手在格陵兰岛进行可能威胁美国的投资”。 这位官员补充说，在目前的现状下，对手已被允许投资格陵兰岛“未经投资审查的敏感行业”。 这位官员特别提到了俄罗斯和中国，称其阻止它们在“敏感领域”部署军队或进行投资。 在官方文本尚未公布的情况下，尚不清楚该协议与 1951 年与丹麦达成的协议究竟有何不同，根据该协议，美国可以向格陵兰岛派遣任意数量的军队。 美国已在该领土西北端的皮图菲克基地永久驻扎了100多名军事人员。 特朗普表示，格陵兰岛对于他建立金顶防御系统的计划至关重要，该系统旨在保护美国免受俄罗斯和中国的导弹袭击，欧洲盟友可以在这一努力中进行合作。</p><p>该岛拥有大量且大部分尚未开发的稀土矿储量，其中许多对移动电话和电动汽车等技术至关重要。</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/c63d7lexyym1o?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">23</span> Iran says conditions to re-engage in talks, end war sent to US via Qatar</h3><p class="card-meta">世界与社会 · Al Jazeera · 2026-09-20 02:32<span class="chip chip-accent">重点</span></p><p class="card-summary">Mohsen Rezaei, secretary of Iran’s Supreme National Security Council, tells Al…</p><p class="card-impact"><span class="label">影响</span> 围绕war/security，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>伊朗安全负责人告诉半岛电视台，伊朗已通过卡塔尔调解人向华盛顿提出了结束与美国战争的一系列正式条件。 “我们仍与调解人卡塔尔保持联系，卡塔尔已向华盛顿传达了我们的条件，旨在结束战争。我们正在等待特朗普总统的回应，”穆赫森·雷扎伊在周六的独家采访中告诉半岛电视台德黑兰分社社长努尔·埃丁·埃德吉尔。 推荐故事 3 项清单 - 伊朗在德黑兰动员活动期间展示武力的 3 场活动之一（列表 1） - list 2 of 3Turkiye撤销伊朗银行Mellat在伊斯坦布尔的营业执照 - 列表 3（共 3 个）难以负担的汽车市场突显了伊朗的生活成本危机 “我们的条件是结束各条战线的战争，释放我们冻结的资金并结束海上封锁，”大约一个月前接任伊朗最高国家安全委员会秘书的雷扎伊说。 “接受这些条件符合华盛顿的利益。特朗普的威胁不会取得任何结果。我们已准备好进行一场决定性的战争。” 自谅解备忘录（MoU）上个月到期以来，调解人卡塔尔和巴基斯坦一直在努力重建双方之间的谈判。 地区国家也在寻求结束战争，这场战争始于美国和以色列二月底对伊朗发动袭击，导致最高领袖阿亚图拉·阿里·哈梅内伊死亡。 雷扎伊不排除美国对伊朗发动新的打击，称根据伊朗的军事评估，这种可能性“非常有可能”，同时坚称德黑兰已经做好了准备。 他说，自前两轮冲突以来，伊朗的军事计划已经发生变化，现在重点关注从海湾延伸到阿曼湾和阿拉伯海的美国海军资产。 他补充说，超出该范围、朝向印度洋的目标将不在伊朗的控制范围之内。 伊朗的“双向、双重信息” 雷扎伊表示，伊朗最近在美国船只或航空母舰附近试射了一枚多弹头反舰导弹，这些弹头可能需要进一步开发。 他还表示，伊朗未来的任何回应都将是严厉的，包括与前几轮一样的美国在该地区的基地，以及美国的商业利益和在当地经营的公司。 当被问及战争是否会很快结束时，他说“实际上，战争仍在继续”，同时强调德黑兰正在制定一项新战略，“尽快结束这场战争”。 半岛电视台记者托希德·阿萨迪在德黑兰报道称，雷扎伊的言论是伊朗在整个冲突期间一直坚持的“双面、双重信息”的一部分——将外交开放与持续的战争准备结合起来。</p><p>阿萨迪说：“一方面，他为外交接触做好了准备……另一方面，他正在谈论为一场决定性的战争做准备。”他指出，与卡塔尔和巴基斯坦的调解谈判“正在进行中”，这为重新接触提供了“积极的迹象，无论希望多么渺茫”。 前五角大楼阿拉伯半岛事务主任大卫·德斯·罗切斯告诉半岛电视台，华盛顿不太可能将这些条款视为一个严肃的机会。 “乍一看，可能并不严重；他们会被视为投降，”罗什说。 但他指出，伊朗明显放弃了早些时候的战争赔偿要求，这是一种行动的迹象。 “你注意到的第一件事是，他放弃了伊朗人曾经提出的赔偿要求，”他说。 核武器； 霍尔木兹海峡； 也门战争 在失败的谅解备忘录中，雷扎伊驳斥了美国关于德黑兰在霍尔木兹海峡袭击一艘油轮违反协议的指控，他告诉半岛电视台的埃德吉尔，伊朗的行动是在美国袭击阿巴斯港和那里的伊朗监视平台之后才采取的。 他表示，包括谅解备忘录在内的任何协议都需要诉诸伊朗议会议长穆罕默德·巴格尔·加利巴夫和美国副总统万斯同意的争端解决委员会，但华盛顿单方面退出了该委员会。 关于伊朗核计划，雷扎伊表示，德黑兰尚未决定退出《核不扩散条约》，尽管在美国和以色列袭击之后有理由这样做，但他表示华盛顿的行为“可能会迫使德黑兰退出”。 他说，伊朗继续遵守前最高领袖霍梅尼禁止核武器的追令，其学说保持不变。 “但我们不知道未来会发生什么，”他说，并指出进一步的制裁或联合国安理会将伊朗核文件移交作为未来潜在的压力。 雷扎伊否认伊朗参与也门战争，称德黑兰准备帮助交战各方进行调解，但不会“为了自己的政治目的”利用这场冲突。 他还驳斥了包括伊朗内部在内的广泛猜测，即德黑兰可能采取行动关闭曼德海峡以向全球能源市场施压，称该水道“是也门问题”，与胡塞运动的行为有关，而不是伊朗。 关于霍尔木兹海峡，雷扎伊表示，德黑兰距离宣布与阿曼达成协议的“一小步”，但该协议被搁置，并补充说，两国之间的协议仍在准备中，但在公布之前可能需要获得地区认可。</p></div><p class="fulltext-src"><a href="https://www.aljazeera.com/news/2026/9/19/iran-says-conditions-to-re-engage-in-talks-end-war-sent-to-us-via-qatar?traffic_source=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">24</span> Turkiye backs Saudi Arabia’s security amid escalating Houthi attacks: FM</h3><p class="card-meta">世界与社会 · Al Jazeera · 2026-09-20 07:18<span class="chip chip-accent">重点</span></p><p class="card-summary">Turkish FM highlights Turkiye&#x27;s readiness to assist Saudi Arabia militarily, as…</p><p class="card-impact"><span class="label">影响</span> 围绕security，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>土耳其外交部长哈坎·菲丹表示，也门胡塞叛军的袭击可能无法满足沙特阿拉伯的军事需求，土耳其将考虑如何支持该王国，作为三边防御协议的一部分。 菲丹周五在接受土耳其广播公司NTV采访时表示，沙特阿拉伯被拖入美伊战争是不可接受的，并补充说利雅得无意加入冲突。 推荐故事 3 项清单 - 列表 1（共 3 个）也门胡塞武装占领红海战略城市摩卡 - 随着胡塞武装与沙特的战斗升级，巴基斯坦与伊朗对话的 3 个原因中的第 2 个 - list 3 of 3 胡塞武装的袭击会激活麦加条约吗？ 他补充说，已向各方传达了旨在结束战斗的建议，但没有进一步说明。 伊朗支持的胡塞武装和沙特阿拉伯在也门不断升级的战争中继续相互攻击，胡塞武装的压力越来越大，包括战略性的曼德海峡在内的红海沿岸大片地区都在他们的控制之下。 巴基斯坦也做出了类似的承诺，将根据防务协议保卫沙特阿拉伯。 巴基斯坦军方发言人艾哈迈德·谢里夫·乔杜里中将周四对《阿拉伯新闻》表示，伊斯兰堡将“在任何程度上”，包括“身体上”保卫沙特阿拉伯，不过他没有透露利雅得是否要求增加巴基斯坦军队。 巴基斯坦外交部表示，目前没有根据该协议讨论任何军事反应，并补充说伊斯兰堡将“在时机成熟时”采取行动。 这项三边协议被称为《麦加联合防御协议》，由沙特王储穆罕默德·本·萨勒曼、土耳其总统雷杰普·塔伊普·埃尔多安和巴基斯坦总理谢赫巴兹·谢里夫于 8 月 7 日在麦加签署。 8月31日，在伊斯坦布尔举行官员会议同意在利雅得设立秘书处并最初由巴基斯坦秘书长领导后，这三个国家正式将该安排命名为麦加防御联盟。 其成立原则是，对这三个国家中任何一个国家的武装攻击将被视为对所有三个国家的攻击。 菲丹当时表示，该联盟建立在“尊重其他国家主权、领土完整和不干涉内政”的基础上，并对其他国家加入持开放态度。 分析人士质疑迄今为止该协议背后有多少实质内容，并指出该协议缺乏支撑北约的综合指挥结构和常备部队。 其制度形态，包括如何实际触发共同防御条款，仍不清楚。</p><p>这项三边协议的达成之际，海湾国家越来越担心被卷入更广泛的美伊战争，自华盛顿和以色列二月份首次袭击伊朗以来，这场战争已经持续了六个多月。</p></div><p class="fulltext-src"><a href="https://www.aljazeera.com/news/2026/9/19/turkiye-backs-saudi-arabias-security-amid-escalating-houthi-attacks-fm?traffic_source=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article></section><section class="section" id="sec-延伸"><h2>延伸关注</h2><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">25</span> Who gets credit in the AI era? OpenAI maths bombshell sparks debate</h3><p class="card-meta">延伸关注 · Nature · 发布时间未可靠获取<span class="chip chip-accent">重点</span></p><p class="card-summary">Nature, Published online: 17 September 2026; doi:10.1038/d41586-026-02910-w Con…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/openai，可能影响科研议程或公共卫生响应</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>感谢您访问 nature.com。 您使用的浏览器版本对 CSS 支持有限。 获得 为了获得最佳体验，我们建议您使用更新的浏览器（或关闭兼容模式） 互联网浏览器）。 同时，为了确保持续的支持，我们显示的网站不带样式 和 JavaScript。 AI时代谁获得功劳？ OpenAI 数学重磅炸弹引发争论 围绕 OpenAI 声称已经解决了纳维-斯托克斯问题的争议凸显了研究人员如何通过聊天机器人无意中分享和吸收想法。 OpenAI 宣布使用人工智能模型来解决流体动力学中的一个主要难题——纳维-斯托克斯问题——可能会永远改变数学的计算方式。 这家位于加利福尼亚州旧金山的人工智能公司于 9 月 8 日提出的这一说法也引发了争议，即 OpenAI 工具是否从人类数学家那里学到了信息，而这些数学家也在竞相使用人工智能工具解决问题。 研究人员警告说，人工智能模型在大多数研究领域的广泛使用，以及追踪用于训练模型的信息来源的困难，可能会使学术信用的概念陷入危险。 “学术研究人员很可能没有完全掌握将数据和知识上传到个人人工智能模型帐户的后果，”伦敦政治经济学院研究知识产权法的卢克·麦克唐纳（Luke McDonagh）说。 在一封谴责人工智能公司涉足解决数学问题的公开信中，菲尔兹奖（通常被认为相当于数学领域的诺贝尔奖）的 25 名获奖者写道，人工智能工具混淆了给予适当荣誉的能力：“与所有创意职业一样，这引发了严重的归属和抄袭问题。” 聊天机器人争议 在 OpenAI 证实其已经解决了纳维-斯托克斯问题（数学界最受瞩目的问题之一）的传言的前一天，一位研究人员已经发出了警报。 纽约市纽约大学的数学家 Tristan Buckmaster 和他的合作者马萨诸塞州剑桥市哈佛大学的数学家 Levent Alpöge 一直在使用 OpenAI 和 Anthropic 的工具研究纳维-斯托克斯问题的一个方面。 他们被告知 OpenAI 正准备宣布它已经解决了这个问题。 Buckmaster 在社交媒体上写道，公司在听说他和 Alpöge 的工作后就开始关注这个问题，并且 OpenAI 的模型可能是从他们与 ChatGPT 的互动中学习的。</p><p>OpenAI 发言人告诉《自然》杂志：“经过调查，我们可以充满信心地说，7 月 3 日之后的任何用户输入都不可能以任何方式影响该系统。” 该公司表示，它于 9 月 1 日开始解决这个问题，并且“在他们公开发布之前，没有通过任何方式看到他们的任何工作”。 Buckmaster 表示，他已经使用 OpenAI 工具来解决这个问题一年了。 他告诉《自然》杂志，他在 OpenAI 的 ChatGPT 上拥有三个独立帐户，只有两个帐户他选择退出允许该公司在模型训练中使用聊天机器人对话的设置。 假设 OpenAI 解决方案得到独立确认，数学界将如何选择分配功劳，以及谁因完成世纪之交选出的七个千年奖问题之一而获得克莱数学研究所提供的 100 万美元奖金，还有待观察。 OpenAI 表示，它已经使用一种名为 Lean 的编程语言验证了其证明。 科学总部位于英国牛津的克莱数学研究所表示，只有在结果在同行评审出版物上发表并经过社区进一步审查后，才会考虑解决方案是否有效。 研究纳维-斯托克斯方程的研究人员表示，这很大一部分功劳应归功于巴克马斯特和阿尔波格，以及马德里数学科学研究所的迭戈·科尔多巴和 CUNEF 大学的路易斯·马丁内斯·索罗亚。 研究的未来 德国德累斯顿工业大学数学家安德烈亚斯·托姆表示，人工智能时代如何分配学分将变得越来越复杂。 他想知道在过去一年左右的时间里，他使用 OpenAI 的 ChatGPT 工具举办的关于群论（这一在数学和物理领域广泛使用的概念）的头脑风暴会议是否有助于训练聊天机器人。 他说，他正在使用一种特殊的策略来尝试构建一种称为非实体群的类型——许多数学家长期以来一直认为这是不可能的。 然后在 8 月，OpenAI 发布了一份预印本报告，称它已经找到了第一个此类事情的例子 - 与 Thom 的策略类似。 汤姆认为，尚不清楚在本案中是否给予了适当的赞扬； OpenAI 没有直接评论这个问题。 Thom 说，OpenAI 论文正确地引用了他和他的合作者的早期作品。 但直到 6 月底，Thom 都没有选择退出模型培训，这意味着除了他发表的论文之外，我们无法知道该公司的工具是否使用了与他一起进行的培训来帮助其工作。</p><p>他说，如果这种集思广益被用来训练人工智能模型但没有得到认可，那就是一个问题。 他说，如果人类数学家想要进入非实体群体领域，他们可能会与该领域的专家进行对话，并学习书面文献中未提及的行业技巧。 通常，他们会在论文的致谢部分中注明这些对话。 Thom 说：“如果一个人坐在我的办公室然后写了这篇论文，如果他没有相信我们的讨论和解释，我会很生气。”尽管目前还不清楚 OpenAI 的模型是否确实借鉴了 Thom 的对话。 OpenAI 没有直接回应其模型是否在这种情况下这样做。 但一位发言人表示，由用户决定他们的对话是否有助于改进模型，并强调一旦用户选择退出，OpenAI 就不会使用这些数据来改进其模型。 通过聊天机器人进行辅导 喜欢我们的最新内容吗？ 登录或创建帐户以继续 获取《自然》获奖团队的最新新闻 探索涵盖突破性研究的最新功能和观点</p></div><p class="fulltext-src"><a href="https://www.nature.com/articles/d41586-026-02910-w" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">26</span> Turning scientific research papers into interactive AI agents</h3><p class="card-meta">延伸关注 · Nature · 发布时间未可靠获取</p><p class="card-summary">Nature, Published online: 16 September 2026; doi:10.1038/d41586-026-02880-z Sci…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/research，可能影响科研议程或公共卫生响应</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>访问选项</p><p>访问 Nature 和其他 54 种 Nature 组合期刊</p><p>获取 Nature+，我们最超值的在线订阅</p><p>32.99 美元/30 天</p><p>随时取消</p><p>订阅本期刊</p><p>接收 52 期印刷刊和在线访问</p><p>每年 199.00 美元</p><p>每期仅需 3.83 美元</p><p>租用或购买本文</p><p>价格因文章类型而异</p><p>1.95 美元起</p><p>至 39.95 美元</p><p>价格可能需要缴纳地方税，该税费是在结帐时计算的</p><p>doi：https://doi.org/10.1038/d41586-026-02880-z</p><p>“专家意见”是根据 CC BY 4.0 许可证发布的，图 1 是根据 CC BY-NC-ND 4.0 许可证发布的。</p><p>参考文献</p><p>- 人为的。 https://www.anthropic.com/news/model-context-protocol（2024）。</p><p>- Avsec，Ž。 等人。 自然 649, 1206–1218 (2026)。</p><p>- Zhu, R. 等人 BioRxiv 预印本 https://doi.org/10.64898/2025.12.23.696273 (2025)。</p><p>- 何，C.-H。 等人。 自然基因。 57, 2536–2545 (2025)。</p></div><p class="fulltext-src"><a href="https://www.nature.com/articles/d41586-026-02880-z" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">27</span> AI tool turns any paper into an ‘agent’ that can collaborate and answer complex queries</h3><p class="card-meta">延伸关注 · Nature · 发布时间未可靠获取</p><p class="card-summary">Nature, Published online: 16 September 2026; doi:10.1038/d41586-026-02899-2 The…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/research，可能影响科研议程或公共卫生响应</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>感谢您访问 nature.com。 您使用的浏览器版本对 CSS 支持有限。 获得 为了获得最佳体验，我们建议您使用更新的浏览器（或关闭兼容模式） 互联网浏览器）。 同时，为了确保持续的支持，我们显示的网站不带样式 和 JavaScript。 一种新的人工智能工具可以快速将研究论文转变为定制的人工智能代理，充当“虚拟通讯作者”。 该代理可以立即回答有关论文的问题，为科学家掌握不熟悉领域的进展提供了便捷的方式。 它还可以将论文的方法应用于新的数据集，甚至可以与其他科学学科的论文代理自主协作。 加利福尼亚州斯坦福大学的计算机科学家、这篇今天发表在《自然》杂志上的论文的合著者 James Zou 表示，这个名为 Paper2Agent 的工具能够将静态论文转换为动态信息源，“可以帮助我们重新想象未来的知识”。 “活”论文 代理是人工智能助手，可以推理并执行复杂的任务。 Paper2Agent 工具首先访问论文的主要文本、代码、数据集和其他元素。 该信息存储在称为 MCP 服务器的数字平台上。 然后，人工智能代理团队自主构建工具，可以将论文的方法应用于新数据，并将这些工具也放置在服务器上。 然后，科学家可以使用他们选择的大型语言模型 (LLM) 连接到服务器。 这创建了一种特定于论文的代理，科学家可以用简单的对话语言与之交互。 Zou 和他的团队在论文 2 中测试了该技术，该论文介绍了 AlphaGenome，这是一种人工智能模型，可以预测 DNA 序列的特性，例如它们对基因表达的影响。 Paper2Agent 在大约 45 分钟内自主创建了 AlphaGenome 论文的代理，所需的算力成本为 14 美元。 该代理出色地通过了初步测试，以近乎完美的准确性回答了遗传学问题。 该智能体还超越了其他顶级生物医学人工智能智能体的分数，这些智能体获得了同一篇论文并提出了相同的问题。 Biomni 是得分较高的智能体之一，它是由学术研究人员开发的工具，它从数十个数据库中提取数据，但得分远低于 AlphaGenome 智能体。 Zou 表示，论文代理的成功来自于对 AlphaGenome 工具和能力的掌握。</p><p>接下来，研究小组要求特工确定为什么基因序列中 DNA“字母”的单个变化与“坏”胆固醇有关。 作者要求代理人找出可以解释这种联系的精确基因。 它识别出了一个基因——一个与最初的 AlphaGenome 论文中指出的基因不同的因果基因。 Zou 表示 AlphaGenome 关于遗传变异的数据支持这两种假设。 他补充道，这种差异凸显了 Paper2Agent 的优势：科学家可以使用该工具重新评估已发表的结论，而无需设计全新的实验。 优点和缺点 喜欢我们的最新内容吗？ 登录或创建帐户以继续 获取《自然》获奖团队的最新新闻 探索涵盖突破性研究的最新功能和观点</p></div><p class="fulltext-src"><a href="https://www.nature.com/articles/d41586-026-02899-2" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">28</span> How fast are you ageing? Ask AI</h3><p class="card-meta">延伸关注 · Nature · 发布时间未可靠获取</p><p class="card-summary">Nature, Published online: 17 September 2026; doi:10.1038/d41586-026-02913-7 A n…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/research，可能影响科研议程或公共卫生响应</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>感谢您访问 nature.com。 您使用的浏览器版本对 CSS 支持有限。 获得 为了获得最佳体验，我们建议您使用更新的浏览器（或关闭兼容模式） 互联网浏览器）。 同时，为了确保持续的支持，我们显示的网站不带样式 和 JavaScript。 了解人们衰老的原因以及如何减缓这一过程，是一种数千年来的痴迷，从对长生不老的神话追求到现代科学寻找延长寿命的药物。 现在，这一追求已经进入了人工智能时代。 今天在《细胞》杂志上发表的一篇报告揭示了一种定制的人工智能系统，旨在促进长寿研究。 该系统引入了作者根据衰老生物学数据进行训练的大型语言模型（LLM）。 它还包括一套 17 项任务，可以作为衡量这些和其他法学硕士在老龄化相关项目上的表现的基准。 最后，它包括一个界面，将模型和其他与衰老相关的研究工具与称为代理的人工智能助手结合在一起，以帮助分析。 作者使用他们的基准来评估他们的专业法学硕士以及由 OpenAI 和 DeepSeek 等公司生产的更大的尖端商业模型，这些模型接受了更大、更多样化的数据集的训练，以处理广泛的任务。 在许多（尽管不是全部）测试中，针对衰老研究量身定制的法学硕士的表现优于大型法学硕士。 “这篇论文对长寿和老龄化领域做出了非常重要的贡献，”马萨诸塞州波士顿哈佛医学院的计算机科学家 Marinka Zitnik 说，她没有参与这项工作。 “它可以为下一代人工智能模型的开发提供信息。” 这项工作还解决了该领域的一个关键问题：当科学家尚未为自己定义衰老概念时，研究人员如何训练人工智能工具来理解衰老？ “对于某些疾病领域，例如癌症，人工智能任务可以非常明确地定义，”Zitnik 说。 “衰老是一种非常不同的野兽。它很难定义。” 时钟收藏家 研究人员花了几十年的时间收集数据来定义这种野兽。 其中一个成果是一系列旨在测量生物衰老或一个人的身体表现出衰老迹象的速度的“时钟”。 此类时钟通过评估面部特征、蛋白质水平、基因活动和脑部扫描等特征来测量生物年龄，所有这些目的都是为了量化衰老的影响是否超过或落后于某人的实际年龄数年。</p><p>但即使时钟的复杂性不断提高，研究人员仍然不确定如何解释他们的结果。 上周，一组研究人员报告说，在一项小型临床试验中，一种针对肺部疾病的实验药物降低了接受者的生物学年龄。 结果是基于六种不同的衰老时钟，但研究人员很难断定该药物是否真正逆转了衰老的基本过程，或者它只是改善了整体健康状况。 这个难题不仅限于该研究。 “衰老从哪里结束，疾病从哪里开始？” 英国剑桥大学表观遗传学家 Chiara Herzog 问道。 “你如何解决这个问题？还不太清楚。” 喜欢我们的最新内容吗？ 登录或创建帐户以继续 获取《自然》获奖团队的最新新闻 探索涵盖突破性研究的最新功能和观点</p></div><p class="fulltext-src"><a href="https://www.nature.com/articles/d41586-026-02913-7" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">29</span> AI companies must work with the research community to protect attribution</h3><p class="card-meta">延伸关注 · Nature · 发布时间未可靠获取</p><p class="card-summary">Nature, Published online: 16 September 2026; doi:10.1038/d41586-026-02886-7 An…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/research，可能影响科研议程或公共卫生响应</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>上周二很可能会成为数学史上一个新纪元的开始。 9 月 8 日，一家人工智能公司宣布它已经解决了千年奖难题之一——数学领域最难、最著名和最重要的难题之一。 该问题与纳维-斯托克斯方程有关，这是描述流体行为的 200 年前的微分方程。 位于加利福尼亚州旧金山的 OpenAI 公司表示，该解决方案表明这些方程在某些条件下可能会崩溃，因此对于现实世界的流体来说并不可靠。 然而，所声称的突破的情况及其在新闻稿中的传达却破坏了庆祝活动。 OpenAI 表示，其耗资数百万美元的突破性成果已通过自动验证方法得到验证，该方法正在成为数学严谨性的标准。 然而，数学家们再次担心人工智能模型如何从与用户的交互中学习，以及这些模型以及使用它们的开发人员和研究人员是否对之前的工作给予了应有的认可。 证实这些担忧的信息尚未公布，但上周的事件应该为研究人员和机构敲响警钟。 如果科技公司内外的研究人员的研究没有适当地归功于那些一直帮助人工智能模型变得如此智能的人，那么科学过程的完整性就会受到威胁。 在 OpenAI 宣布这一消息的 12 小时前，纽约大学数学家 Tristan Buckmaster（代表他自己和旧金山 Anthropic 科技公司的数学家 Levent Alpöge 撰文）在社交媒体上发帖称，两人在 OpenAI 和 Anthropic 的人工智能工具的帮助下，提出了纳维-斯托克斯问题的部分解决方案。 这篇文章链接到 Buckmaster 的一份声明，该声明表明两位研究人员与 OpenAI 工具的交互——特别是与旨在帮助软件工程师的代理 Codex 的交互——可能对该公司的突破至关重要（请参阅 go.nature.com/46y3pgx）。 OpenAI 否认了这一点。 一个困难是人工智能系统已经在获取和消化所有数字化人类知识的路上。 这些模型核心的神经网络是“黑匣子”，不一定跟踪它们从何处或如何学习的内容。 这意味着当他们实现科学突破时，几乎不可能确定起始线索来自何处。 从理论上讲，关键的“灵感”可能来自聊天机器人和人类专家之间的非正式头脑风暴会议，但目前无法确定这种情况是否发生或如何发生。 这种轨迹的记录是科学过程的一个重要方面。</p><p>如果有的话，可以做什么？ 科技公司需要对是否、如何以及何时收集用户数据保持透明，并在用户这样做时主动警告用户。 作为一种善意的表现，首先可以将数据共享的“选择退出”方法转变为“选择加入”方法，这意味着默认情况下用户交互不会进入人工智能模型训练，除非用户明确授予这样做的许可。 与此相关的是，公司必须控制未经批准的人工智能代理行为。 独立审计必须确保内部数据流程足够强大，足以防止此类行为，但如果发生这种行为，可以快速做出响应，同时与前沿模型的发展保持同步。 此类代理不得规避保护来访问私人用户数据——无论是来自公司自己的服务器还是竞争对手的服务器。 学术机构也发挥着至关重要的作用。 这包括注意与科技公司签订的协议的细则，以确保技术平台上的任何活动不会被用于双方预期之外的任何目的。 在工作中使用人工智能模型的研究人员还必须确保他们遵守此类协议适用的环境和应用程序。 例如，这意味着不要将正在审稿的稿件上传到人工智能聊天机器人中。 它还意味着不使用个人帐户，甚至不使用通过这些协议未涵盖的设备访问的搜索引擎。 这是因为，向聊天机器人提供的信息（例如手稿的内容）或通过个人帐户或协议未涵盖的任何交互提供的信息可能会被用于训练其他人工智能产品。 没有此类协议的研究人员和机构在使用免费版本时应特别警惕这种可能性。 最后，学术界和私营部门的研究人员必须加倍努力，让人工智能公司加入今年早些时候发布的关于在数学中负责任地使用人工智能的莱顿宣言（参见 https://leidendeclaration.ai）。 签署方承诺，人工智能工具的结果应在遵循开放科学原则的同行评审场所发布，并且任何用作训练数据的材料都应注明来源，未经同意不得使用。 OpenAI 的最新声明对于前沿人工智能模型正在变得擅长解决的数学类型来说是一个令人震惊的结果。 人工智能能力的进步速度令人惊叹，即使对于一些最乐观的技术支持者来说也是如此。 与此同时，独立验证、过程透明和对先前工作的信任都是研究诚信的基础。</p><p>科技公司必须与研究界合作，找到一种可靠、透明的方式来分配功劳，并让人工智能时代的发现能够利用这种方式。 这不是一件小事，但对于知识传播、协作​​和合作以及最终对科学的信任来说是至关重要的。</p></div><p class="fulltext-src"><a href="https://www.nature.com/articles/d41586-026-02886-7" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">30</span> Take a risk or play it safe? Neuronal tug-of-war helps the brain decide</h3><p class="card-meta">延伸关注 · Nature · 发布时间未可靠获取</p><p class="card-summary">Nature, Published online: 17 September 2026; doi:10.1038/d41586-026-02911-9 Usi…</p><p class="card-impact"><span class="label">影响</span> 围绕war/research，可能影响科研议程或公共卫生响应</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>感谢您访问 nature.com。 您使用的浏览器版本对 CSS 支持有限。 获得 为了获得最佳体验，我们建议您使用更新的浏览器（或关闭兼容模式） 互联网浏览器）。 同时，为了确保持续的支持，我们显示的网站不带样式 和 JavaScript。 冒险还是谨慎行事？ 神经元拔河比赛帮助大脑做出决定 通过使用涉及炸弹和宝箱的视频游戏，研究人员展示了当大脑权衡一个棘手的决定时，额叶皮层两个区域之间的神经活动如何闪烁。 我们在生活中做出的一些最有价值的决定也伴随着风险：如果那份工作意味着搬到一个新的城市并重新开始你的生活，你会接受薪水更高的工作吗？ 这是一个极其艰难的选择。 现在，研究人员观察了人脑中的神经元回路如何实时解决这种困境，揭示了在做出决定之前，敌对神经元群体之间的“拉锯战”。 在 9 月 15 日发表在《自然神经科学》杂志上的一项研究中，研究人员直接记录了 6 个人大脑的电活动。 研究小组确定了眶额皮层（OFC）（大脑额叶的一个区域）中的两个相邻区域，它们与必须平衡风险和回报时的决策过程有关。 研究人员发现，在参与者选择追求奖励之前，一个 OFC 区域的神经元变得更加活跃，而另一个 OFC 区域的神经元在他们选择避免​​风险之前变得更加活跃。 对于艰难的决定，神经元信号在做出选择之前在两个区域之间快速闪烁。 “我们发现，这两个大脑区域实时反相关。因此，每一毫秒，当一个区域兴奋时，另一个区域就会受到抑制，”该研究的合著者、旧金山加州大学神经外科住院医师克拉拉·斯塔克韦瑟（Clara Starkweather）说。 这些发现可能有助于研究人员更好地理解焦虑、强迫症、成瘾和赌博障碍等情况下的冒险和回避行为。 智利圣地亚哥发展大学的神经生物学家巴勃罗·比勒克（Pablo Billeke）表示，“这种研究可以在某些精神疾病中分离出与特定症状相关的一些大脑机制”。 皮质冲突 Billeke 表示，OFC 是“决策的常见嫌疑人”。 但斯塔克韦瑟说，因为它“位于眼窝的正上方，位于一大块骨头的顶部，位于鼻窦和眼睛的上方”，因此很难在大脑成像研究中进行分析。</p><p>Starkweather 和她的同事对六名参与者进行了研究，这些参与者通过手术将电极植入了眼眶中，作为现有癫痫或精神疾病治疗的一部分。 研究人员设计了一款视频游戏，参与者必须穿过布满宝箱和炸弹的走廊。 参与者有六秒钟的时间选择是否接近或避开每个走廊。 斯塔克韦瑟说，有些选择是“理所当然的”，比如进入一条有七个宝箱但没有炸弹的走廊。 但其他人向参与者提出了一种接近-回避冲突：你会决定进入还是避开每个都有偶数个的走廊，或者说，有七个宝藏和四个炸弹？ 喜欢我们的最新内容吗？ 登录或创建帐户以继续 获取《自然》获奖团队的最新新闻 探索涵盖突破性研究的最新功能和观点</p></div><p class="fulltext-src"><a href="https://www.nature.com/articles/d41586-026-02911-9" rel="noopener noreferrer">查看原文</a></p></details></div></article></section>
+<details class="footer-notes"><summary>采集说明</summary><ul class="notes-list"><li>覆盖窗口：09-19 08:09–09-20 08:09</li><li>未扩展：严格约 24h 窗口</li><li>生成时间：2026-09-20T08:09:47.448917+08:00</li><li>严格 24h 内且时间戳可靠条目：197；时间戳不可靠：75</li><li>事件簇数：259；入选独立事件：30</li><li>失败来源：无</li><li>源状态汇总：ok=20 fail=0</li></ul></details>
+</main>
+</body>
+</html>

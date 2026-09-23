@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Morning Briefing · 2026-09-22</title>
+<style>
+:root {
+  --bg: #F2F3F7;
+  --text: #1d1d1f;
+  --secondary: #6e6e73;
+  --link: #007AFF;
+  --accent: #007AFF;
+  --accent-soft: #3B82F6;
+  --glass: rgba(255, 255, 255, 0.78);
+  --glass-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --chip-bg: rgba(120, 120, 128, 0.12);
+  --nav-pill: rgba(255, 255, 255, 0.72);
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-blue: 0 4px 14px rgba(0, 122, 255, 0.28);
+  --radius: 24px; /* glass cards 24–28 */
+  --radius-sm: 18px;
+  --accent-ai: #5e5ce6;
+  --accent-ai-glow: rgba(94, 92, 230, 0.28);
+  --measure: 42ch;
+  --nav-h: 56px;
+  --pad: 16px;
+  --col: 440px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --text: #f5f5f7;
+    --secondary: #98989d;
+    --link: #0A84FF;
+    --accent: #0A84FF;
+    --accent-soft: #3B82F6;
+    --glass: rgba(28, 28, 30, 0.72);
+    --glass-strong: rgba(28, 28, 30, 0.82);
+    --glass-border: rgba(255, 255, 255, 0.14);
+    --chip-bg: rgba(120, 120, 128, 0.28);
+    --nav-pill: rgba(44, 44, 46, 0.72);
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.35);
+    --shadow-blue: 0 4px 14px rgba(10, 132, 255, 0.35);
+    --accent-ai: #7d7aff;
+    --accent-ai-glow: rgba(125, 122, 255, 0.35);
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + env(safe-area-inset-top, 0px) + 12px);
+  scroll-padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.55;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Quiet off-white canvas + faint cool map wash (not heavy lavender/peach) */
+  background:
+    radial-gradient(900px 600px at 18% 12%, rgba(59, 130, 246, 0.07), transparent 60%),
+    radial-gradient(700px 500px at 88% 78%, rgba(0, 122, 255, 0.05), transparent 55%),
+    linear-gradient(180deg, #F2F3F7 0%, #EEF0F5 100%);
+  background-attachment: fixed;
+  background-color: var(--bg);
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    background:
+      radial-gradient(900px 600px at 18% 12%, rgba(10, 132, 255, 0.12), transparent 60%),
+      radial-gradient(700px 500px at 88% 78%, rgba(59, 130, 246, 0.08), transparent 55%),
+      linear-gradient(180deg, #000000 0%, #0c0c0e 100%);
+  }
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Horizontal pill-chip nav (Map/推荐 segmented feel) */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: var(--nav-h);
+  padding-top: env(safe-area-inset-top, 0px);
+  display: flex;
+  align-items: center;
+  background: transparent;
+}
+.nav-inner {
+  width: 100%;
+  max-width: var(--col);
+  margin: 0 auto;
+  padding: 10px var(--pad);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-inner::-webkit-scrollbar { display: none; }
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 16px;
+  color: var(--secondary);
+  font-size: 14px;
+  font-weight: 560;
+  border-radius: 999px;
+  flex-shrink: 0;
+  background: var(--nav-pill);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.nav a:hover {
+  text-decoration: none;
+  color: var(--text);
+  background: var(--glass-strong);
+}
+.nav a.active,
+.nav a:target {
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: var(--shadow-blue);
+  font-weight: 600;
+}
+.wrap {
+  max-width: var(--col);
+  margin: 0 auto;
+  padding: 12px var(--pad) calc(48px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(var(--pad), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--pad), env(safe-area-inset-right, 0px));
+}
+@media (min-width: 640px) {
+  :root { --col: 520px; --pad: 20px; }
+  body { font-size: 17px; }
+}
+
+/* Hero = floating route-header glass card */
+.hero {
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.hero h1 {
+  margin: 0 0 6px;
+  font-size: clamp(24px, 6.5vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+.hero .subtitle {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: var(--secondary);
+  font-weight: 520;
+}
+.hero .meta {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--secondary);
+  line-height: 1.45;
+}
+.banner {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 159, 10, 0.18);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  font-size: 14px;
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+.section { margin: 22px 0 6px; }
+.section h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section h2::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--accent) 0%, var(--accent-soft) 100%);
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+}
+
+.section-sheet {
+  padding: 16px 16px 16px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+}
+.section-sheet .lead-card {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+.section-sheet .lead-card::before { display: none; }
+
+.lead-card {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.lead-card p {
+  margin: 0;
+  position: relative;
+  font-size: 16.5px;
+  line-height: 1.65;
+  max-width: var(--measure);
+}
+
+/* Frosted white news cards */
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  padding: 0;
+  margin: 0 0 14px;
+  position: relative;
+  overflow: hidden;
+}
+.card-body {
+  position: relative;
+  z-index: 1;
+  padding: 16px 18px 18px;
+}
+.card-focus .card-body { padding: 18px 18px 18px; }
+.card-focus .card-title { font-size: 19px; }
+.card-media {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: rgba(0,0,0,.04);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.card-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.card-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 620;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+}
+.rank {
+  display: inline-block;
+  min-width: 1.6em;
+  color: var(--secondary);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.ai-id { color: var(--accent-ai); }
+.card-meta {
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  color: var(--secondary);
+  line-height: 1.4;
+}
+.card-summary {
+  margin: 0 0 10px;
+  font-size: 15.5px;
+  line-height: 1.55;
+  max-width: var(--measure);
+}
+.card-why, .card-impact {
+  margin: 0 0 8px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  max-width: var(--measure);
+}
+.label {
+  display: inline;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--secondary);
+  margin-right: 4px;
+}
+.chip {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 560;
+  background: var(--chip-bg);
+  border: none;
+  color: var(--secondary);
+  vertical-align: middle;
+}
+.chip-accent {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: var(--shadow-blue);
+}
+.secondary { margin: 6px 0 0; padding-left: 1.2em; font-size: 13px; color: var(--secondary); }
+.secondary li { margin: 2px 0; }
+.meta-block { margin: 8px 0; }
+.crossref { margin: 8px 0; font-size: 13px; color: var(--secondary); }
+.read-more { margin: 14px 0 0; font-size: 14px; font-weight: 560; }
+.read-more a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(0, 122, 255, 0.35);
+  color: var(--accent);
+  background: rgba(0, 122, 255, 0.06);
+  text-decoration: none;
+  transition: background .15s ease, border-color .15s ease;
+}
+.read-more a:hover {
+  background: rgba(0, 122, 255, 0.12);
+  border-color: var(--accent);
+  text-decoration: none;
+}
+/* In-page fulltext expand (news cards) */
+.fulltext {
+  margin: 10px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.fulltext > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  color: var(--secondary);
+  user-select: none;
+  transition: color .15s ease;
+}
+.fulltext > summary::-webkit-details-marker { display: none; }
+.fulltext > summary::marker { content: ""; }
+.fulltext > summary .expand-mark {
+  display: inline-block;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 400;
+  color: var(--secondary);
+  opacity: 0.85;
+  animation: expand-bounce-down 1.4s ease-in-out infinite;
+  will-change: transform;
+}
+.fulltext > summary:hover,
+.fulltext > summary:hover .expand-mark {
+  color: var(--accent);
+  opacity: 1;
+}
+.fulltext[open] > summary {
+  margin-bottom: 8px;
+}
+.fulltext[open] > summary .expand-mark {
+  font-size: 0;
+  animation: none;
+}
+.fulltext[open] > summary .expand-mark::after {
+  content: "︿";
+  display: inline-block;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--accent);
+  animation: none;
+}
+@keyframes expand-bounce-down {
+  0%, 100% { transform: translateY(0); opacity: 0.85; }
+  50% { transform: translateY(5px); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fulltext > summary .expand-mark { animation: none; }
+}
+.fulltext-body {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  font-size: 15.5px;
+  line-height: 1.7;
+  max-width: var(--measure);
+}
+@media (prefers-color-scheme: dark) {
+  .fulltext-body {
+    background: rgba(44, 44, 46, 0.55);
+  }
+}
+.fulltext-body p {
+  margin: 0 0 0.85em;
+}
+.fulltext-body p:last-child { margin-bottom: 0; }
+.fulltext-src {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: var(--secondary);
+}
+.fulltext-src a {
+  color: var(--secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.muted { color: var(--secondary); }
+.card-ai {
+  border-left: 3px solid var(--accent-ai);
+  box-shadow: var(--shadow), -3px 0 18px var(--accent-ai-glow);
+  background:
+    linear-gradient(90deg, rgba(94, 92, 230, 0.08), transparent 28%),
+    var(--glass);
+}
+.card-ai .card-body { padding: 16px 18px 16px; }
+.conclusions {
+  margin: 6px 0 12px;
+  padding-left: 1.25em;
+  font-size: 15px;
+  max-width: var(--measure);
+  position: relative;
+  z-index: 1;
+}
+.conclusions li { margin: 4px 0; }
+.empty {
+  margin: 0 0 12px;
+  padding: 16px 18px;
+  border-radius: var(--radius-sm);
+  color: var(--secondary);
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px dashed var(--glass-border);
+  font-size: 15px;
+}
+.footer-notes {
+  margin-top: 40px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,0,0,.06);
+  color: var(--secondary);
+  font-size: 13px;
+}
+@media (prefers-color-scheme: dark) {
+  .footer-notes { border-top-color: rgba(255,255,255,.12); }
+}
+.footer-notes summary {
+  cursor: pointer;
+  font-weight: 520;
+  padding: 12px 0;
+  min-height: 44px;
+  color: var(--secondary);
+  list-style: none;
+}
+.footer-notes summary::-webkit-details-marker { display: none; }
+.footer-notes summary::before {
+  content: "› ";
+  display: inline-block;
+  transition: transform .15s ease;
+}
+.footer-notes[open] summary::before { transform: rotate(90deg); }
+.notes-list { margin: 0 0 8px; padding-left: 1.2em; line-height: 1.55; }
+.notes-list ul { padding-left: 1.1em; margin: 4px 0; }
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="章节导航"><div class="nav-inner"><a href="#sec-脉络" class="active">脉络</a><a href="#sec-重点">重点</a><a href="#sec-科技">科技</a><a href="#sec-research">Research</a><a href="#sec-市场">市场</a><a href="#sec-世界">世界</a><a href="#sec-延伸">延伸</a></div></nav>
+<main class="wrap">
+<header class="hero">
+  <h1>Morning Briefing</h1>
+  <p class="subtitle">2026-09-22 · 全球新闻早报</p>
+  <p class="meta">覆盖窗口：09-21 08:04–09-22 08:04 · 新闻 30 条 · AI Research 2 项 · 生成 2026-09-22 08:04:16 Asia/Shanghai · no_agent=true</p>
+</header>
+
+<section class="section section-sheet" id="sec-脉络"><h2>今日脉络</h2><div class="lead-card"><p>今日主线围绕ai/openai、ai/climate展开，重点包括OpenAI forms math advisory …；SpaceX 拟收购倒闭初创公司数据训练 Grok。技术侧另见成本压力促使更多初创企业转向成本更…、The man who built…。市场与产业侧，Nvidia boss rejects AI ex…等条目值得对照政策与资本动向。</p></div></section><section class="section" id="sec-重点"><h2>今日重点</h2><article class="card card-focus has-media"><figure class="card-media"><img src="https://techcrunch.com/wp-content/uploads/2026/09/51013975207_8dcac5cf72_k.jpg?resize=1200,900" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">01</span> OpenAI forms math advisory group as its AI resolves more than 100 open problems</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-22 04:15<span class="chip chip-accent">重点</span></p><p class="card-summary">The group won&#x27;t be given leeway to slow down or redirect OpenAI&#x27;s ongoing mathematical research.</p><p class="card-why"><span class="label">为什么重要</span> 触及高信号主题（ai/openai/research）；或影响技术路线或产业布局</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>周一，OpenAI 宣布在新泽西州普林斯顿高级研究所成立一个新的独立咨询小组。 该小组被称为数学和人工智能咨询小组，旨在为数学家为公司的数学研究提供更多投入。 帖子中写道：“这个小组将成为数学界和更广泛公众之间的桥梁，让数学家在我们如何前进方面拥有发言权。” 这一消息是在纳维-斯托克斯千年奖问题的解决方案突然公布之后发布的。 作为新团队公告的一部分，OpenAI 还声称相同的内部模型已经解决了大多数数学领域的 100 多个其他开放问题。 许多著名数学家对这些结果的疯狂进展提出了质疑。 本月早些时候，25 名菲尔兹奖得主数学家签署了一封公开信，称人工智能实验室正在威胁他们的智力工作，因为他们试图在著名数学问题的解决方案上相互竞争。 顾名思义，OpenAI 的新团队将主要担任顾问角色，评估新结果的重要性并协调其发布。 虽然会员不会获得报酬，但他们可以主动提供建议、公开发表自己的观点并控制自己的会员资格，从而在一定程度上独立于公司。 然而，该小组不会有放慢或改变 OpenAI 正在进行的数学研究的余地。 正如博客文章所说，“该小组将不负责就如何调整我们内部数学进展的速度提供建议。” 高等研究院在自己的公告中强调了这一点。 该研究所在一份新闻稿中表示：“虽然我们会提供建议，但我们在任何人工智能公司都没有决策权，任何公司做出的决策的责任将由该公司承担。” 九名著名数学家被任命为该小组的初始成员。 值得注意的是，只有一名成员——IAS 的卡米洛·德·莱利斯（Camillo De Lellis）——也签署了菲尔兹奖得主的信。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card card-focus has-media"><figure class="card-media"><img src="https://readhub.cn/social-image.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">02</span> SpaceX 拟收购倒闭初创公司数据训练 Grok</h3><p class="card-meta">科技与 AI · ReadHub · 2026-09-22 02:00<span class="chip chip-accent">重点</span></p><p class="card-summary">马斯克旗下 SpaceX 内部讨论从陷入困境或已倒闭的初创公司购买客户信息和运营数据，用于改进 AI 模型 Grok，核心原因是成本实惠。此前 Grok 主要依靠 X 平台内容塑造人格、AI tut…</p><p class="card-why"><span class="label">为什么重要</span> 触及高信号主题（ai/openai/anthropic）；或影响技术路线或产业布局</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>SpaceX 拟收购倒闭初创公司数据训练 Grok 马斯克旗下 SpaceX 内部讨论从陷入困境或已倒闭的初创公司购买客户信息和运营数据，用于改进 AI 模型 Grok，核心原因是成本实惠。此前 Grok 主要依靠 X 平台内容塑造人格、AI tutors 团队补齐专业能力，当前其数据训练正从早期冲刺转向工程化生产线，购买倒闭公司数据是为补充真实业务场景这块短板，相关讨论尚处非正式阶段。不止马斯克，谷歌也曾出价 1000 万美元竞拍破产重组的美国廉航 Spirit Airlines 的业务数据用于 AI 训练，因隐私问题交易被搁置。当前 Grok 面临下载量、付费转化下滑的尴尬处境，在 AI 竞赛中落后于 OpenAI、Anthropic，谷歌 Gemini 也表现低迷。</p></div><p class="fulltext-src"><a href="https://readhub.cn/topic/8wZK6onldbv" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card card-focus has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/27869614e45fe3747243417a4c789b07a8f7aaa4/688_0_6880_5504/master/6880.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=52d2883642154d2d0676a338d825569e" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">03</span> Albanese signs declaration with 20 world leaders to urge human control over AI ahead of UN assembly</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-22 07:40<span class="chip chip-accent">重点</span></p><p class="card-summary">Before United Nations meeting, prime minister says Australians knows the impact of global heating a…</p><p class="card-why"><span class="label">为什么重要</span> 触及高信号主题（ai/climate）；或影响地缘与公共政策讨论</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>安东尼·阿尔巴内斯在联合国大会前不久的主题演讲中表示，澳大利亚与其他国家一样了解全球变暖的危险和采取气候行动的紧迫性。 周一，总理在纽约联合国气候周活动开幕式上发表讲话时表示，澳大利亚人在过去几十年中亲眼目睹了气候崩溃的影响，经历了一系列灾难性的丛林大火和洪水。 他说，人们已经直面逆境，但现在轮到政客们表现出他们的“勇气”，并采取必要的强有力行动来解决这个问题。 “我们需要团结起来，直面问题，”他告诉大会。 “我们不可避免地要承担巨大的责任，或者不采取行动的代价。” 澳大利亚了解它必须发挥的重要作用以及支持的必要性 “积极的事情”并继续前进并“为下一代建设更美好的未来”。 他的政府制定了一个“雄心勃勃但可实现”的目标，即到 2035 年将排放量在 2005 年的水平上减少 62-70%，并且凭借天然气支持的可再生能源，澳大利亚“将实现这一目标”。 “我们现在是家庭电池安装领域的领导者，澳大利亚人每周安装 10,000 个电池，去年超过 50 万个。” “在澳大利亚，春天已经到来，”阿尔巴尼斯说。 “随着创纪录的厄尔尼诺现象预测，澳大利亚和太平洋国家正在为可能出现的极端炎热、丛林大火和洪水的夏季做准备。” 去年，一些太平洋国家齐心协力创建了太平洋复原力基金，这是一个区域气候融资机制。 澳大利亚已向该基金捐款 1 亿澳元，并另外捐款 3.5 亿澳元，以进一步支持太平洋地区气候适应型基础设施。 阿尔巴尼斯说：“这也是对我们太平洋大家庭的一个承诺，他们不会独自面对气候危机。” “在澳大利亚的支持下，帕劳第一个大型太阳能和电池项目有望满足其 20% 以上的能源需求。” 澳大利亚消防员已加紧应对美国、加拿大和法国等更远国家的火灾和洪水。 阿尔巴尼斯称这些消防员为“勇敢的国际兄弟会”。 尽管澳大利亚正在输出知识和资金以支持世界其他地区应对气候紧急情况，但该国对天然气的持续依赖也继续加剧了这场危机。 “我们的 2035 年目标是在 2005 年的基础上减少 62-70% 的排放。这是雄心勃勃的，但也是可以实现的。澳大利亚丰富的可再生能源潜力将帮助我们实现这一目标，”Albanese 说。</p><p>尽管澳大利亚国内对天然气的需求有所下降，但该国是最大的液化天然气出口国之一，出口量在过去一年中持续增加。</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/australia-news/2026/sep/21/no-avoiding-the-cost-of-inaction-on-climate-anthony-albanese-says-in-new-york" rel="noopener noreferrer">查看原文</a></p></details></div></article></section><section class="section" id="sec-科技"><h2>科技与 AI</h2><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">04</span> 成本压力促使更多初创企业转向成本更低的开源模型</h3><p class="card-meta">科技与 AI · ReadHub · 2026-09-22 04:40<span class="chip chip-accent">重点</span></p><p class="card-summary">估值约 156 亿美元的法律初创公司 Harvey，原本以训练 GPT-4 类 AI 模型为核心服务律师，因 AI 成本飙升，在今年 3 月更新 AI 代理系…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/gpt，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>估值约 156 亿美元的法律初创公司 Harvey，原本以训练 GPT-4 类 AI 模型为核心服务律师，因 AI 成本飙升，在今年 3 月更新 AI 代理系统后客户量激增但毛利率从年初约 50% 跌至 6 月的-50%，如今该公司转而采用开放权重式 AI，这类技术比美国 AI 开发商的专有技术更便宜，还可利用自身数据创建定制模型。</p></div><p class="fulltext-src"><a href="https://readhub.cn/topic/8wbxk4bravm" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">05</span> The man who built Apple’s stores doesn’t buy Silicon Valley’s bet on AI shopping</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-22 07:44<span class="chip chip-accent">重点</span></p><p class="card-summary">Apple Store architect Ron Johnson says Apple&#x27;s secret sauce has always been its…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>尽管硅谷正花费数十亿美元让人工智能代理为我们购物，但苹果零售店的先驱者认为，该行业高估了人们将有多少购物任务交给机器，并相信实体店将继续蓬勃发展。 66 岁的罗恩·约翰逊 (Ron Johnson) 此前曾听过有关实体零售业消亡的预测。 2000 年，当在线购物开始兴起时，他加入苹果公司，致力于建立零售业务，并继续帮助创建商店网络，该网络成为苹果公司销售产品和与客户联系的核心。 “人工智能是一项新技术，将改善在线购物体验，”约翰逊在接受采访时表示。 “但我不知道这会改变我们的购物方式。” 约翰逊提出这一观点之际，世界上一些最大的科技公司正试图将人工智能更深入地推向购物领域，他们押注代理可以使我们更多地查找和购买商品的方式自动化——这一概念通常被称为代理商务。 谷歌正在通过其通用商务协议来推动这一趋势，该协议旨在帮助人工智能代理引导消费者从产品发现到结账。 与此同时，OpenAI 正在将 ChatGPT 变成一个购物目的地，用户可以在其中研究、比较，在某些情况下甚至可以在不离开聊天机器人的情况下购买产品。 当被问及他是否可以想象有人让代理人在不访问网站或商店的情况下选择并购买 1,000 美元或 2,000 美元的笔记本电脑时，约翰逊明确表示：“老实说，没有人会这样做。” 他认为，购买笔记本电脑过于个人化，不能简单地委托给人工智能代理。 买家想要感受它的重量、查看显示屏并决定哪种尺寸适合他们。 约翰逊告诉 TechCrunch，人工智能可能会缩小选择范围。 他补充说，许多消费者在花这么多钱之前仍然希望亲自体验该产品。 “人工智能永远无法让你亲身体验产品，”约翰逊说。 相反，他希望代理商在消费者走进商店之前更好地告知他们。 “当他们来到商店时，他们就会成为更加知情的购物者。” 约翰逊的定罪源于苹果二十多年前做出的决定。 他说，苹果实体店的设计不仅是购买 Mac 的地方，也是人们可以试用产品、学习如何使用产品以及在出现问题时返回寻求帮助的地方。 其中一些赌注在约翰逊的新书《Shop Different: How Retail Revealed Apple’s Genius》中得到了重新审视，该书讲述了与史蒂夫·乔布斯一起打造苹果零售业务的故事。 他说，竞争对手借用了苹果的玻璃设计、开放式布局，甚至是天才吧的版本，但常常错过了人们。 “苹果的秘密武器一直是它的员工、店里的员工以及他们对待顾客的方式，”约翰逊说。</p><p>约翰逊表示，苹果专卖店员工不收取佣金，这与零售业常见的销售文化不同。 他说，这个想法是为了消除销售压力，而是让员工弄清楚客户真正需要什么。 离开苹果公司后，约翰逊于 2011 年接管了 J.C. Penney，并制定了一项雄心勃勃的计划，重塑这家陷入困境的百货连锁店。 不到两年后，他因销售额暴跌而被解雇。 约翰逊现在表示，他试图改变太多、太快，却没有带动员工和客户。 苹果商店实际上是一家与公司产品一起发展的初创公司。 另一方面，J.C. Penney 的转型需要采取不同的方法。 “我运用了创业心态来实现扭亏为盈的转型，”他回忆道。 约翰逊后来重返创业界，创立了享受科技（Enjoy Technology），这是一家电子商务公司，将技术产品和设置服务直接带到客户家中。 该初创公司于 2022 年申请破产，并将其大部分资产出售给 Asurion。 尽管约翰逊对人工智能将如何重塑购物业持怀疑态度，但他仍然看好这项技术本身。 “我是人工智能的真正信徒。我是人工智能乐观主义者，”他说。 他相信乔布斯也会接受人工智能，但不能代替人类判断。 “人类的直觉是无可替代的，”约翰逊说道，他回顾了乔布斯的信念，即让聪明的人聚集在一起讨论问题并找到看待问题的新方法。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/21/the-man-who-built-apples-stores-doesnt-buy-silicon-valleys-bet-on-ai-shopping/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">06</span> 近 40 家公司预告三季度业绩 AI 产业链高景气度持续兑现</h3><p class="card-meta">科技与 AI · ReadHub · 2026-09-22 07:45<span class="chip chip-accent">重点</span></p><p class="card-summary">A 股 2026 年前三季度业绩预告披露启幕，截至 9 月 21 日，38 家披露经营情况的公司中约六成预计业绩同比增长，其中 AI 产业链公司因算力需求爆发…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>近 40 家公司预告三季度业绩 AI 产业链高景气度持续兑现 19 分钟前 A 股 2026 年前三季度业绩预告披露启幕，截至 9 月 21 日，38 家披露经营情况的公司中约六成预计业绩同比增长，其中 AI 产业链公司因算力需求爆发实现高增长，生物医药、新能源等领域也因产品量价齐升等业绩稳步向好。 话题追踪 查看更多 专业版功能 体验专业版特色功能，拓展更丰富、更全面的相关内容。</p></div><p class="fulltext-src"><a href="https://readhub.cn/topic/8wcNpcRAsbr" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">07</span> AI 系统可快速精准匹配 X 光与三维扫描图像</h3><p class="card-meta">科技与 AI · ReadHub · 2026-09-22 07:40<span class="chip chip-accent">重点</span></p><p class="card-summary">美国麻省理工学院等机构科学家开发的 AI 系统「xvr」，可针对患者个性化适配，在数秒内将术中 X 光图像与三维医学扫描精准匹配，定位手术器械位置，精度达亚毫…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>AI 系统可快速精准匹配 X 光与三维扫描图像 23 分钟前 收藏 美国 麻省理工学院 等机构科学家开发的 AI 系统「xvr」，可针对患者个性化适配，在数秒内将术中 X 光图像与三维医学扫描精准匹配，定位手术器械位置，精度达亚毫米级，相关成果发表于新一期《自然》杂志。 AI 系统可快速精准匹配 X 光与三维扫描图像 格隆汇/同花顺财经/财联社 话题追踪 2026-09-22 AI 系统可快速精准匹配 X 光与三维扫描图像 2026-09-18 AI 系统可让 3D 打印实现同步质检 2026-08-18 哈佛 MIT 造出 83 亿「AI 人」：用 MatrAIx 系统模拟全球人类行为 2025-06-16 光学 AI 处理器可高效准确分类无线信号 2023-07-13 麻省理工学院 FrameDiff 工具问世，利用 AI 设计蛋白质结构 2018-08-13 美研究员新开发人工智能模型，有望改进恶性脑瘤治疗 2018-05-07 MIT 开发出新自动驾驶系统：可在无地图乡间道路上导航 专业版功能 登录 体验专业版特色功能，拓展更丰富、更全面的相关内容。</p></div><p class="fulltext-src"><a href="https://readhub.cn/topic/8wcR1yb4QY6" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://media.wired.com/photos/6ab15a857fffb9bb745696eb/master/pass/trumpxi.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">08</span> AI, Tariffs, Rare Minerals: What to Expect From Trump’s Upcoming Summit With Xi Jinping</h3><p class="card-meta">科技与 AI · WIRED · 2026-09-22 02:33<span class="chip chip-accent">重点</span></p><p class="card-summary">Washington and Beijing have grown ever more linked in the AI boom, making hardw…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/chip，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>在本周举行的联合国大会所有活动中，最令人期待的是唐纳德·特朗普和中国国家主席习近平即将举行的会晤。 尽管大部分外交活动都在纽约进行，但两位领导人的面对面交流将在白宫进行。 特朗普计划于 9 月 23 日星期三在安德鲁斯联合基地亲自欢迎习近平，这是一个不同寻常的外交姿态，因为美国总统通常不会去机场欢迎外国领导人。 在机场重聚之前，由财政部长斯科特·贝森特和贸易代表杰米森·格里尔率领的美国代表团正在与中国国务院副总理何立峰会面，以制定议程。 世界经济论坛概述了一些最紧迫的话题，包括贸易冲突、供应链、技术竞争和日益敏感的台湾问题，同时也牢记了使美国深陷中东战争并可能升级的困难。 贸易休战即将到期 去年特朗普和习近平在釜山会晤后达成的贸易休战协议将于 11 月 10 日到期。两国政府现在必须决定是否延长该协议，该协议降低了特朗普的关税威胁并暂停了港口收费。 除了讨论延期的可能性外，领导人还可以决定设定农产品、能源和波音飞机等关键贸易项目的采购目标。 他们还可能继续就价值约 300 亿美元的“非敏感”商品进行谈判，其中包括约 10 个类别，但尚未就其范围达成一致。 釜山协议的一个关键组成部分是取消了中国对稀土和矿物的出口限制——汽车、国防和技术的关键出口产品，包括人工智能的重要硬件。 随着美国寻求更稳定的这些材料供应，北京利用其在国际市场的主导地位将华盛顿带到贸易战的谈判桌上。 人工智能大赛 Scott Bessent表示，人工智能安全将被列入双边会议的议程。 尽管业界对预期结果的看法不一，但这次讨论一直是商界领袖的主要要求之一。 北京希望看到美国放松对中国技术的一些限制。 然而，随着越来越多的人呼吁放慢人工智能发展以确保安全，一些美国企业担心被中国超越。 这一领域仍然存在不确定性，因为特朗普驳回了国内监管的呼吁，而且这些讨论从根本上说也与有关计算机芯片和相关材料出口管制的贸易谈判交织在一起。</p><p>伊朗、台湾和全球政治 贸易谈判在两国最敏感的地缘政治立场之间摇摆不定。 中国威胁称，如果美国批准对台新武器销售，中国将完全退出此次峰会。 不过，预计两国将讨论中国与伊朗的经济关系以及被拘留的外国人。 预计两国都会在不放弃影响力的情况下谨慎行事，因此不太可能出现任何根本性转变。 总之，华盛顿正在推动扩大中国产品和市场、关键矿产的准入以及对某些安全问题的承诺。 另一方面，北京寻求免除关税和限制。 每一方都有自己的筹码，并在不同的棋盘上都有多个棋子，例如非洲和拉丁美洲。 与此同时，两国都在努力防止台湾和其他地缘政治冲突破坏两国的经济关系。 今年五月在北京举行的会议充满了象征性姿态，但两位领导人在谈判桌上几乎没有做出任何让步。 华盛顿会有不同的结果吗？ 中国贸易分析师兼 Ashton Intelligence 创始人安娜·阿什顿 (Anna Ashton) 向 CNBC 表示：“我认为，由于总统峰会即将到来，将会有一些可交付成果，但我不认为我们即将取得某种突破。” “我认为维持现状可能是双方普遍的最佳期望。”</p></div><p class="fulltext-src"><a href="https://www.wired.com/story/ai-tariffs-rare-minerals-what-to-expect-from-trumps-upcoming-summit-with-xi-jinping/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">09</span> Google’s $899 Googlebook is a bet that you’ll buy a new laptop for Gemini</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-21 22:39<span class="chip chip-accent">重点</span></p><p class="card-summary">Google’s AI-native Googlebook ties Gemini to the cursor, dictation, widgets, an…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/gemini，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>谷歌在 5 月份首次推出了名为 Googlebook 的新型人工智能笔记本电脑后，周一表示，这款新设备现已开始接受预订，价格为 899 美元。 Googlebook 旨在比传统 Chromebook 更进一步，在 Android 操作系统上运行，并配有桌面版 Chrome 浏览器和其他熟悉的 ChromeOS 元素。 然而，新设备的真正吸引力在于它们将以一种新的形式突出显示 Gemini 的最新功能：笔记本电脑。 谷歌正试图提供一款具有独特功能的笔记本电脑，例如人工智能驱动的光标、振动编码小部件以及对人工智能增强听写的支持。 后者是一个名为 Rambler 的功能，它可以将杂乱无章的大脑转储清理为可读的文本。 此举是为了押注人工智能，特别是谷歌的 Gemini，可能足以吸引人们购买搭载人工智能的新笔记本电脑，而不是通过您安装或通过浏览器访问的桌面应用程序来运行它们。 此外，这些设备最终可能会取代 Chromebook，从而将数百万前 Chromebook 客户带入 Gemini AI。 在 Googlebook 上，谷歌正试图重塑桌面计算的“点击式”体验，现在加入了人工智能元素：光标充当了 Gemini 的管道。 该公司提出了多种使用方法，例如突出显示网页上供 Gemini 使用的内容、要求 Gemini 查看您将光标悬停在其上的电子邮件是否可疑，或者选择图像，然后要求 Gemini 将它们一起可视化。 实际上，这一功能与 Android 的“圈出搜索”没有太大区别，后者允许智能手机用户使用圈出、突出显示或点击等手势来连接 Google 搜索，当然，其中还包括人工智能。 虽然这是一种利用人们使用手机的方式的聪明方法，但“Circle to Search”本身并没有引发大量用户转向 Android。 同样，Magic Cursor（人工智能指针的名称）不太可能成为 Googlebook 的主要卖点，尤其是现在我们拥有可以接管您的计算机和浏览器来为您执行任务的人工智能代理。 然而，谷歌的 Rambler 可能是本次升级中最好的人工智能功能之一，因为它满足了令人惊讶的有用需求。 然而，这也不足以成为购买新设备的理由，因为它感觉更像是一个值得拥有的功能，而不是必需品。 Vibe 编码小部件也是一个小补充。 其他 Googlebook 功能，例如 Gemini Spark 和 Gemini Live，也不需要特殊的新硬件。</p><p>Googlebook 更有趣的是，它似乎是 Google 长期计划的一部分，旨在占领目前依赖 Chromebook 的 K-12 市场的很大一部分，并将其推向该公司的 Gemini AI。 谷歌表示，学校里大约有 5000 万台 Chromebook，供学生和教育工作者使用。 今年 5 月，该公司告诉 TechCrunch，其当前的 Chromebook 将继续受到支持，尽管许多 Chromebook 未来将有资格过渡到新的 Googlebook 体验。 这款售价 899 美元的设备将包括 12 个月的 Google AI Pro（为您提供 5TB 云存储）、Gemini Advanced 工具以及 3 个月的 YouTube Premium、Adobe Photoshop 等。 谷歌表示，这些设备将在长达 10 年内定期获得更新。 Googlebook 预订现已在 Google 商店、百思买和其他零售商处开放。 该设备将于 10 月 4 日在美国上架，10 月 5 日在加拿大、英国、爱尔兰、法国、德国和澳大利亚上架。 新系列的旗舰设备由宏碁、华硕、戴尔、惠普和联想制造，采用铝、镁合金和碳纤维等材料。 它们配备高达 2.8K OLED 显示屏、触觉玻璃触控板和背光键盘。 在底层，它们将在英特尔和高通的处理器上运行，并配有专用的 NPU。 谷歌表示，该设备的电池续航时间可达 14 小时。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://platform.theverge.com/wp-content/uploads/sites/2/2026/09/gettyimages-2286055476.jpg?quality=90&amp;#038;strip=all&amp;#038;crop=0,0,100,100" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">10</span> California tightens rules on AI data center energy and water use</h3><p class="card-meta">科技与 AI · The Verge · 2026-09-22 04:29<span class="chip chip-accent">重点</span></p><p class="card-summary">California Gov. Gavin Newsom has signed seven bills designed to prevent AI data…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>据《洛杉矶时报》早些时候报道，加利福尼亚州州长加文·纽瑟姆签署了七项法案，旨在防止人工智能数据中心将公用事业成本转嫁给居民。 该一揽子法律要求加州公用事业委员会为数据中心引入新的费率分类，同时迫使它们支付当地电网和供水系统的升级费用。 加州收紧人工智能数据中心能源和用水的规定 加文·纽瑟姆签署了一系列法案，要求人工智能数据中心支付当地能源网格的升级费用。 该计划中包含的其他法案将要求拟议的数据中心向地方政府披露其估计的用水量，以及有关能源效率和干旱规划的信息。 他们还必须满足某些能源、水和燃料消耗要求，才有资格获得简化的审批流程。 上周，纽瑟姆签署了一项行政命令，以加快创建人工智能“终止开关”。 纽瑟姆在新闻稿中表示：“虽然特朗普政府走向放松管制，但社区仍要应对由此带来的后果——电力需求增加、电网限制、用水和污染。” “通过这些法律，我们可以确保加州人继续掌握主导权，并且那些从数据中心获利的人不会以我们为代价。”</p></div><p class="fulltext-src"><a href="https://www.theverge.com/ai-artificial-intelligence/998453/california-ai-data-center-bills" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">11</span> Meta’s Muse is outpacing ChatGPT’s early mobile launch</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-22 03:19<span class="chip chip-accent">重点</span></p><p class="card-summary">Meta’s new AI agent Muse has racked up more downloads and daily active users in…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>新数据显示，Meta 最新的人工智能应用程序 Muse 可能会成为这家社交巨头的下一个热门产品。 根据市场情报提供商 Apptopia 刚刚发布的估计，Muse 移动设备上的应用程序在上市前 12 天内的下载次数比 ChatGPT 首次亮相后 12 天内的下载次数还要多。 （该数据仅比较美国和加拿大市场。） 该公司发现，Muse 的每日活跃用户数量也比 ChatGPT 当时的数量还要多。 到目前为止，很难对这两个应用程序进行精确的比较，因为它们采取了不同的发布策略。 当 ChatGPT 登陆移动设备时，它在全球范围内可用，但仅限于 iOS。 与此同时，Muse 可在 Apple App Store 和 Google Play 上使用，但仅限美国和加拿大。 为了更好地调整数据进行比较，Apptopia 仅查看了这两款应用在各自发布的前 12 天内在美国和加拿大的 iOS 数据。 在这部分数据中，Muse 目前的下载量为 180 万次，而 ChatGPT 的下载量为 130 万次。 该公司还表示，总体而言，Muse 在推出的前 12 天内在全球的总安装量为 280 万。 它的增长也尚未停滞。 据《商业内幕》周五报道，Muse 发布后立即从美国应用商店的整体排名第二上升至目前的第一。 该媒体指出，这一跳跃使该应用程序的排名高于 ChatGPT。 另一家公司 Appfigures 表示，Muse 当时的下载量已突破 100 万次。 此外，Apptopia 的数据显示，Muse 在美国的每日活跃用户数目前高于 ChatGPT 推出后同期的水平。 仅比较美国移动应用的日活跃用户数时，Muse 的日活跃用户数为 642,000，而 ChatGPT 当时的日活跃用户数为 231,000。 公平地说，Muse 可在 iOS 和 Android 上使用，而 ChatGPT 仅在 iOS 上推出，Apptopia 缩小了与单独 iOS 的比较范围。 然而，即便如此，Muse 的排名也更高，iOS 上的日活跃用户数为 359,000 人，仍然高于 ChatGPT 同期的数据。 Apptopia 只能提供有关应用程序下载量和活跃用户的第三方估算； 它无法直接访问 Meta 的内部数据。 但即使这些数字仅从一般“大概”角度来看是正确的，它们也表明 Muse 有机会成为 Meta 最新的顶级应用程序。</p><p>Meta 在推出 Instagram 的 Threads 时就已经完善了其交叉推广策略，得益于 Instagram 和 Facebook 等 Meta 最大应用程序的大力营销和集成，该产品目前拥有 5 亿多用户。 鉴于人工智能应用程序可以与这两个平台连接，Muse 可能会得到类似的推动。 它也可以在 WhatsApp 内部运行，因此这可能会进一步推动它的发展。 虽然 Apptopia 无法直接了解 Meta 的交叉推广工作或广告，但它确实注意到，超过 95% 的 Muse 用户也是 Facebook 用户，63% 是 Instagram 用户。 Meta 已被要求发表评论，但尚未分享与 Muse 早期采用相关的公众数据。 更正：本文的早期版本引用了分析公司 Appfigures 作为 Apptopia 的数据来源。 这已得到修复。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/21/metas-muse-is-outpacing-chatgpts-early-mobile-launch/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">12</span> Meta’s AI agent has been blocked from using Amazon.com</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-22 01:55<span class="chip chip-accent">重点</span></p><p class="card-summary">Amazon has its own cohort of foundation models, along with one of the most popu…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>周日晚上，Meta 人工智能助手 Muse 的用户在尝试在亚马逊上购买商品时开始收到一条奇怪的错误消息。 GeekWire 发现，错误消息如下：“未经授权的人工智能代理的持续访问违反了亚马逊的使用条件，我们的客户已经同意了这一点。” 换句话说，Muse 作为购物者并不受欢迎——任何试图通过人工智能代理在亚马逊上购买商品的人都必须在其他地方找到它。 很容易将这个区块视为科技巨头之间的面对面交流。 毕竟，亚马逊拥有自己的基础模型群，以及互联网上最受欢迎的推理平台之一。 既然他们没有法律义务打开 Muse 的大门，他们为什么要这么做呢？ 但亚马逊可能还不想涉足代理商务业务，还有一些实质性原因。 如果 Muse 下了一份糟糕的订单，亚马逊将负责清理它——同时应对愤怒的顾客和愤怒的供应商。 在人工智能模型中，Muse 是幻觉率较低的模型之一，但离零还很远。 即使亚马逊看到了代理驱动的商务机会，他们也可能希望再等待几个发布周期才能推出任何产品。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/21/metas-ai-agent-has-been-blocked-from-using-amazon-com/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">13</span> With Tabby, a former accountant is using AI to make accountants obsolete</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-22 00:38</p><p class="card-summary">Tabby is designed to be a real-time bookkeeping interface, handling clients’ pa…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>2025 年 5 月，阿哈德·阿里 (Ahad Ali) 成为一名成功的会计师，管理着一支 20 人的团队，每年处理 2,000 多份申报表。 “我们负责簿记、会计、销售税、税收等一切工作，”阿里说。 这是一项稳定的生意，而且很容易维持下去。 但阿里开始注意到一些事情。 他的工作越来越受到会计软件摩擦的影响，而会计软件的设计很少考虑到实际的会计师。 他对 QuickBooks 等特定会计软件感到沮丧，很快他对基于 SaaS 的会计的整个想法感到沮丧。 “我意识到小型企业不需要更好的会计软件，”阿里告诉 TechCrunch。 “他们需要更少的会计软件。他们需要能够为他们做事的软件。” 现在，阿里正在构建这个目标。 他的产品 Tabby 被设计为一个实时簿记界面，处理客户的文书工作，为他们提供有关其业务损益的最新数据。 Tabby 使用 Plaid 导入真实账户数据，利用 AI 快速构建企业财务健康状况的实时仪表板。 还有一个 Tabby 版本，适合那些想要 QuickBooks 的更智能替代品的会计师事务所，但 Ali 的目标是尽可能频繁地直接面向最终用户。 在阿里看来，像 Tabby 这样的产品有机会一劳永逸地自动化记账工作，将其转变为每月按互联网接入或工资服务收费的费用。 如果成功，它可能会严重改变小型企业的经营方式。 “你可以说 QuickBooks 数字化了簿记，”Ali 告诉 TechCrunch，“但我们希望让（可见的软件层）不存在。” 到目前为止，它似乎正在发挥作用。 14 个月后，Tabby 已有 5,500 家小型企业使用该平台，年度经常性收入约为 100,000 美元。 该团队仍然只有 7 个人——阿里、他的技术联合创始人、四名工程师和一名市场推广专家——并且正在筹集 100 万美元的种子前资金。 当我与 Ali 交谈时，他的团队正准备推出 Tabby Talk，这是该产品的自然语言界面。 会计领域竞争激烈，尤其是现在人工智能已经颠覆了一切。 阿里的目光集中在 QuickBooks 上，它仍然是最大的参与者，但他还将面临资金雄厚的初创公司，如红杉资本支持的 Rillet，以及主要实验室自己的财务工具。 这是一项艰巨的任务，但阿里认为塔比可以通过专注于那些帮助他的会计业务蓬勃发展的中小型公司来开辟自己的利基市场。 “我们所看到的一切都让我们相信其他玩家有一条路，因为空间很大，”阿里告诉 TechCrunch。 “还有 3000 万家企业。”</p><p>了解有关 Tabby 和参与 TechCrunch Disrupt 著名 Startup Battlefield 200 竞赛的其他创新初创公司的更多信息，竞赛将于 10 月 13 日至 15 日在旧金山市中心举行。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/21/with-tabby-a-former-accountant-is-using-ai-to-make-accountants-obsolete/" rel="noopener noreferrer">查看原文</a></p></details></div></article></section><section class="section" id="sec-research"><h2>前沿 AI 研究</h2><article class="card card-ai"><div class="card-body"><h3 class="card-title"><span class="rank ai-id">AI-01</span> METR — May 20, 2026 <span class="chip">新发布</span></h3><p class="card-meta">2026-09-17 · Safety / Alignment</p><p class="label">核心结论</p><ol class="conclusions"><li>详见原文，脚本未能提取结构化结论</li></ol><p class="card-why"><span class="label">为什么重要</span> 来自METR官方页面；涉及安全/对齐信号；类型启发式=Safety / Alignment</p><p class="card-impact"><span class="label">影响</span> 可能影响模型部署策略与合规讨论</p><p class="card-meta"><span class="label">证据属性</span> 独立评测</p><p class="card-meta"><span class="label">可信度与局限</span> 独立评测来源页面提取；仍需核对原文方法与样本，脚本未做独立复核</p><p class="read-more"><a href="https://www.nbcnews.com/tech/security/chatgpt-ai-mythos-anthropic-agent-rogue-danger-warning-safety-rcna346078" rel="noopener noreferrer">官方链接</a></p></div></article><article class="card card-ai"><div class="card-body"><h3 class="card-title"><span class="rank ai-id">AI-02</span> METR — July 2, 2025 <span class="chip">新发布</span></h3><p class="card-meta">2026-09-17 · Benchmark / Evaluation</p><p class="label">核心结论</p><ol class="conclusions"><li>详见原文，脚本未能提取结构化结论</li></ol><p class="card-why"><span class="label">为什么重要</span> 来自METR官方页面；含评测/基准相关关键词；类型启发式=Benchmark / Evaluation</p><p class="card-impact"><span class="label">影响</span> 可能影响模型对比与选型基准</p><p class="card-meta"><span class="label">证据属性</span> 独立评测</p><p class="card-meta"><span class="label">可信度与局限</span> 独立评测来源页面提取；仍需核对原文方法与样本，脚本未做独立复核</p><p class="read-more"><a href="https://spectrum.ieee.org/llm-benchmarking-metr" rel="noopener noreferrer">官方链接</a></p></div></article></section><section class="section" id="sec-市场"><h2>市场与产业</h2><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/ba1f/live/38ae4b30-b54a-11f1-a718-f1288d239f82.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">14</span> Nvidia boss rejects AI extinction fears as &#x27;doomsday narratives&#x27;</h3><p class="card-meta">市场与产业 · BBC Business · 2026-09-21 14:25</p><p class="card-summary">Jensen Huang&#x27;s comments come after warnings from AI researchers that the techno…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/nvidia，可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 英伟达首席执行官黄仁勋将人工智能可能在未来十年导致人类灭绝的警告描述为“世界末日叙事”。 黄在接受英国广播公司美国合作伙伴哥伦比亚广播公司新闻采访时表示，“2030年不会是世界末日。世界末日的可能性为0%”。 黄补充道：“吓唬人是没有必要的。这是不负责任的。” 最近几周，研究人员对该技术带来的潜在风险发出警告，加剧了有关人工智能安全的争论，一些行业高管呼吁放慢模型开发速度。 在他发表上述言论之前，前人类学研究员雅各布·考克森在社交媒体上发表了声明，称人工智能开发人员认为这项技术“可能会在本世纪末杀死我们所有人”。 Coxon 的担忧引发了有关该技术风险的争论，包括 Anthropic 老板 Dario Amodei 和 OpenAI 的 Sam Altman 等高管呼吁放慢人工智能的发展速度。 黄仁勋表示，此类预测“没有科学依据”，并补充说，确保行业负责任地生产其产品符合英伟达的最佳利益。 “我们公司的成功与产品和服务的安全部署直接相关，”他说。 “如果我们不继续这样做，我们的价值就会减少。” 黄建议人工智能公司谈论“放慢速度”可能是为其产品可能造成的损害寻求责任保护。 “去读一下字里行间的意思，”他说。 “他们实际上并不是要求制定更多法律。他们要求取消我们现有的法律，我认为这是一个问题。” 黄的评论与 BBC 联系的多名曾在 OpenAI、Meta 和 DeepMind 等公司工作过的人士的言论相呼应。 在文本交流和对话中，他们表示对不受控制的人工智能发展会导致集体杀人工具的想法持怀疑态度。 英伟达是该行业的关键参与者，开发对制作人工智能模型至关重要的尖端计算机芯片。 由于华盛顿和北京采取的措施，该公司最强大的芯片在中国面临限制。 美国的出口管制旨在减缓中国的军事和人工智能进步，而中国的法规旨在鼓励对国产技术的依赖。 美国财政部长斯科特·贝森特和中国国务院副总理何立峰周日在纽约举行会谈，试图就人工智能、关税和关键矿产达成协议。 会后，贝森特告诉记者，双方已讨论建立新的人工智能安全通报机制。 唐纳德·特朗普总统和中国国家主席习近平将于本周晚些时候在华盛顿举行峰会。</p><p>上周，黄仁勋出席了查尔斯国王主办的英国峰会，他警告科技领导人人工智能的“生存危险”。</p><p>国王对大家说：“你们面前的任务不仅仅是推进技术，还要确保技术坚定地为人类、社区和自然世界服务。”</p><p>在美国，唐纳德·特朗普总统淡化了对人工智能风险的担忧。</p><p>9 月 14 日，当 Nvidia 老板在洛杉矶举行的一场科技会议上发表讲话时，特朗普意外地给黄仁勋打了电话。</p><p>在通话中，特朗普批评了减缓人工智能发展步伐的呼吁，并将担忧视为“骗局”。</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cr5ye7p13jg7o?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/c9cd/live/8b3a0650-b5e5-11f1-a430-4d16ee157c41.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">15</span> I couldn&#x27;t cook when I left home – but these easy £2.50 recipes became my go-to</h3><p class="card-meta">市场与产业 · BBC Business · 2026-09-22 07:41</p><p class="card-summary">Former culinary-challenged students share four low cost meals they think everyo…</p><p class="card-impact"><span class="label">影响</span> 可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 当米娅·琼斯离开安格尔西的家去伦敦上大学时，她“无论如何”都不会做饭，但她很快意识到这种情况必须改变。 “我不能一辈子只靠面食生活，”她说，所有的现成饭菜和方便面都开始增加。 “我每周在食物上花费 45 英镑，”这位 22 岁的年轻人说道。 “那是不可行的。” 于是她开始购买新鲜食材。 “然后我意识到，‘哦，我现在需要学习如何做饭’。” 她开始关注社交媒体视频以获取技巧和食谱，并更换她不喜欢的食物。 虽然早期发生了一些灾难，但不久之后米娅就自豪地说她会做饭。 “这让我意识到我可以独立生活，”她说。 “[第一年]我无法相信这一切”。 更重要的是，米娅每周的购物费用减少了 20 英镑，并且发现她有了更多的精力。 “我在讲座中感觉更加清醒，这非常有用，”她说。 完成硕士学位后，她现在在网上分享她的食谱，希望能帮助其他与她处境相同的学生。 米娅和其他曾经在烹饪方面遇到困难的学生分享了他们学到的招牌菜，这些菜便宜、简单，而且最重要的是美味。 所有食谱都可以通过在初级商店橱柜中储存来制作，价格不超过 13 英镑。 然后，每顿饭都使用额外的食材，价格不到 2.50 英镑 - 这使得几份食物非常适合第二天或放在冰箱里。 我们要求零售跟踪平台 Assosia 使用 2026 年 9 月 11 日 Tesco、Sainsbury&#x27;s、Asda 和 Morrisons 的平均促销前价格来查找标准尺寸包装原料的粗略成本。 米娅的拿手菜：鹰嘴豆咖喱和豆腐乌冬面 米娅的第一个食谱是鹰嘴豆咖喱：“它非常便宜而且营养丰富，”她说。 允许 TikTok 内容吗？ 本文包含 TikTok 提供的内容。 在加载任何内容之前，我们会征求您的许可，因为它们可能会使用 cookie 和其他技术。 在接受之前，您可能需要阅读 TikTok 的 cookie 政策、外部和隐私政策、外部。 要查看此内容，请选择“接受并继续”。 第二个是乌冬面。 “这是一个 10 分钟的食谱，很容易定制（用豆腐或鸡肉），对于工作日晚上的晚餐非常有用。” 米娅说如果她喜欢的话她会加辣椒油。 允许 TikTok 内容吗？ 本文包含 TikTok 提供的内容。 在加载任何内容之前，我们会征求您的许可，因为它们可能会使用 cookie 和其他技术。 在接受之前，您可能需要阅读 TikTok 的 cookie 政策、外部和隐私政策、外部。 要查看此内容，请选择“接受并继续”。 和米娅一样，杰达·奥托-门萨在上大学之前“并没有真正做饭”。</p><p>这位物理治疗专业的学生每周要在医院呆上大约 40 个小时，想要了解如何制作健康食品。 “当你做饭时会容易得多，因为你确切地知道里面会发生什么，”她说。 “我可以吃一个鸡肉汉堡，而且由于我烹饪的方式，它真的很健康。” 经过 TikTok 视频的“大量尝试和错误”后，这位 20 岁的考文垂大学学生有足够的信心拍摄自己做饭的视频。 现在她买主食，虽然她试图坚持每周的膳食计划，但她主要是根据自己的感觉做饭。 Jayda 的拿手菜：脆皮照烧碎玉米饼 Jayda 最常做的饭菜之一是炸玉米饼。 “这是一顿很棒的饭菜，既快捷又实惠，”她说。 允许 TikTok 内容吗？ 本文包含 TikTok 提供的内容。 在加载任何内容之前，我们会征求您的许可，因为它们可能会使用 cookie 和其他技术。 在接受之前，您可能需要阅读 TikTok 的 cookie 政策、外部和隐私政策、外部。 要查看此内容，请选择“接受并继续”。 罗布·梅德赫斯特 (Rob Medhurst) 认为，学生主食肉酱意大利面是他走向更美味菜肴的跳板。 这位 25 岁的诺丁汉特伦特大学毕业生表示：“它非常实惠，而且很容易。” “我很快就知道准备饭菜和批量烹饪对我来说是最好的方法，”他说。 “我知道有些人喜欢烹饪艺术，但我个人不喜欢。” 罗布的拿手菜：肉酱意大利面 罗布发现简单的 spag bol 是一种多功能食谱：“你只需调整一些东西来制作辣椒或大量墨西哥卷饼。” 他说他已经做了很多次同样的食谱，他将其描述为“肌肉记忆”。 记得带上商店橱柜里的必需品 厨师兼烹饪书作者克莱尔·汤普森 (Claire Thompson) 记得她的女儿格蕾丝 (Grace) 离开家去上大学，她想知道：“她真的会做饭吗？” 她送格蕾丝带着三箱补给品，她的女儿形容这些是“为世界末日储备的，以防万一出现问题”。 但对于克莱尔来说，每个人在离家时都应该考虑储备一些必需品。 “我认为香料确实是一个让你开始思考的好东西，”她告诉英国广播公司世界频道的食物链播客。 “它们能以不多的钱提供很多很多的味道，而且它们可以在你的商店橱柜里保存得很好，”她说。 “在番茄酱中加入一罐鹰嘴豆，然后将其添加到意大利面中，就可以提高蛋白质的含量，并为一道非常便宜的菜肴带来营养。”</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cgjqgjn3n2wo?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/c4d4/live/c9f5d180-b608-11f1-b1d1-571ed4d7ff2c.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">16</span> Flights at major US airports delayed after cable cut by construction workers</h3><p class="card-meta">市场与产业 · BBC Business · 2026-09-22 07:25</p><p class="card-summary">The cable had been repaired and airports are resuming normal operations, the US…</p><p class="card-impact"><span class="label">影响</span> 可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 由于建筑工人不小心切断了空中交通管制所需的电缆，美国主要机场的数百架航班已延误。 周一下午，纽约、宾夕法尼亚、新泽西和马萨诸塞州的机场发布了地面停靠和延误通知。 几小时后，美国交通部长肖恩·达菲表示，电缆已修复，机场将恢复正常运营，但预计仍会出现延误。 东海岸的重大混乱发生在周二于纽约举行的联合国大会之前，预计数十位世界领导人将抵达纽约地区机场出席会议。 其中包括英国首相安迪·伯纳姆（Andy Burnham），他在延误开始之前成功登机，预计将准时抵达。 交通官员表示，延误是由于受损的电缆影响了航站楼雷达进近控制系统而导致的，该系统用于引导飞机起飞和降落。 新泽西州公共交通机构 NJ Transit 告诉 BBC 美国合作伙伴 CBS News，其建筑工人不小心切断了线路，并且挖掘现场的标记被错误地放置。 BBC 已联系新泽西州交通局征求意见。 达菲早些时候表示，损坏是由美国国家城际铁路服务运营商美国铁路公司(Amtrak)的工人造成的，他们正在进行建筑工作。 达菲在 X 上发帖称，这“导致了电信中断”，迫使美国联邦航空管理局 (FAA) 停飞航班。 据美国媒体报道，美铁发言人在一份声明中表示，该事件涉及新泽西州交通承包商。 拥有该电缆的电信公司 Verizon 也表示不承担任何责任。 美国联邦航空管理局局长布莱恩·贝德福德表示，被切断的电缆实际上是一个备用网络，只有在主电路出现故障后才发现错误。 根据航班跟踪网站 FlightAware 的数据，新泽西州的纽瓦克自由国际机场是为纽约市提供服务的三大机场之一，受到今天空中交通管制中断的影响最严重。 据报道，今天有 267 架出发航班延误，另有 257 架飞往纽瓦克的航班也延误。 纽约的约翰·肯尼迪国际机场和拉瓜迪亚机场以及费城国际机场也受到影响。 一名乘客道格拉斯·特尼恩 (Douglas Tewnion) 表示，他登上了从爱丁堡飞往纽约的航班，但飞机已改道飞往马萨诸塞州波士顿。 他告诉英国广播公司，在他的航班飞往纽约两小时后，他和其他乘客仍然“坐在同一架飞机上，在波士顿的停机坪上，没有任何信息”。</p><p>尽管“每个人的精神都很好”，但特尼恩表示，在漫长的飞行中还要多等两个小时，“这只是一种痛苦”。</p><p>艾恩·威尔斯的补充报道</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/ckvgyzzgvv4wo?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/342d/live/bc86a7d0-b5dc-11f1-8c16-65d8f060d73f.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">17</span> Vet prescription fees capped under rule changes</h3><p class="card-meta">市场与产业 · BBC Business · 2026-09-22 07:01</p><p class="card-summary">Vets must also tell clients if cheaper medicine is available online as part of…</p><p class="card-impact"><span class="label">影响</span> 可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 兽医的书面处方费将上限为 21 英镑，这是未来几个月法律要求诊所进行的一系列改革的一部分。 兽医还必须告诉客户是否可以在网上获得更便宜的药品，在治疗前编写价格估算，并作为规则更新的一部分发布服务价格表。 官方竞争监管机构对该行业的调查发现价格上涨速度几乎是通货膨胀率的两倍，因此实施了这些措施。 然而，批评者表示，这些措施将对独立退伍军人造成最严重的打击，并使拥有三分之二以上执业资格的六家公司受益。 自周二起，竞争与市场管理局 (CMA) 对该行业的补救措施具有法律约束力，兽医有最多 12 个月的时间来实施所有变更。 除了限制处方费外，其他变化还包括： - 兽医诊所必须公布标准服务的“全面”价格表——包括咨询、通用程序和火葬选项 - 对于预计花费 500 英镑或以上的任何治疗，必须提前提供书面估算，包括善后护理费用以及明细账单。 紧急情况是唯一的例外 - 兽医企业必须明确它们是集团的一部分还是独立企业 - 为了帮助宠物主人比较当地的做法，价格和所有权信息将通过皇家兽医学院的“寻找兽医”服务提供，该服务将与第三方比较网站共享数据。 兽医需要进行修复的时间表取决于具体的规定和团体的规模。 CMA 在此列出。, 外部 CMA 小组主席马丁·科尔曼 (Martin Coleman) 表示：“所需要的改变将有助于宠物主人了解价格。” 然而，索尔特本 (Saltburn) 一家独立兽医服务机构的老板凯特·蒂特顿 (Cate Titterton) 告诉 BBC Your Voice，这些变化将使顾客去看兽医的费用更高。 “兽医诊所仍然需要有一个库存充足的药房，所以如果我们不能在药品上赚取微薄的利润，我们将不得不在其他地方赚取一些利润。 “因此，服务、咨询、手术等服务——不幸的是，这些价格非常非常有可能上涨。” 她认为，其中有“一个明显的赢家”——更大的兽医团体和企业。 英国兽医协会主席罗布·威廉姆斯博士表示，兽医实践已经在很大程度上发挥了 CMA 的补救措施的作用，包括与投诉处理、常规程序的价格估算和处方费用相关的命令。</p><p>威廉姆斯说：“在整个调查过程中，我们一直向 CMA 明确表示，它必须确保其补救措施不会对规模较小的独立业务造成不成比例的影响，并且我们已经消除了我们所担心的问题。” 兽医手术“对动物不感兴趣” 克莱夫·迪·乔治奥 (Clive Di Giorgio) 是一位希望看到更便宜、更透明的兽医服务市场的人，他与 BBC Your Voice 取得了联系。 他说，在一位兽医告诉他，他的狗路易斯背上出现皮疹“绝对”是癌症的征兆后，他的治疗报价为数千英镑。 然而，在去了另一家兽医手术后，他说他被告知路易斯的皮疹不是癌性的。 克莱夫说，类固醇、抗生素和喷雾剂的治疗在两周内就消除了皮疹。 “当你去看兽医时，你只是感觉他们现在不再对这种动物感兴趣了，”他说。 “你感觉好像所有的兴趣都是他们基本上可以从你身上榨取多少钱。”</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cqzjz2gx18ggo?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/9cdb/live/ffc48210-ac22-11f1-9bd9-7b7da208bd5c.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">18</span> I&#x27;d rather pay thousands on a holiday: Meet the pensioners spending the kids&#x27; inheritance</h3><p class="card-meta">市场与产业 · BBC Business · 2026-09-22 07:01</p><p class="card-summary">The phenomenon sees retirees spend all their money on enjoying life to the full.</p><p class="card-impact"><span class="label">影响</span> 可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 莎拉·穆尔豪斯幸福地退休了，她正在利用她的私人养老金“随时去各地做善事”。 虽然其他每月有可观养老金收入的退休人员可能会选择为孩子积累遗产，但 64 岁的莎拉和她的丈夫杰夫却选择把钱花在最大限度地享受生活上。 “我们喜欢去苏格兰，”退休学校管理员莎拉说。 “我们去过剑桥郡，那儿很可爱。我们经常去湖区的度假小屋，我们还计划去诺福克。” 这对住在约克郡山谷的夫妇每年去度假四五次，每次花费数百英镑，因为在莎拉看来，“一生只有一次机会”。 他们最近确实出售了他们的老式 Sunbeam Alpine 跑车。 但只有这样他们才能用更现代、运动型的两座敞篷车——马自达 MX-5 来取代它。 “我已经到了要去参加朋友和熟人葬礼的年龄，我认为你只需要享受生活并尽可能地享受它，因为这是一种非常珍贵的商品，”莎拉说。 莎拉和杰夫是全球个人理财现象的一部分，这种现象被称为“滑雪”，代表着花掉孩子们的遗产。 这对资产将传给下一代的观念提出了挑战。 根据养老金提供商标准人寿 (Standard Life) 3 月份发布的一份报告，七分之一的英国各年龄段孩子的父母 (15%) 现在计划优先考虑在退休后享受自己的钱，而不是留下遗产。 金融服务公司 Northwestern Mutual 的一项外部研究显示，在美国，预计从父母那里获得遗产的人数从 2024 年的 25% 降至去年的 20%。 “狂野”期待继承 莎拉和杰夫有两个已成年的女儿。 其中一位波比 (Poppy) 告诉英国广播公司 (BBC)，她的父母外出玩耍让她感到无比高兴。 她坚决拒绝她和她的妹妹应该继承遗产的想法。 “对我来说，这太疯狂了。我从来没有想过，当我的妈妈和爸爸去世时，我会得到钱。我非常希望他们做他们想做的事。” 标准人寿退休和储蓄总监迈克·安伯里(Mike Ambery)认为，英国滑雪运动的推动因素是最终工资养老金的消失，这种养老金可以为退休人员提供终身有保证的每月养老金支付。 相反，现在更多的英国人拥有所谓的固定缴款养老金，但这些养老金可能会用完。 安伯里认为，如果你知道你的退休收入将持续到你需要的时候，那么你就更容易慷慨地捐赠遗产。 他还指出，养老金领取者希望在工作结束后简单地享受生活。</p><p>“稍微放纵一下就可以享受生活了。让我们面对现实吧，工作生活对某些人来说可能非常艰难。” 当然，并非所有退休人员都过得很好。 根据约瑟夫·朗特里基金会慈善机构的数据，在英国，16% 的养老金领取者生活在贫困之中。 新发布的数据显示，美国的这一数字为 15.4%。, 外部 但与此同时，根据外部智库财政研究所的数据，在过去三十年中，英国养老金领取者的可支配收入（不包括住房成本）的增幅超过了非养老金领取者。 “我已经花光了一切” 60 岁的凯伦·格林 (Karen Green) 说，她对孩子们非常坦诚。 “我已经非常明确地说不太可能留下遗产，因为我预计会花掉所有的钱。” 凯伦来自伯克郡，过去11年一直住在法国南部的普罗旺斯，每年度假的花费超过1万英镑。 “今年，我要去一次瑜伽静修。三月份我在摩洛哥做了一次，”她说。 “然后在 10 月到 11 月期间，我将前往越南和老挝进行一些游览。” 她称自己处于半退休状态，因为她仍然从事一些商业咨询工作（她以前全职从事的工作）来补充自己的私人养老金。 当谈到她每月有多少钱时，她说她的收入与她全职工作时的收入相同。 除了养老金和兼职收入外，她40%的资金来自出租房产。 但凯伦坚称她并不“为钱疯狂”，而是喜欢“达成协议”。 和 Sarah Moorhouse 一样，她要到 67 岁才能领取英国国家养老金。对于 2016 年 4 月之后达到国家养老金年龄的人来说，目前的标准是每年 12,547.60 英镑，但明年将会上涨。 相比之下，美国的退休人员获得称为社会保障退休福利的国家付款。 从 67 岁“完全退休年龄”开始，每年最高金额为 49,824 美元（36,993 英镑）。但是，从 62 岁开始，人们可以选择接受较低的外部付款。 俄亥俄州西北互助银行 (Northwestern Mutual) 副总裁马修·洛夫莱斯 (Matthew Loveless) 表示，退休人员需要坦诚地对待自己的成年子女，其中一些孩子可能希望继承一份他们打算依赖的遗产。 回到约克郡，莎拉正在计划她的下一个假期。 “我一生都在努力工作，我认为我应该拥有一些空闲时间并能够做一些美好的事情。”</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cje8y3w2zdpo?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/b081/live/0dfb6860-b5ee-11f1-aff1-eb6baa3fda4f.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">19</span> Paramount settles lawsuit with US states, clearing way for $110bn merger with Warner Bros</h3><p class="card-meta">市场与产业 · BBC Business · 2026-09-22 05:34</p><p class="card-summary">The deal includes an agreement to produce 30 films a year, or Paramount will be…</p><p class="card-impact"><span class="label">影响</span> 可能影响相关板块估值与资本开支预期</p><div class="meta-block"><span class="label">另见</span><ul class="secondary"><li><a href="https://www.theverge.com/entertainment/998302/paramount-warner-bros-discovery-merger-settlement" rel="noopener noreferrer">The Verge</a> — Paramount settles lawsuit blocking $110 billion Warner Bros. merger</li><li><a href="https://www.aljazeera.com/economy/2026/9/21/paramount-settles-with-us-states-in-step-towards-merger-with-warner-bros?traffic_source=rss" rel="noopener noreferrer">Al Jazeera</a> — Paramount settles with US states, union to win Warner Bros takeover</li></ul></div><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 派拉蒙 Skydance 已与美国十几个州达成和解，为其与华纳兄弟探索公司 1100 亿美元（828 亿英镑）的合并铺平了道路。 根据协议，派拉蒙每年必须制作至少 30 部电影，并确保一定比例在美国制作，否则将面临包括出售部分业务在内的处罚。 这笔交易扫清了合并的最后障碍之一，合并将重塑好莱坞，将传统工作室、主要流媒体和全国网络合并到一个保护伞下。 加州总检察长罗布·邦塔 (Rob Bonta) 宣布达成和解协议时表示，该协议“并不是对此次合并的支持”，而派蒙首席执行官则对该决议表示欢迎。 大卫·埃里森表示，现在州总检察长和美国作家协会（WGA）的担忧已经得到解决，“我们已经完全批准了这次合并，并期待将这些承诺付诸行动”。 他说：“我们的共同目标是为消费者、工人以及最重要的是对视觉叙事艺术至关重要的创意社区提供最好的服务。” WGA 表示，它仍然相信该交易“将对作家和整个行业造成损害”。 该协会表示，它被迫自己解决诉讼，因为作为一个非营利组织，如果没有政府的支持，它无法独自应对合并。 该工作室将向 WGA 健康基金支付 1750 万美元，支付法律费用，并在五年内禁止哥伦比亚广播公司新闻广播 (CBS News Broadcast) 裁员。 邦塔表示，和解协议将有助于促进美国的电影制作。 根据协议，派拉蒙每年必须发行至少 30 部电影。 邦塔表示，为了防止工作室用低预算或自动化内容完成年度配额，对“人工智能生成”的电影有严格的限制。 他补充说，官员们希望保证“真实、强劲的电影”能够促进经济活动并让人们重返工作岗位。 如果派拉蒙无法完成年度生产配额，它将被迫出售其持有的米拉麦克斯49%的股份。 邦塔表示：“资产剥离是我们针对所有三个市场的解决方案的一部分。”他认为，这笔交易将“国内产量的断崖式下跌转变为大幅增长”，从而带来更多的电影、就业机会和经济活动。 尽管埃里森此前表示，合并后的公司在可预见的未来将把总部保留在加利福尼亚州，但邦塔澄清说，这一承诺并未写入法律协议中。 “这不是交易的一部分，”邦塔说。 埃里森此前曾威胁要将工作室业务迁出加州。 为了确保剩余条款得到执行，派拉蒙同意任命一名独立监察员来监督和解协议的持续遵守情况。</p><p>加利福尼亚州与亚利桑那州、科罗拉多州和新泽西州总检察长联盟一起领导了这项法律行动。</p><p>根据协议的初步条款，派拉蒙必须确保前两年所有电影制作的 20% 在美国进行，并在接下来的三年内增加 30% 以上。</p><p>虽然合并通常会导致公司重叠和裁员，但邦塔坚持认为，它将成为“就业创造者”，让整个行业的人们重返工作岗位。</p><p>Bonta 表示，得益于这笔交易，“我们国家的电影和电视制作的经济活动将至少增加 3 亿至 15 亿美元”。</p><p>Bonta 表示：“重要的是，这是基线。这是最低限度。”他指出，如果国会通过联邦电影税收抵免，生产承诺可能会增加高达 700%。</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cm4gjr1qepr8o?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/1d5574adcd3cea81acccbd1d41c466d0bb1ac672/755_0_3781_3027/master/3781.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=d6362a97b39ae0add2599f9abe5d3fea" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">20</span> Plan for editorial oversight board at CNN and CBS News draws skepticism: ‘Utter garbage’</h3><p class="card-meta">市场与产业 · Guardian Business · 2026-09-22 04:05</p><p class="card-summary">Some network employees and media-watchers have questions and concerns about how…</p><p class="card-impact"><span class="label">影响</span> 可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>在达成和解以解决由 12 个州组成的联盟提起的阻止派拉蒙以 1100 亿美元收购华纳兄弟探索公司的诉讼后，主要媒体人物和内部人士对建立一个编辑监督委员会以保护 CNN 独立性的计划表示不屑，用一名工作人员的话说，这是“彻头彻尾的垃圾”。 加州总检察长罗布·邦塔 (Rob Bonta) 在宣布和解协议的新闻发布会上表示，派拉蒙“必须成立新闻编辑独立委员会，支持哥伦比亚广播公司新闻 (CBS News) 和 CNN 继续保持编辑独立性，以确保哥伦比亚广播公司新闻 (CBS News) 和 CNN 的独立、客观、基于事实的报道”。 在正式结束此案的法律动议中，两家公司表示，新闻编辑独立委员会将“为合并后实体的新闻频道制定指导编辑和新闻原则”。 根据和解条款，董事会必须在交易完成后 180 天内成立。 该团队将由五名现任或前任记者组成，每名记者至少有 10 年的工作经验，由公司董事会任命，任期三年。 该委员会的任务是“解决哥伦比亚广播公司新闻员工、美国有线电视新闻网员工和合并后实体管理层之间涉嫌违反新闻编辑原则的任何争议”； “解决哥伦比亚广播公司新闻员工、CNN 员工和合并后实体管理层之间有关涉嫌报道偏见或未能达到商定的报道公平标准的任何争议”； 以及“建立并监督遵守新闻行业最佳实践所定义的新闻道德和编辑独立性，包括来自合并实体的所有权和股东的独立性”。 此次大型合并的批评者对 CNN 被埃里森家族接管表示担忧，埃里森家族与特朗普政府有着有据可查的联系。 据报道，大卫·埃里森 (David Ellison) 和他的父亲拉里·埃里森 (Larry Ellison) 已与白宫讨论了他们可能在 CNN 做出的潜在改变，这最终可能会对特朗普政府产生更积极的报道，这一前景令有线新闻网络的记者们感到担忧。 周一下午，媒体行业内部（包括参与交易的公司的现任和前任员工）已经对编辑监督委员会是否会真正保护 CNN 的编辑诚信表示怀疑。 美国有线电视新闻网 (CNN) 前主播吉姆·阿科斯塔 (Jim Acosta) 表示：“这是行不通的。” “他们会开始发射主播和某些人来发送信息，其余的人要么排队要么离开。这是一个巨大的错误。” 哥伦比亚广播公司新闻频道的一位关心此事的工作人员表示，这“听起来完全是垃圾”。</p><p>“我很高兴听到更多有关此事的信息，但董事会的日常运作方式很难让我理解，”一位未获授权发表评论的 CNN 制片人表示。 倡导组织“自由新闻”的联合首席执行官杰西卡·J·冈萨雷斯对监督委员会的有效性表示怀疑。 她在周一的一份声明中表示：“正如我们从失败且受到广泛批评的 Facebook 监督委员会了解到的那样，一个虚假的两党监督委员会无法拯救 CNN。” “我们从埃里森家族摧毁哥伦比亚广播公司的行动中获得了所需的所有证据，证明他们应唐纳德·特朗普的要求扭曲了新闻业。” 美国有线电视新闻网 (CNN) 华盛顿分社前社长、现于乔治华盛顿大学教授新闻学的弗兰克·塞斯诺 (Frank Sesno) 表示，监督委员会的有效性将完全取决于其运作方式。 “我完全欢迎由专业记者组成的咨询小组，他们可以提供见解、反馈、批评和平衡，”他在一封电子邮件中写道。 “它需要由致力于专业事实新闻报道并了解当前媒体环境的压力和复杂性的人员组成。” 康涅狄格州总检察长威廉·唐（William Tong）是诉讼联盟的成员，他在一份声明中表示，该州“希望并要求全面剥离 CNN 和 CBS 新闻”。 “我们希望拯救道德和独立的新闻业和新闻，”他补充道。 “我们积极争取这种补救措施。我对我们无法做得更多感到非常失望。” 不过，他表示，该委员会“将切实帮助保护两家新闻机构的编辑独立性，并将根据同意令强制执行”。 2007 年，鲁珀特·默多克 (Rupert Murdoch) 收购《华尔街日报》母公司道琼斯 (Dow Jones) 时，由于担心保守派媒体大亨是否会干预新闻版面，因此成立了一个类似的董事会（由五名据称独立的人士组成）。 据当时的新闻报道称，此举“旨在防止默多克干预《华尔街日报》的新闻编辑室并保持其编辑独立性”，尽管有人对一些董事会成员的独立性提出了一些担忧。 去年夏天，Skydance Media 同意任命一名独立监察员，以确保联邦通信委员会批准与哥伦比亚广播公司当时的母公司派拉蒙全球公司合并。</p><p>大卫·埃里森坚称他将保持 CNN 的编辑独立性，并声称州总检察长提起的诉讼主要是为了阻止他控制该网络。 “我认为这场斗争实际上并不是为了市场份额，”他上个月在《纽约时报》的一篇客座文章中写道。 “如果是的话，它就不会得到包括美国、中国以及欧盟在内的 65 个国家的监管机构的审查和批准。我相信，在简报和新闻稿的背后隐藏着一个更明显的担忧：新闻。问题是我作为华纳旗下 CNN 的管家是否值得信任。 “像 CNN 和 CBS News 这样的伟大新闻机构在这里直接讲述这一点，”他补充道。 “这需要新闻编辑室反映整个世界，而不是世界的某一面。 并且它需要独立性。 我们的记者将继续对事实和他们所服务的所有人负责，而不是对任何政党或事业负责。” 尽管如此，埃里森对独立的承诺并没有平息美国有线电视新闻网 (CNN) 和哥伦比亚广播公司新闻 (CBS News) 记者的担忧，尤其是后者面临着在主编巴里·韦斯 (Bari Weiss) 领导下持有党派倾向的指控。 在周一下午关于和解的声明中，埃里森没有提及编辑监督委员会或任何确保 CNN 编辑独立性的保护措施。 但为了回应对党派之争的担忧，和解协议指出“不得超过两 (2) 名编辑独立委员会成员隶属于同一政党”。</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/media/2026/sep/21/cnn-cbs-news-editorial-board-skepticsm" rel="noopener noreferrer">查看原文</a></p></details></div></article></section><section class="section" id="sec-世界"><h2>世界与社会</h2><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/12d3b8a696e125da3fbcda3ef54642d86479a3ea/506_0_2932_2345/master/2932.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=575288f267fbd797bd8c6d9ab921fe0f" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">21</span> World leaders address climate crisis before UN meet amid record-breaking El Niño</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-22 05:26<span class="chip chip-accent">重点</span></p><p class="card-summary">Prime ministers of Australia and Iceland discuss effects on their countries eve…</p><p class="card-impact"><span class="label">影响</span> 围绕inflation/war，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>世界政治领导人将齐聚纽约参加联合国大会，其中一些领导人周一在该市一年一度的气候周开始时发表讲话，将气候危机提上议程。 今年的气候周与联合国大会同期举行，此前欧洲和美国等世界大部分地区经历了数月的极端高温、非洲发生野火、亚洲发生山洪以及创纪录的厄尔尼诺现象。 澳大利亚总理安东尼·阿尔巴内塞周一发表了开幕主旨演讲，冰岛总理克里斯特伦·弗罗斯塔多蒂尔则发表了闭幕辞。 两人都谈到了气候危机对各自国家的影响、他们为摆脱化石燃料而采取的措施，以及他们对其他国家也这样做的支持。 “全球天气一直变化无常。但科学明确地告诉我们，随着世界变暖，这些事件将变得更加频繁和激烈。这些科学预测已经成为现实，”阿尔巴尼斯说，并强调了该国为支持其他太平洋国家应对气候危机所做的努力。 弗罗斯塔多蒂尔表示，全球石油危机促使北欧国家转向地热能。 20 世纪 70 年代初，大多数冰岛家庭都燃烧进口石油取暖。 “家庭预算受到打击，一个远离每个市场、每个供应商的小岛国经历了惨痛的教训，才学会依赖那些你无法控制的东西，”她说。 “所以我们做出了选择。我们没有安然度过波动，而是转向了我们脚下的东西。” 在短短几年内，雷克雅未克建成了大型地热区域供暖系统。 冰岛的其他城镇也紧随其后，其中许多城镇在十年内发生了变化。 “这需要坚定不移的政治支持。财政支持机制可以帮助普通家庭实现转变，而无需付出毁灭性的前期成本，”弗罗斯塔多蒂尔说。 “而且，也许在当今世界上最罕见的是跨党派共识比几届政府都更长久。” 现在，冰岛几乎每个家庭都使用可再生能源供暖，其中 90% 以上是地热能。 然而，在气候周开幕当天，几乎没有提及美国政府最近为阻止气候行动所做的努力，例如特朗普政府支付近40亿美元纳税人的钱来停止海上风电项目，以及削弱汽车和燃煤发电厂排放标准的措施。 发言者没有谈论政治停滞和气候行动倒退，而是关注安全和经济原因，这些原因使得转型的必要性不容忽视。</p><p>联合国负责气候行动的助理秘书长塞尔温·哈特表示，伊朗战争进一步证明了这一点。 他对《卫报》表示：“这场危机虽然可怕，但确实为国家、企业和人民敲响了警钟，让他们真正摆脱对化石燃料的依赖，尽快加速转型。” 英国退役高级军官理查德·努吉中将表示，军队需要能够在他们所处的环境中作战，而这些环境正在发生变化。 他说：“一个很好的例子是，海湾的海水变得非常热，预计会变得非常热，以至于水无法冷却我们船只的发动机。” 努吉表示，军队应该关注气候适应技术，不仅因为它们的排放量较低，而且因为它们具有战略优势的潜力。 “我不相信有可再生能源可以驱动 70 吨的坦克。事实并非如此，”他说。 “但是我们的小型武装车辆，为什么不采用混合动力呢？这对我们的隐身效果更好，对机组人员也更好，因为噪音更小，振动更小。” 英国外交大臣埃德·米利班德也谈到了鉴于俄罗斯入侵乌克兰和美国对伊朗战争而继续依赖化石燃料的风险，并将其固有的不稳定描述为“化石燃料过山车”。 米利班德说：“气候和自然必须纳入国家安全系统、威胁评估和应急计划中。” “各国需要汇集信息，因为从一个国家开始的冲击可能会迅速通过供应链、金融市场和移民模式传播到其他国家。” 与此同时，私营部门正在利用向可再生能源的过渡来保护其盈利。 最大的宜家零售商 Ingka Group 的首席可持续发展官 Karen Pflug 表示，其商店的能源效率使该公司每年节省数百万美元。 Pflug 表示，该公司刚刚宣布在南卡罗来纳州建立一个新的太阳能园区，该园区将拥有 178,000 块太阳能电池板。 “因此，无论从政治角度来看发生了什么，我认为这实际上具有良好的商业意义，”她说。 “经济上的必要性是存在的。” 领导人还强调需要尽早过渡。 冰岛的弗罗斯塔多蒂尔表示：“对于领导人和在座的所有人来说，唯一真正的问题是如何才能比尚未袭击我们的干扰更快地继续前进。我们在北大西洋的一个小岛上的答案是：在必须开始之前就开始。在危机考验之前建立韧性。”</p><p>自 2009 年以来，气候周每年在纽约举行，组织者表示，今年的气候周将是迄今为止规模最大的一次，将有超过 10 万名来自政界、商界和激进主义人士的与会者。 但他们也承认，“气候沉默”现象有所增加，商界领袖和政界人士在对席卷全球的战争、通货膨胀和经济冲突的持续关注中回避谈论气候危机。 气候周组织者、气候组织首席执行官海伦·克拉克森表示：“今年夏天，我们感受到了前所未有的气候变化，发生了一些大规模灾难，领导人也想在多大程度上谈论这个问题。” “毫无疑问，人们关心生活成本，但我们在民意调查中看到，人们也关心气候，他们并没有忘记正在发生的事情。我们今天在演讲中经常听到的一句话是，我们需要勇气与人们建立联系并加入其中。”</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/environment/2026/sep/21/world-leaders-climate-crisis-el-nino" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">22</span> Putin’s party wins supermajority in Russia’s parliamentary election</h3><p class="card-meta">世界与社会 · Al Jazeera · 2026-09-22 04:17<span class="chip chip-accent">重点</span></p><p class="card-summary">Victory of United Russia party strengthens Putin&#x27;s hand even as the war with Uk…</p><p class="card-impact"><span class="label">影响</span> 围绕election/war，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>几乎完全的官方结果显示，弗拉基米尔·普京总统的统一俄罗斯党在精心策划的议会民意调查中赢得了创纪录的绝对多数，几乎排除了任何真正的反对派。 根据周日结束的为期三天的投票结果，周一宣布的结果显示，主导俄罗斯政坛 25 年的统一俄罗斯党已获得超过 58% 的选票，有望赢得下议院国家杜马超过四分之三的席位。 推荐故事 4 项清单 - 俄罗斯称乌克兰无人机袭击莫斯科至少三人死亡，共 4 人名单之一 - 第 2 个（共 4 个）是导弹吗？ 它是无人机吗？ 乌克兰用的鹈鹕号是什么？ - 4个中的第3个执政党在俄罗斯战时议会投票中主导早期结果 - 4 项俄罗斯选举结果中的 4 项显示普京的政党获胜：我们所知道的 这是自2022年俄罗斯军队入侵乌克兰以来的首次议会投票，也是当年晚些时候被莫斯科占领和非法吞并的四个乌克兰地区的居民首次参与的投票。 半岛电视台记者德米特里·梅德韦登科在莫斯科报道称，这一结果以及近 60% 的高投票率“可能会被莫斯科视为壮胆，因为公众支持其正在做的事情，特别是支持其在乌克兰为继续战争所做的事情”。 中央选举委员会主席埃拉·帕姆菲洛娃表示，俄罗斯唯一注册的反战政党“亚布洛科”没有在国家层面赢得任何席位。 俄罗斯最高法院上个月将其从选票中删除，并且只有几十名候选人参加单席位竞选。 亚布洛科确实进入了俄罗斯西部诺夫哥罗德地区的地方议会。 它在社交媒体上表示，它收到了大约 12,000 张选票——略高于百分之六的选票，足以进入地区立法机构。 亚布洛科和共产党批评了政府政策的某些方面，但小心翼翼地避免对普京提出任何批评，并表示许多观察员被拒绝进入投票站。 共产党以 13.8% 的选票进入议会，获得 40 个杜马席位。 民族主义的自民党赢得25个席位，新民党赢得20个席位。 俄罗斯没有邀请欧洲安全与合作组织（欧安组织）的观察员，外交部指责该组织对俄罗斯的批评采取“双重标准”。 欧安组织议会主席佩雷·琼·庞斯表示，排除观察员的决定违反了俄罗斯作为成员国的承诺。 “没有人感到惊讶” 许多俄罗斯人对民意调查结果似乎并不感到惊讶。 “早上，我看到统一俄罗斯队获胜。这可能没有人感到惊讶，”莫斯科居民塔蒂亚娜说。</p><p>当被问及她想改变什么时，她说：“嗯，我想每个人都知道最尖锐的事情——乌克兰冲突。我希望看到它早点结束，如果可能的话，用和平的方式结束”。 战争的继续存在着巩固政策的风险，这些政策对俄罗斯普通民众的影响越来越大，而议会的绝对多数可能很难改变这种动态。 卡内基俄罗斯欧亚中心的塔季扬娜·斯塔诺瓦亚（Tatyana Stanovaya）在网上评论中表示：“普京当然会将统一俄罗斯党的结果解读为（公众）对战争支持的确认，尽管事实并非如此：结束战争的总体需求正在增长。” “主要问题是：现在怎么办？人们对动员、新的镇压、更严厉的措施和升级感到非常担忧，”她写道。 西方批评 欧盟最高外交官卡亚·卡拉斯驳斥了俄罗斯“所谓”的选举。 “克里姆林宫压制异见，禁止唯一注册的反对乌克兰战争的政党，并将国际选举监督人员拒之门外。俄罗斯仅存民主的外表，”卡拉斯说。 在一份联合声明中，澳大利亚、英国和加拿大等五个国家谴责俄罗斯在被占领的乌克兰地区举行的“虚假”议会选举，称其为“更广泛的占领体系的一部分”。</p></div><p class="fulltext-src"><a href="https://www.aljazeera.com/news/2026/9/21/pro-putin-party-wins-supermajority-amid-ramped-up-ukrainian-attacks?traffic_source=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/8b34809ab945c631baf069850af883b4c987dc05/433_0_3753_3003/master/3753.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=d70cf9c2eec8846b0c0082eecf7e56ea" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">23</span> Halt super-intelligent AI with non-proliferation treaty, Ed Davey to say</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-22 05:30<span class="chip chip-accent">重点</span></p><p class="card-summary">At Lib Dems’ conference in Brighton, leader will accuse Andy Burnham of relying…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>埃德·戴维 (Ed Davey) 在自由民主党会议上发表主题演讲时，将呼吁制定一项全球核式核不扩散条约，以阻止超级智能人工智能的发展，并指责安迪·伯纳姆 (Andy Burnham) 依赖唐纳德·特朗普 (Donald Trump) 和“科技兄弟”来解决问题。 当他在布莱顿集会的最后一天向信徒发表讲话时，该党领导人将呼吁全球暂停超级智能人工智能，并将其与可能导致“毁灭我们所有人”的技术的核军备竞赛进行比较。 在人工智能研究人员多次警告人工智能可能在十年内消灭人类之后，预计戴维将在周二的演讲中制定建立一个新的国际人工智能安全机构的计划——以国际原子能机构（IAEA）为蓝本，总部设在英国。 “我们并没有把原子弹留给少数亿万富翁来监督自己，”他会说。 预计戴维将呼吁发起一场新的全球运动，共同努力保护人类免受超级智能人工智能的风险，他表示，国际原子能机构是由“共同努力控制一项可能摧毁我们所有人的技术”的各国建立的，但他警告说，人工智能的未来正在由“加州和北京的极少数最富有和最有权势的人”决定，没有任何减缓发展的护栏。 “作为自由主义者，我们知道像核武器或气候变化这样事关生死存亡的事情不能留在少数有权势的人手中。人工智能也必须如此。我们不能把它交给马克·扎克伯格、山姆·奥尔特曼或埃隆·马斯克来拯救我们，”戴维会说。 周一，在特朗普周二向联合国大会发表讲话之前，总理宣布与美国建立新的人工智能合作伙伴关系。 但戴维会表示，该计划“远不足以应对这一威胁的规模”，并且“只会有让我们更加依赖科技兄弟口袋里的特朗普政府的风险”。 此前，自由民主党内政事务发言人马克斯·威尔金森(Max Wilkinson)周一宣布，该党提议征收巨额科技税，并承诺成立一个新的在线犯罪机构，重点打击儿童性虐待材料、贩运毒品和武器以及深度伪造人工智能生成的色情图像等犯罪行为。 威尔金森表示，自由民主党将适当规范 Meta 智能眼镜的使用，他将其称为“变态护目镜”，并在会议上表示，这款眼镜“不仅仅是一种提供一点乐趣的良性科技”，而且人们——尤其是女性——在未经同意或警告的情况下被记录。 他说：“这正在成为新常态，因为这个政府不会对抗大型科技来保护我们的公民自由。”</p><p>周日，戴维提出了一项提议，即在三个月的固定期限内将燃油税每升降低 10 便士，并将公交车票价上限从 3 英镑降低至 1 英镑，以及其他与交通相关的生活成本政策。 周一，戴维在一系列采访中为自己辩护，抱怨他的政党缺乏远见，称试图与英国改革党和绿党等引人注目的想法竞争是毫无意义的。 “目前环境非常嘈杂，”他告诉英国广播公司。 “但让我告诉你，民粹主义者发出的一些噪音是分裂我们国家的事情，这些事情是令人讨厌的，或者是完全疯狂的。我不想这样做。我想告诉人们，我们确实经过深思熟虑制定了减税政策。” 当被问及在承诺三个月内削减 10 便士燃油税后是否会提出进一步减税时，戴维回答说：“当然。” 他说，由于自由民主党提出寻求进入欧盟单一市场，这些资金将通过更高的经济增长来提供资金。 这位自由民主党领导人确实赞扬了伯纳姆想要改革成人社会关怀，但他告诉天空新闻，对于伯纳姆是否会担任总理，“还没有定论”。 但戴维对伯纳姆所做的一些事情持积极态度。 “我认为其他政党开始谈论自由民主党的优先事项是件好事，”他说。 “我们主导了关于社会关怀和护理人员的辩论，因为这对我们的医疗服务非常重要。我们主导了关于政治变革的辩论，因为我们需要改变我们的政治制度，而伯纳姆先生似乎愿意这样做。”</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/politics/2026/sep/21/halt-super-intelligent-ai-ed-davey-lib-dem-conference" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">24</span> Trump approval rating hits career low of 32% amid Iran war, high costs</h3><p class="card-meta">世界与社会 · Al Jazeera · 2026-09-22 03:10<span class="chip chip-accent">重点</span></p><p class="card-summary">Republican support for Trump dips to 73 percent, down from 82 percent, as war a…</p><p class="card-impact"><span class="label">影响</span> 围绕inflation/war，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>路透社/益普索的一项新民意调查发现，美国总统唐纳德·特朗普的支持率已降至 32%，为他政治生涯中的最低水平，因为他的共和党同僚对他在不受欢迎的伊朗战争中处理生活成本的方式感到不满。 这项为期四天的民意调查于周日结束，显示 73% 的共和党人认可特朗普的工作表现，低于一周前路透社/益普索民意调查的 82%。 当时他的总体支持率为 35%。 特朗普于 2025 年 1 月重返白宫，承诺抑制通货膨胀和结束对外战争。 在他首次宣誓就职后数小时内进行的路透社/益普索民意调查显示，他的支持率高达 47%。 在新的民意调查中，只有 17% 的受访者认可他对生活成本这一首要问题的处理方式。 美国人表示，这将决定他们在 11 月 3 日中期选举中如何投票，届时特朗普的共和党人将捍卫国会的微弱多数席位。 自特朗普2月份对伊朗发动战争以来，共和党人的不满情绪不断加剧，导致汽油和柴油价格大幅上涨。 现在，不赞成特朗普对生活成本处理方式的共和党人首次超过了对他竖起大拇指的人数——51%对44%。 特朗普周三表示，美国“希望”与伊朗的战争“即将结束”，尽管也门的战斗仍在继续，但美国重新启动外交的前景仍然存在。 然而，德黑兰尚未证实与华盛顿的直接谈判已经恢复。 路透社/益普索 (Reuters/Ipsos) 民意调查在网上进行，收集了全国 1,277 名美国成年人的回应。 它的误差幅度为三个百分点。</p></div><p class="fulltext-src"><a href="https://www.aljazeera.com/news/2026/9/21/trumps-approval-rating-hits-record-low-amid-iran-war-economy-fallout?traffic_source=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/1b64d780d138f983eb00807f780354fab89e93b6/342_0_2315_1853/master/2315.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=7b0a775ad44bfdca090dfca52678c613" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">25</span> Appeals court rules in favor of Trump-backed Missouri congressional maps</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-22 06:44<span class="chip chip-accent">重点</span></p><p class="card-summary">Supreme court, which has twice blocked maps from being used in November, likely…</p><p class="card-impact"><span class="label">影响</span> 围绕election，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>围绕密苏里州国会地图的长期法律斗争周一再次出现转折，联邦上诉小组做出了有利于唐纳德·特朗普支持的新选区的裁决，尽管美国最高法院已阻止这些选区用于 11 月的选举。 美国第八巡回上诉法院的三名法官组成的小组表示，密苏里州应该在 11 月的选举中使用共和党划定的新美国众议院选区，就像该州在 8 月的初选中所做的那样。 上诉法官表示，在大选中恢复原来的选区将违反美国宪法。 不过，该裁决不会立即产生影响。 这是因为联邦上诉小组将其命令的生效时间推迟了一周，以便有时间上诉。 美国最高法院已经两次站在特朗普支持的地图一边，并阻止执行有利于该地图的下级法院命令，等待高等法院的潜在上诉和最终裁决。 根据密苏里州最高法院和美国最高法院先前的决定，密苏里州目前定于 11 月在 2024 年和 2022 年使用的相同国会选区举行选举。 地方选举官员已经向使用这些选区的海外公民和军人选民发送了缺席选票。 州法律要求在周二之前向所有其他选民提供缺席选票。</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/us-news/2026/sep/21/missouri-congressional-map-trump-appeals-court" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/6c7796db29848443195be6b429eb1ed4d6b778e9/604_0_6042_4836/master/6042.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=1cc2e8beba5737ebd15d2147ca32707f" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">26</span> Young people’s Pip claims for ADHD and autism ‘rising fastest in affluent areas’</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-22 07:01<span class="chip chip-accent">重点</span></p><p class="card-summary">Experts say trend across England probably reflects swifter access to diagnoses…</p><p class="card-impact"><span class="label">影响</span> 围绕research，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>最新研究显示，自疫情大流行以来，英格兰一些最富裕的地区因多动症和自闭症而申请残疾福利的年轻人比例增幅最大。 在贫困率较高、教育成果较低和就业不稳定的贫困地区，因这些健康状况而申请的个人独立付款 (Pip) 福利的比例通常要高得多。 然而，多动症和自闭症相关的 Pip 索赔增长最快的是该国一些最繁荣的地区，如沃金厄姆、沃里克以及汉普郡和萨里的部分地区。 研究人员表示，这一趋势可能反映出在较富裕的地区，多动症和自闭症诊断的获取速度更快，这在一定程度上凸显了富裕家庭有能力跳过漫长的国民医疗服务体系(NHS)等候名单，并私下支付临床诊断费用。 他们表示，富裕地区和贫困地区之间的基点索赔相对差距正在缩小，萨里郡兰尼米德等富裕地区的增长率超过了布莱克浦和特伦特河畔斯托克等地区。 研究还发现，白人中患有多动症和自闭症的 Pip 索赔率高于其他族裔群体。 这反映在伦敦纽汉姆和布伦特以及莱斯特等种族多元化地区的初请失业金人数低于预期。 增长最快的地区之一是绿树成荫的萨里希思（自 2019 年以来，用于治疗自闭症和多动症的蛤蜊增加了 630%），而相比之下，相对贫困的曼斯菲尔德和大雅茅斯城镇分别增加了 30% 和 50%。 研究人员表示，这种转变是违反直觉的，并且是多动症和自闭症所独有的。 没有证据表明学习障碍、抑郁、焦虑或身体状况有类似的趋势。 全科医生的记录显示，在相对富裕的地区，新诊断多动症的比例较高。 进行这项研究的纳菲尔德信托基金会的高级政策分析师莎莉·盖恩斯伯里表示，研究结果可能反映出“在获得私人和国民医疗服务体系诊断服务方面存在着巨大的不平等”，这意味着“拥有更好资源和更多支持的人往往能够更快地排在队列前面”。 盖恩斯伯里说，这也可能反映出更有特权的个人有能力应对众所周知的困难和不可预测的点子索赔流程。 获得临床诊断可能会增加 Pip 索赔成功的机会。 Pip 旨在帮助索赔人支付因残疾而产生的额外费用，例如能源、交通和食品。 它不经过经济情况调查，也不与就业状况挂钩，而是支付给那些因状况损害其执行日常任务能力的个人。</p><p>今年 4 月，约有 205,000 名 16 至 24 岁的青少年因 ADHD 或自闭症相关残疾而接受了 Pip，这一数字自 2019 年以来增加了三倍多，2025-26 年的费用为 13.6 亿英镑。 该群体的平均 Pip 索赔额为每年 8,800 英镑。 领取 Pip 和其他残疾福利的年轻人数量急剧增加，特别是自疫情以来，一直是有关工作年龄残疾福利支出可持续性的政治辩论的中心，预计该支出将从 2019 年的 140 亿英镑增至 2030 年的 340 亿英镑。 这个问题已经成为一个文化战争话题。 右翼媒体和政界人士质疑皮普声称的有效性，他们称这是夸大心理健康症状的结果，并涉嫌对神经分歧疾病的过度诊断。 纳菲尔德信托基金的研究是在政府委托一份关于心理健康、自闭症和多动症诊断的报告之前进行的。 预计将推荐一种“基于需求”的系统，在该系统中，捉襟见肘的 NHS 服务针对的是受 ADHD 影响最严重的患者，例如那些有自残风险或无法工作的患者。 由伦敦大学学院临床心理学家和精神分析学家 Peter Fonagy 教授领导的今年早些时候发表的中期审查得出的结论是，该系统迫使儿童和成人获得正式诊断才能获得支持。</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/society/2026/sep/22/england-affluent-areas-young-people-adhd-autism-pip-claims" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/6e9995103c6b85d5b6aec97ba1732151e2f35e26/0_0_5278_4224/master/5278.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=d256f0e9b263ac8630a3b804a051729b" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">27</span> Cut NHS red tape and boost productivity to prevent 20,000 early deaths a year in England, report urges</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-22 07:01<span class="chip chip-accent">重点</span></p><p class="card-summary">Changes could save £33bn and result in average of four extra years of good heal…</p><p class="card-impact"><span class="label">影响</span> 围绕research，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>一份报告称，通过减少繁文缛节和提高生产力，英国 NHS 可以避免 2 万人死亡，每年节省 330 亿英镑。 健康基金会的研究发现，数十年来，由于过度监管、短期规划和实现重大变革的能力不足，医疗服务一直受到阻碍。 但研究发现，通过利用新技术、赋予员工权力和增加资本投资，重新构建全球最大的单一医疗保健系统 NHS，可以挽救生命和金钱。 报告称，“在 NHS 现有的资金范围内，改善结果的空间很大”，这可能会为人们带来平均长达四年的良好健康状况。 报告补充说，就如何预防死亡而言，重点是尽早诊断癌症并更快地发现患有高血压或糖尿病等疾病的人将是关键。 该报告呼吁进行一系列变革，例如让 NHS 摆脱不必要的监管、报告和合规任务，以及启动“测试和学习”方法来扩大可以提高生产力的措施，例如人工智能的使用。 报告称：“我们的分析表明，如果英格兰的 NHS 取得的结果更接近表现最佳的同类卫生系统，并且每年不增加支出，那么每年可能会减少 18,500 至 20,600 人因可治疗原因死亡的人数，并且人们平均健康状况会延长 2.5 至 4.5 年。” 提高 NHS 生产力“有时……被视为在一个已经承受巨大压力的系统中劝告勤奋工作的员工更加努力地工作”，但这种观点必须受到挑战，它补充道。 “从本质上讲，生产力意味着利用可用资源实现更好的健康成果。” 影响生产力的最大问题包括“持续流失”、目标过多以及对健康结果关注不够。 研究人员还从工作人员那里了解到，糟糕的 IT 技术如何浪费了临床时间，有限的财产和设备如何限制了医疗保健，以及行政支持的差距如何将额外的工作转移给临床医生。 报告称，虽然人工智能提供了机会，但“NHS 一直在努力利用潜力”。 报告作者、健康基金会高级经济顾问安妮塔·查尔斯沃思 (Anita Charlesworth) 表示：“这对于 NHS 来说至关重要，它不能简单地继续做更多同样的事情。 “问题不在于缺乏忠诚和有才华的人，也不在于缺乏想法；而是在于。” 问题在于，NHS 的设立并不是为了实现持续的生产力增长。</p><p>“我们的研究指出，对运营条件进行根本性的重新设计——不是又一次破坏性的重组，而是重新调整，使提高生产力成为 NHS 在未来十年及更长时间内的明确重点。” 代表并支持英格兰、威尔士和北爱尔兰医疗保健系统的 NHS 联盟首席执行官 Ciarán Devane 爵士表示，他同意可以采取更多措施来进一步提高生产力，但仍存在需要解决的“巨大障碍”。 “缺乏资本投资一直是国民医疗服务体系生产力的长期拖累。必须采取更多行动来扭转多年来忽视的局面……我们还同意，鼓励地方自治和创新的更加精简、支持性的监管体系对于未来的进步至关重要。”</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/politics/2026/sep/22/nhs-health-england-wales-red-tape" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://npr.brightspotcdn.com/dims3/default/strip/false/crop/1024x675+0+0/resize/1024x675!/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F33%2Ff9%2Fa1ba379c412caa70582f71d4c63f%2Fgettyimages-2239675235.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">28</span> Aviation regulators turn to AI to help manage the nation&#x27;s airspace</h3><p class="card-meta">世界与社会 · NPR News · 2026-09-22 01:37</p><p class="card-summary">The Federal Aviation Administration launched an ambitious $875-million-dollar p…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>航空监管机构求助于人工智能来帮助管理国家空域 华盛顿——负责空中交通管制的联邦机构正在求助于人工智能来帮助管理国家空域。 美国联邦航空管理局周一正式启动了耗资 8.75 亿美元的雄心勃勃的软件检修计划，并宣布将在服务于华盛顿特区的三个主要机场开始实施。 新系统被称为空域、航线和轨迹战略管理，简称 SMART。 交通部长肖恩·达菲 (Sean Duffy) 在一份声明中表示：“通过从根本上重塑我们管理空域的方式并防患于未然，SMART 将减少那些令人沮丧的延误、减轻空中交通管制员的压力并降低旅行价格。” 然而，期待已久的部署因设备故障而抢了风头，设备故障导致东海岸主要机场的空中交通混乱。 美国联邦航空局表示，问题始于其位于费城的空中交通管制设施的电路故障，该设施还负责处理纽瓦克自由国际机场的交通。 达菲在社交媒体上发帖称，航空官员试图切换到备用线路，但发现这条线路被新泽西州的美铁施工人员意外切断。 光纤线路被切断导致电信中断，并迫使美国联邦航空局暂停东北部的航班，包括纽约市的约翰·肯尼迪机场和拉瓜迪亚机场。 美国联邦航空管理局局长布莱恩·贝德福德告诉记者，设备故障凸显了更换过时基础设施的必要性。 新软件是国家空中交通管制系统现代化计划耗资 125 亿美元的一部分。 监管机构和航空公司希望人工智能增强工具能够提高飞行效率，但批评人士警告称，它无法解决空中交通管制系统的更大问题。 美国联邦航空局和交通部领导人强调，这项新技术并不是要取代人类空中交通管制员。 他们将其描述为一种工具，旨在通过在空中拥堵和冲突发生之前减少空中交通拥堵和冲突，从而使管制员的工作变得更加轻松。 美国联邦航空局局长布莱恩·贝德福德在今年早些时候的参议院听证会上表示：“我们今天管理交通的方式很混乱，我们可以做得更好。” “我们需要由美国联邦航空局来管理这一点，而不是依赖商业航空公司简单地按照他们想要的方式安排航班。” 美国联邦航空局领导人表示，SMART 系统将考虑所有计划的航空公司航班以及天气、风和其他变量，并调整这些航班时刻表以减少拥堵，从而帮助优化国家空域。</p><p>美国联邦航空局聘请了一家名为“Air Space Intelligence”的相对较小的公司来构建该系统。 该公司此前曾为阿拉斯加航空和其他航空公司的调度员开发过人工智能增强软件，但该项目提出了一次规模更大、知名度更高的测试。 怀疑论者质疑 SMART 系统是否会成为美国联邦航空局 (FAA) 领导人所承诺的游戏规则改变者。 “它不会取代人类。它将成为工具箱中的另一个工具，”前空中交通管制员戴夫·赖利 (Dave Riley) 说，他在 FAA 工作了 20 多年，于 2020 年退休。 “但是，当然，当你称其为人工智能时，它会引起很多关注。” 莱利淡化了对人工智能工具失控的担忧，因为人类空中交通管制员仍将负责保持飞机安全分离。 “对人工智能在未来 10 年杀死我们所有人的恐惧，我认为这个平台不会是这样的，”他说。 但莱利怀疑该工具能否解决空中交通管制系统中更大的问题，尤其是人员短缺问题。 美国联邦航空局仍有数千名经过认证的空中交通管制员人员不足，迫使许多管制员强制加班和安排紧张的工作。 代表管制员的工会美国国家空中交通管制员协会与新系统保持了距离。 该工会在一份声明中表示：“NATCA 尚未参与 SMART 的设计、测试或实施，因此目前无法谈论其对空中交通管制人员的影响。” 代表华盛顿主要航空公司的贸易协会美国航空协会赞扬美国联邦航空局推动国家飞行管理工具现代化的努力。 该组织在一份声明中表示：“它在加强安全、增加容量和提高效率方面的潜力将对美国游客产生直接的积极影响。” “我们正处于初始阶段，但这是美国联邦航空局几十年来采取的最令人兴奋和大胆的举措之一。”</p></div><p class="fulltext-src"><a href="https://www.npr.org/2026/09/21/nx-s1-5976816/faa-ai-manage-airspace" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/86ec1271f4feeaa83e696c9ba648c6b304809281/513_0_3484_2788/master/3484.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=6d7d5358e495526170016893def9f761" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">29</span> Putin consolidates grip on Russia as 49 Ukraine war veterans elected to parliament</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-21 21:40</p><p class="card-summary">United Russia party’s record victory in tightly controlled vote likely to be us…</p><p class="card-impact"><span class="label">影响</span> 围绕election/war，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>执政的统一俄罗斯党在广受批评的选举中取得压倒性胜利后，官员们表示，俄罗斯新议会将包括 49 名曾参加过乌克兰战争的代表。 初步数据显示，亲克里姆林宫的政党在该国杜马下议院 450 个席位中赢得了创纪录的 355 个席位。 这一结果进一步巩固了弗拉基米尔·普京(Vladimir Putin)对权力的控制，并使统一俄罗斯党获得了绝对多数席位，超过了此前2016年创纪录的343个席位。 这是自普京 2022 年全面入侵以来举行的首次民意调查。 统一俄罗斯党秘书长弗拉基米尔·亚库舍夫表示，莫斯科“特别军事行动”的 86 名退伍军人可能会当选。 “这是一个相当大的贡献，”他说。 后来他将这个数字修改为49。 普京的新闻发言人德米特里·佩斯科夫表示，这次投票表明俄罗斯人支持他们的长期领导人，这位领导人自2000年以来一直担任总理或总统。“当然，这些指标表明俄罗斯社会内部围绕国家元首的团结达到了最高水平，”佩斯科夫说。 西方政府谴责在俄罗斯占领的乌克兰地区举行的民意调查是“骗局”。 俄罗斯最高法院上个月禁止唯一反对战争的政党亚布洛科(Yabloko)参选，让自由派选民无法表达不满。 欧盟最高外交官卡亚·卡拉斯称这次选举是“俄罗斯民主的又一重大挫折”。 卡拉斯在 X 上写道：“克里姆林宫压制了异议，并将国际选举监督人员拒之门外。”他补充道：“民主的外表仅存。” 此次选举之际，人们猜测普京可能会在今年秋季宣布大规模动员活动，试图为俄罗斯陷入困境的军事行动注入新的动力。 乌克兰总统弗拉基米尔·泽连斯基 (Volodymyr Zelenskyy) 暗示克里姆林宫希望再招募 30 万军队。 近几个月来，俄罗斯升级了轰炸力度，用喷气式攻击无人机轰炸基辅和其他乌克兰城市。 乌克兰也发动了深度打击，周日袭击了莫斯科的炼油厂，这是泽连斯基所谓的“长期制裁”的一部分。 俄罗斯还加大了攻占乌克兰东部顿巴斯地区一系列城市的力度，其中包括克拉马托尔斯克和斯洛维安斯克。 到目前为止，它还无法突破，乌克兰指挥官报告说他们在莱曼市附近进行了反攻。 在俄罗斯境内，禁止批评这场冲突。 反战博主已被逮捕并入狱。 当地政客鲍里斯·纳杰日丁 (Boris Nadezhdin) 此前曾试图以和平名义参加总统选举，但被禁止参加 9 月份的选举，并被指控为“外国代理人”。</p><p>在本月的民意调查中赢得席位的其他政党都支持“特别军事行动”。 其中包括以 40 个席位位居第二的共产党、拥有 25 个席位的极端民族主义自民党和拥有 20 个席位的新人民党。车臣领导人、普京盟友拉姆赞·卡德罗夫再次当选，据说赢得了超过 99% 的选票。 俄罗斯选举负责人埃拉·帕姆菲洛娃表示，在95%的选票已清点的情况下，统一俄罗斯党以57.83%的得票率取得了压倒性胜利，高于上次2021年议会选举中的49.8%。她赞扬选民抵制了“心理压力”。 一夜之间，俄罗斯对南部城市扎波罗热发动了泽伦斯基所说的“残酷的、有针对性的袭击”。 他说，一栋九层住宅楼、一栋大学大楼、一个购物中心和一个锅炉房全部受损，造成五人受伤。 哈尔科夫地区一名妇女在无人机袭击中丧生。 泽连斯基表示：“俄罗斯并没有缩减其升级行动，而是发出了扩大战争准备的信号。所有这一切都是在全球稳定已经被这场战争破坏的背景下发生的。我们必须继续向侵略者施压，以结束这场战争。”</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/world/2026/sep/21/putin-consolidates-grip-russia-ukraine-war-veterans-elected-duma" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/cf2e/live/a7f43980-b5d8-11f1-8c16-65d8f060d73f.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">30</span> Merz vows to keep coalition together for Germany&#x27;s &#x27;democratic future&#x27;</h3><p class="card-meta">世界与社会 · BBC World · 2026-09-22 00:54</p><p class="card-summary">The chancellor has come under increasing pressure after resounding state electi…</p><p class="card-impact"><span class="label">影响</span> 围绕election，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 德国总理弗里德里希·梅尔茨表示，在他的政党在两次州选举中惨败后，他将为了国家的“民主未来”而保持执政联盟的团结。 默茨说：“我们决心应对我们国家面临的历史性挑战。”他指的是基督教民主联盟党（CDU）和社会民主党（SPD）之间的联盟。 周日的选举结果公布后，默茨的职位面临着越来越大的压力。 在梅克伦堡-前波莫瑞州东北部，极右翼的德国另类选择党（AfD）赢得了最多选票，而基民盟甚至未能达到留在州议会的门槛。 与此同时，在柏林，基民盟位居第二，落后于极左的德国左翼党，而德国选择党也取得了显着进展。 梅尔茨在周一的新闻发布会上发表讲话，称梅克伦堡-前波莫瑞州的选举结果对中右翼基民盟来说是“沉重的打击”。 “这次选举是一个意义深远的转折点。对于德国基民盟来说，这是一个戏剧性的、前所未有的结果，”他承认。 默茨表示，自选举结果公布以来，没有人讨论过他自己的立场，并反驳了选举失败背后仅是他的低支持率造成的观点。 默茨说：“我知道我作为个人在这些州选举中发挥了作用，但结果的原因远远超出了我的范围。” “我们正在见证德国政党制度的深刻变革，就像世界上许多其他国家正在发生的那样。” 有传言称，执政仅16个月的默茨因支持率不佳，可能会在所谓的总理互换中被替换。 周一早些时候，当被问及默茨的任期还有多久时，德国选择党联合领导人爱丽丝·韦德尔 (Alice Weidel) 告诉 BBC：“很快，他就会离开。” 这两次选举均于周日举行，两周前，基民盟在萨克森-安哈尔特州的得票数减半，而选择党在该州取得了重大胜利。 在梅克伦堡-前波莫瑞州，基民盟未能达到进入议会的 5% 门槛，与预计的该党在该地区有史以来最差的结果相比，表现不佳。 默茨早些时候承认这个结果是“一场灾难”。 尽管德国选择党在梅克伦堡-前波莫瑞州赢得了最多选票，但它还远未达到多数席位，并且不太可能执政，因为其他政党可能会拒绝与其合作。 该党的一些分支被国内情报部门归类为右翼极端分子，但该党强烈反对这种认定。 但其反移民、德国优先和对俄罗斯友好的议程在该国前共产主义东部找到了沃土。 在柏林，基民盟的失败意味着赢得最多选票的左翼党现在可以联合执政。</p><p>领导该党在首都取得胜利的埃利夫·埃拉尔普(Elif Eralp)在选举结果公布后发表讲话，承诺解决难以承受的租金问题。</p><p>她告诉德国新闻媒体《先锋报》：“柏林人民显然选择了政策上的改变，特别是为了一个负担得起的柏林，为了解决租金危机和以人为本的政策。”</p><p>竞选期间，埃拉尔普承诺从私人房东手中征用超过20万套住房。 默茨承诺将寻求立法来防止此类行为，并指出这会对外国投资产生影响。</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cqm27p8enwmko?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article></section><section class="section" id="sec-延伸"><h2>延伸关注</h2><p class="empty">本日无条目</p></section>
+<details class="footer-notes"><summary>采集说明</summary><ul class="notes-list"><li>覆盖窗口：09-21 08:04–09-22 08:04</li><li>未扩展：严格约 24h 窗口</li><li>生成时间：2026-09-22T08:04:16.417621+08:00</li><li>严格 24h 内且时间戳可靠条目：248；时间戳不可靠：75</li><li>事件簇数：306；入选独立事件：30</li><li>失败来源：无</li><li>源状态汇总：ok=20 fail=0</li></ul></details>
+</main>
+</body>
+</html>

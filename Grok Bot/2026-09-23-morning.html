@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Morning Briefing · 2026-09-23</title>
+<style>
+:root {
+  --bg: #F2F3F7;
+  --text: #1d1d1f;
+  --secondary: #6e6e73;
+  --link: #007AFF;
+  --accent: #007AFF;
+  --accent-soft: #3B82F6;
+  --glass: rgba(255, 255, 255, 0.78);
+  --glass-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --chip-bg: rgba(120, 120, 128, 0.12);
+  --nav-pill: rgba(255, 255, 255, 0.72);
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-blue: 0 4px 14px rgba(0, 122, 255, 0.28);
+  --radius: 24px; /* glass cards 24–28 */
+  --radius-sm: 18px;
+  --accent-ai: #5e5ce6;
+  --accent-ai-glow: rgba(94, 92, 230, 0.28);
+  --measure: 42ch;
+  --nav-h: 56px;
+  --pad: 16px;
+  --col: 440px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --text: #f5f5f7;
+    --secondary: #98989d;
+    --link: #0A84FF;
+    --accent: #0A84FF;
+    --accent-soft: #3B82F6;
+    --glass: rgba(28, 28, 30, 0.72);
+    --glass-strong: rgba(28, 28, 30, 0.82);
+    --glass-border: rgba(255, 255, 255, 0.14);
+    --chip-bg: rgba(120, 120, 128, 0.28);
+    --nav-pill: rgba(44, 44, 46, 0.72);
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.35);
+    --shadow-blue: 0 4px 14px rgba(10, 132, 255, 0.35);
+    --accent-ai: #7d7aff;
+    --accent-ai-glow: rgba(125, 122, 255, 0.35);
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + env(safe-area-inset-top, 0px) + 12px);
+  scroll-padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.55;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Quiet off-white canvas + faint cool map wash (not heavy lavender/peach) */
+  background:
+    radial-gradient(900px 600px at 18% 12%, rgba(59, 130, 246, 0.07), transparent 60%),
+    radial-gradient(700px 500px at 88% 78%, rgba(0, 122, 255, 0.05), transparent 55%),
+    linear-gradient(180deg, #F2F3F7 0%, #EEF0F5 100%);
+  background-attachment: fixed;
+  background-color: var(--bg);
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    background:
+      radial-gradient(900px 600px at 18% 12%, rgba(10, 132, 255, 0.12), transparent 60%),
+      radial-gradient(700px 500px at 88% 78%, rgba(59, 130, 246, 0.08), transparent 55%),
+      linear-gradient(180deg, #000000 0%, #0c0c0e 100%);
+  }
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Horizontal pill-chip nav (Map/推荐 segmented feel) */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: var(--nav-h);
+  padding-top: env(safe-area-inset-top, 0px);
+  display: flex;
+  align-items: center;
+  background: transparent;
+}
+.nav-inner {
+  width: 100%;
+  max-width: var(--col);
+  margin: 0 auto;
+  padding: 10px var(--pad);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-inner::-webkit-scrollbar { display: none; }
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 16px;
+  color: var(--secondary);
+  font-size: 14px;
+  font-weight: 560;
+  border-radius: 999px;
+  flex-shrink: 0;
+  background: var(--nav-pill);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.nav a:hover {
+  text-decoration: none;
+  color: var(--text);
+  background: var(--glass-strong);
+}
+.nav a.active,
+.nav a:target {
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: var(--shadow-blue);
+  font-weight: 600;
+}
+.wrap {
+  max-width: var(--col);
+  margin: 0 auto;
+  padding: 12px var(--pad) calc(48px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(var(--pad), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--pad), env(safe-area-inset-right, 0px));
+}
+@media (min-width: 640px) {
+  :root { --col: 520px; --pad: 20px; }
+  body { font-size: 17px; }
+}
+
+/* Hero = floating route-header glass card */
+.hero {
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.hero h1 {
+  margin: 0 0 6px;
+  font-size: clamp(24px, 6.5vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+.hero .subtitle {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: var(--secondary);
+  font-weight: 520;
+}
+.hero .meta {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--secondary);
+  line-height: 1.45;
+}
+.banner {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 159, 10, 0.18);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  font-size: 14px;
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+.section { margin: 22px 0 6px; }
+.section h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section h2::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--accent) 0%, var(--accent-soft) 100%);
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+}
+
+.section-sheet {
+  padding: 16px 16px 16px;
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+}
+.section-sheet .lead-card {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+.section-sheet .lead-card::before { display: none; }
+
+.lead-card {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.lead-card p {
+  margin: 0;
+  position: relative;
+  font-size: 16.5px;
+  line-height: 1.65;
+  max-width: var(--measure);
+}
+
+/* Frosted white news cards */
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  padding: 0;
+  margin: 0 0 14px;
+  position: relative;
+  overflow: hidden;
+}
+.card-body {
+  position: relative;
+  z-index: 1;
+  padding: 16px 18px 18px;
+}
+.card-focus .card-body { padding: 18px 18px 18px; }
+.card-focus .card-title { font-size: 19px; }
+.card-media {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: rgba(0,0,0,.04);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.card-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.card-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 620;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+}
+.rank {
+  display: inline-block;
+  min-width: 1.6em;
+  color: var(--secondary);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.ai-id { color: var(--accent-ai); }
+.card-meta {
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  color: var(--secondary);
+  line-height: 1.4;
+}
+.card-summary {
+  margin: 0 0 10px;
+  font-size: 15.5px;
+  line-height: 1.55;
+  max-width: var(--measure);
+}
+.card-why, .card-impact {
+  margin: 0 0 8px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  max-width: var(--measure);
+}
+.label {
+  display: inline;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--secondary);
+  margin-right: 4px;
+}
+.chip {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 560;
+  background: var(--chip-bg);
+  border: none;
+  color: var(--secondary);
+  vertical-align: middle;
+}
+.chip-accent {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: var(--shadow-blue);
+}
+.secondary { margin: 6px 0 0; padding-left: 1.2em; font-size: 13px; color: var(--secondary); }
+.secondary li { margin: 2px 0; }
+.meta-block { margin: 8px 0; }
+.crossref { margin: 8px 0; font-size: 13px; color: var(--secondary); }
+.read-more { margin: 14px 0 0; font-size: 14px; font-weight: 560; }
+.read-more a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(0, 122, 255, 0.35);
+  color: var(--accent);
+  background: rgba(0, 122, 255, 0.06);
+  text-decoration: none;
+  transition: background .15s ease, border-color .15s ease;
+}
+.read-more a:hover {
+  background: rgba(0, 122, 255, 0.12);
+  border-color: var(--accent);
+  text-decoration: none;
+}
+/* In-page fulltext expand (news cards) */
+.fulltext {
+  margin: 10px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.fulltext > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  color: var(--secondary);
+  user-select: none;
+  transition: color .15s ease;
+}
+.fulltext > summary::-webkit-details-marker { display: none; }
+.fulltext > summary::marker { content: ""; }
+.fulltext > summary .expand-mark {
+  display: inline-block;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 400;
+  color: var(--secondary);
+  opacity: 0.85;
+  animation: expand-bounce-down 1.4s ease-in-out infinite;
+  will-change: transform;
+}
+.fulltext > summary:hover,
+.fulltext > summary:hover .expand-mark {
+  color: var(--accent);
+  opacity: 1;
+}
+.fulltext[open] > summary {
+  margin-bottom: 8px;
+}
+.fulltext[open] > summary .expand-mark {
+  font-size: 0;
+  animation: none;
+}
+.fulltext[open] > summary .expand-mark::after {
+  content: "︿";
+  display: inline-block;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--accent);
+  animation: none;
+}
+@keyframes expand-bounce-down {
+  0%, 100% { transform: translateY(0); opacity: 0.85; }
+  50% { transform: translateY(5px); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fulltext > summary .expand-mark { animation: none; }
+}
+.fulltext-body {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  font-size: 15.5px;
+  line-height: 1.7;
+  max-width: var(--measure);
+}
+@media (prefers-color-scheme: dark) {
+  .fulltext-body {
+    background: rgba(44, 44, 46, 0.55);
+  }
+}
+.fulltext-body p {
+  margin: 0 0 0.85em;
+}
+.fulltext-body p:last-child { margin-bottom: 0; }
+.fulltext-src {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: var(--secondary);
+}
+.fulltext-src a {
+  color: var(--secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.muted { color: var(--secondary); }
+.card-ai {
+  border-left: 3px solid var(--accent-ai);
+  box-shadow: var(--shadow), -3px 0 18px var(--accent-ai-glow);
+  background:
+    linear-gradient(90deg, rgba(94, 92, 230, 0.08), transparent 28%),
+    var(--glass);
+}
+.card-ai .card-body { padding: 16px 18px 16px; }
+.conclusions {
+  margin: 6px 0 12px;
+  padding-left: 1.25em;
+  font-size: 15px;
+  max-width: var(--measure);
+  position: relative;
+  z-index: 1;
+}
+.conclusions li { margin: 4px 0; }
+.empty {
+  margin: 0 0 12px;
+  padding: 16px 18px;
+  border-radius: var(--radius-sm);
+  color: var(--secondary);
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px dashed var(--glass-border);
+  font-size: 15px;
+}
+.footer-notes {
+  margin-top: 40px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,0,0,.06);
+  color: var(--secondary);
+  font-size: 13px;
+}
+@media (prefers-color-scheme: dark) {
+  .footer-notes { border-top-color: rgba(255,255,255,.12); }
+}
+.footer-notes summary {
+  cursor: pointer;
+  font-weight: 520;
+  padding: 12px 0;
+  min-height: 44px;
+  color: var(--secondary);
+  list-style: none;
+}
+.footer-notes summary::-webkit-details-marker { display: none; }
+.footer-notes summary::before {
+  content: "› ";
+  display: inline-block;
+  transition: transform .15s ease;
+}
+.footer-notes[open] summary::before { transform: rotate(90deg); }
+.notes-list { margin: 0 0 8px; padding-left: 1.2em; line-height: 1.55; }
+.notes-list ul { padding-left: 1.1em; margin: 4px 0; }
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="章节导航"><div class="nav-inner"><a href="#sec-脉络" class="active">脉络</a><a href="#sec-重点">重点</a><a href="#sec-科技">科技</a><a href="#sec-research">Research</a><a href="#sec-市场">市场</a><a href="#sec-世界">世界</a><a href="#sec-延伸">延伸</a></div></nav>
+<main class="wrap">
+<header class="hero">
+  <h1>Morning Briefing</h1>
+  <p class="subtitle">2026-09-23 · 全球新闻早报</p>
+  <p class="meta">覆盖窗口：09-22 08:05–09-23 08:05 · 新闻 30 条 · AI Research 2 项 · 生成 2026-09-23 08:05:02 Asia/Shanghai · no_agent=true</p>
+</header>
+
+<section class="section section-sheet" id="sec-脉络"><h2>今日脉络</h2><div class="lead-card"><p>今日主线围绕ai/芯片、ai/war、ai/openai展开，重点包括高通第六代骁龙 8 超级至尊版升级封装方案：峰值性能输…；Trump defends actions in Ir…。技术侧另见Five AI safety se…、Anthropic：未来几周将推出…。</p></div></section><section class="section" id="sec-重点"><h2>今日重点</h2><article class="card card-focus has-media"><figure class="card-media"><img src="https://readhub.cn/social-image.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">01</span> 高通第六代骁龙 8 超级至尊版升级封装方案：峰值性能输出更持久</h3><p class="card-meta">科技与 AI · ReadHub · 2026-09-23 07:20<span class="chip chip-accent">重点</span></p><p class="card-summary">2026 骁龙峰会上，高通宣布在第六代骁龙 8 超级至尊版芯片上采用全新的偏移式堆叠封装方案。不同于主流手机芯片将 DRAM 内存直接垂直堆叠在 SoC 正上方的传统 PoP 封装，该方案物理偏移…</p><p class="card-why"><span class="label">为什么重要</span> 触及高信号主题（ai/芯片/突破）；或影响技术路线或产业布局</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>高通第六代骁龙 8 超级至尊版升级封装方案：峰值性能输出更持久 2026 骁龙峰会上，高通宣布在第六代骁龙 8 超级至尊版芯片上采用全新的偏移式堆叠封装方案。不同于主流手机芯片将 DRAM 内存直接垂直堆叠在 SoC 正上方的传统 PoP 封装，该方案物理偏移 CPU、GPU 等高发热计算核心，使上方内存不再完全覆盖 SoC，让 SoC 核心区域可更直接接触外部散热材料提升散热效率。这款主频行业首次突破 5.0GHz 的芯片，以牺牲少量封装空间对称性为代价显著提升热性能，更适配极致性能旗舰设备，可让手机在游戏、AI 推理、视频渲染等高负载场景下更久维持高帧率或高吞吐量，减少使用中性能下降的情况。</p></div><p class="fulltext-src"><a href="https://readhub.cn/topic/8wdy4v92vhb" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card card-focus has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/fd3d54e78610502dcdc3d7f85a3039e191f836db/651_287_3396_2718/master/3396.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=bf9c233ba0c04e61dc03e5eaeab7a3c4" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">02</span> Trump defends actions in Iran and Venezuela in UN General Assembly address amid rising tensions with allies – live</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-23 07:54<span class="chip chip-accent">重点</span></p><p class="card-summary">Trump threatens to ‘annihilate’ Iran and ‘drive them into Hell’ if there isn’t a deal, while also u…</p><p class="card-why"><span class="label">为什么重要</span> 触及高信号主题（ai/war）；或影响地缘与公共政策讨论</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>在与盟友的紧张局势加剧之际，特朗普在联合国大会讲话中为伊朗和委内瑞拉的行动辩护 - 直播 特朗普威胁称，如果不能达成协议，他将“消灭”伊朗并将其“赶入地狱”，同时还强调了美国对古巴、墨西哥、格陵兰岛和人工智能的政策 特朗普在联合国的演讲开始时纪念建国250周年，重点不是国际问题，而是宣传他的国内记录。 减税、股市高位、犯罪率和移民执法等等。 他再次将今年早些时候与以色列发动的对伊朗战争描述为解决长期被忽视的威胁的必要冲突，就像他对国内听众所做的那样。 特朗普表示，美国已采取行动阻止伊朗获得核武器，而其他国家却忽视了这一问题。 特朗普随后再次发出威胁，如果伊朗政权不屈服并达成协议，他将“消灭”伊朗并“将他们赶入地狱”。 他吹捧了他对这场战争的看法：在这场战争中，美国在军事上削弱了伊朗的实力，并将该国推向经济崩溃的边缘。 他还回避说，他有信心伊朗会在美国中期选举后达成协议——这是他向美国选民提出的论点。 特朗普表示，他正在“与俄罗斯和乌克兰领导人密切合作”以结束这场灾难性的战争。 “我认为，这一切发生的速度会比人们理解的要快，”他说。 美国总统表示，他已经签署了一项关于制裁的“强有力的新法律”，“如果有必要，我将不得不使用它们”。 他补充道：“是时候停止杀戮了。” 特朗普为其政府在拉丁美洲的行动进行了辩护，包括午夜突袭逮捕委内瑞拉前总统尼古拉斯·马杜罗，以及他与对美国更加友好的继任者德尔西·罗德里格斯达成的石油协议。 特朗普宣称，“战利品属于胜利者”，并证明了这项协议的合理性，该协议将把国家巨大的石油财富的一部分注入美国财政部。 特朗普为自己对加勒比海和太平洋地区船只的无人机袭击进行了辩护，他将他声称正在打击的卡特尔与伊斯兰恐怖组织等同起来。 “卡特尔是西半球的伊斯兰国——不是好人，”他说。 “像‘伊斯兰国’一样，他们应该作为敌方战斗人员被杀害、流放或拘留，而且不得获释，而这正是我们正在做的事情。” 他指责墨西哥受到卡特尔的有效控制，并表示美国在这种情况下与一个国家共享边界是“不可接受的”。 特朗普说：“因此墨西哥必须从人类敌人手中夺回对其土地的控制权。”</p><p>特朗普还指出了古巴的政权更迭。 他说：“我的政府也在寻求从根本上改变古巴的局势，那里的共产主义政权承受着巨大的压力，这是他们所承受的最大的压力。” “这绝对是一个失败的国家。它正在失败。” 特朗普表示，美国与丹麦王国就格陵兰岛问题达成了“前所未有的协议”。 他表示，该协议将于他演讲后不久正式签署，“使美国永久控制该领土的安全和所有需求”，并且美国将在格陵兰岛建立两个“非常重要”的军事基地。 特朗普表示，他将拒绝任何关于控制人工智能的“全球主义计划”的呼吁，并即兴向世界领导人推销该技术，称该技术为“超级智能”或“SI”。 随着一些人（包括行业领导者）呼吁对该技术进行国际监管，人们对人工智能的危险日益担忧，特朗普表示他不会阻碍人工智能的发展。 他表示，他相信这将“比工业革命更大”，并誓言美国将在人工智能领域处于领先地位。 “我们只会鼓励超级智能。” 最高法院拒绝介入阿拉斯加代孕妈妈和加州一对夫妇之间的监护权纠纷，这对夫妇的孩子出生时患有罕见的严重心脏缺陷。 周二，法官埃琳娜·卡根 (Elena Kagan) 拒绝了阿拉斯加护士兼代孕妈妈麦肯纳·韦斯特 (McKenna West) 的紧急请求，麦肯纳·韦斯特曾要求美国最高法院暂停加州法院的一项命令，该命令承认奥马尔·艾哈迈德 (Omar Ahmed) 和瑙希恩·吉尔卡 (Nausheen Gilkar) 夫妇是男孩的合法父母。 最近几周，此案引起了全国关注，引发了有关代孕和堕胎的更广泛讨论。 在唐纳德·特朗普称古巴为“失败国家”后，古巴代表团退出了联合国大会会议。 古巴外交部长布鲁诺·罗德里格斯在社交媒体帖子中写道：“美国政府无法接受古巴是并且有权成为一个完全独立的主权国家。” “经济封锁，包括能源围困，只会威胁古巴和其他国家。这是种族灭绝和集体惩罚的行为。我们是一个和平的国家，我们应该得到和平。” 正如我的同事李·施伦克和埃德·奥古斯丁上周报道的那样，“华盛顿和佛罗里达州越来越多的内部人士——从亿万富翁特朗普的盟友和与卢比奥有联系的游说者到古巴流亡者——正在争夺对这个共产党统治的岛国关键资产的控制权”。 由于唐纳德·特朗普试图阻止风能扩张，转而使用化石燃料，来自加利福尼亚州和纽约州的民主党总检察长就特朗普政府回购海上风电租赁的计划提起诉讼。</p><p>加州总检察长罗布·邦塔 (Rob Bonta) 表示，他正在起诉芝加哥 Invenergy 计划拆除该州海岸附近的一个项目。 特朗普政府6月表示，将回购该公司在美国东海岸和西海岸四个风电项目的海上风电租赁合同。 与此同时，纽约总检察长Letitia James带领七个州提起诉讼，试图阻止Invenergy交易以及与Bluepoint Wind的另一项提议，后者于4月同意终止纽约和新泽西海岸正在开发的一个风电场。 这些交易将为能源公司带来 14 亿美元的纳税人资金，以换取多个项目的取消。 特朗普政府总共承诺向企业提供近 40 亿美元资金，以退出全国各地的项目。 几天前，玛丽亚·埃尔维拉·萨拉查 (María Elvira Salazar) 批评美国总统针对守法无证移民的移民执法政策，另一位佛罗里达州著名共和党人公开与唐纳德·特朗普保持距离。 据《迈阿密先驱报》报道，11 月美国中期选举的共和党州长候选人拜伦·唐纳德 (Byron Donalds) 周二推出了更新后的竞选网站，该网站几乎删除了所有提及特朗普的内容，并删除了这位国会议员及其妻子埃里卡 (Erika) 与总统合影的照片。 到目前为止，唐纳德兹一直自豪地宣传他与总统的密切关系，开展了一场主要以特朗普的支持为主题的共和党初选活动，并在他的网站上展示了一个大横幅来宣传他的支持。 此举出台之际，特朗普的整体支持率因对美国经济和伊朗战争处理方式的不满而首次跌破30%，而共和党人则准备在11月遭受重大损失，包括可能失去该党在美国众议院和参议院的多数席位。 共和党全国委员会起诉新泽西州选举官员拒绝交出选民记录 共和党全国委员会起诉新泽西州的高级选举官员，指控他们未能提供公开选民名册记录，包括非公民选民的地址。 新泽西州州长米基·谢里尔 (Mikie Sherril) 在 7 月份宣布，该州机动车辆登记系统中的“软件错误”导致该州从 2023 年开始将 6,600 名非公民添加到该州选民登记名单中。根据该州的说法，有 400 张选票是由非公民投的，尽管唐纳德·特朗普声称该州有“数千张选票”是由非公民投的，以争取对他的拯救美国的支持 行动。 2024 年，卡马拉·哈里斯 (Kamala Harris) 以超过 252,000 票赢得新泽西州 – 这意味着……</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/us-news/live/2026/sep/22/donald-trump-unga-speech-iran-middle-east-ukraine-latest-news-updates" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card card-focus has-media"><figure class="card-media"><img src="https://readhub.cn/social-image.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">03</span> OpenAI 拟在研发早期引入第三方评估 AI 模型安全风险</h3><p class="card-meta">科技与 AI · ReadHub · 2026-09-23 01:30<span class="chip chip-accent">重点</span></p><p class="card-summary">OpenAI 计划允许第三方机构在其人工智能模型开发周期的早期阶段开展安全风险审查，以应对外界对该技术潜在危害的担忧，同时明确了保障评估有效运作的多项关键优先级。相关负责人表示，此前这类安全评估和能…</p><p class="card-why"><span class="label">为什么重要</span> 触及高信号主题（ai/openai/人工智能）；或影响技术路线或产业布局</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>OpenAI 拟在研发早期引入第三方评估 AI 模型安全风险 6 小时前 OpenAI 计划允许第三方机构在其人工智能模型开发周期的早期阶段开展安全风险审查，以应对外界对该技术潜在危害的担忧，同时明确了保障评估有效运作的多项关键优先级。相关负责人表示，此前这类安全评估和能力评测通常仅在模型发布前引入，随着风险升高，如今将把审查范围拓展至训练、评估等高风险环节，甚至可能安排外部评估人员参与部分最敏感的工作，OpenAI 过去也曾尝试过类似做法。 话题追踪 查看更多 专业版功能 体验专业版特色功能，拓展更丰富、更全面的相关内容。</p></div><p class="fulltext-src"><a href="https://readhub.cn/topic/8wdgvl6Hkjg" rel="noopener noreferrer">查看原文</a></p></details></div></article></section><section class="section" id="sec-科技"><h2>科技与 AI</h2><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">04</span> Five AI safety sessions every founder should have on their TechCrunch Disrupt 2026 agenda</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-22 23:00<span class="chip chip-accent">重点</span></p><p class="card-summary">At TechCrunch Disrupt 2026, five sessions across the AI Stage and Real World AI…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/anthropic，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>您是否信任可以访问您公司系统的人工智能代理？ 让您的员工乘坐自动驾驶汽车？ 部署一个必须理解不可预测的物理世界的机器人？ 对于人工智能创始人来说，这些不再是假设性的问题。 随着人工智能走出演示并进入企业、车辆、机器人和自主代理，安全和保障成为产品的一部分。 在 TechCrunch Disrupt 2026 上，人工智能舞台和现实世界人工智能舞台的五场会议将这些挑战置于首要位置。 从保护代理到将企业人工智能投入生产，创始人可以在这里深入研究如何构建人们和企业真正信任和使用的人工智能 (AI)。 构建下一代人工智能？ 确保您获得 Disrupt 通行证，并将这五场人工智能安全会议添加到您的议程中。 9 月 25 日晚上 11:59 之前购买通票最多可节省 200 美元 PT。 获得第二次通行证可享 50% 折扣。 1. 当企业实际部署 Claude 时，Anthropic 会看到什么 一些企业正在从人工智能中获得可衡量的价值。 18 个月后，其他公司仍在进行试点。 为什么？ 应用人工智能的人类负责人 Cat de Jong 近距离观察。 她直接与企业合作，将克劳德放入关键工作流程中，了解部署在哪里成功，在哪里停滞，以及两者之间的区别。 在“当企业实际部署 Claude 时 Anthropic 会看到什么”中，de Jong 将在人工智能舞台上探讨当企业从人工智能实验转向将其投入生产时会发生什么。 对于试图向企业推销人工智能的创始人来说，她的经验让他们可以直接了解为什么有些部署能带来真正的价值，而另一些部署仍停留在试点模式。 想知道人工智能试点与提供真正商业价值的部署有何不同？ 听听 Anthropic 亲眼所见。 立即注册 Disrupt 可在 9 月 25 日之前节省高达 200 美元。 2.无人谈论的代理安全问题 可以采取行动的人工智能代理也可能会产生一系列全新的安全问题。 它应该有权访问什么？ 应该允许它做什么？ 当应用程序级别的权限不够时会发生什么？ 在 AI Stage 会议“无人谈论的代理安全问题”中，Okta 产品和技术总裁 Ric Smith 和 NanoCo 联合创始人兼首席执行官 Gavriel Cohen 将解决基础设施级别的代理安全问题，包括应用程序级别权限模型的弱点以及创始人在部署代理 AI 时需要考虑的架构决策。 如果代理出现在您的产品路线图上，那么安全性也属于其中。 立即购买门票可节省高达 200 美元，并将本次会议添加到您的 Disrupt 议程中。 3. 保护人工智能企业：为什么云变得更加复杂</p><p>让人工智能产品进入企业大门需要的不仅仅是令人印象深刻的演示。 当公司考虑将人工智能引入关键系统时，安全性、治理和可观察性都成为讨论的一部分。 在 AI Stage 会议“保护 AI 企业：为什么云变得更加复杂”中，AWS 安全服务副总裁 Rudy Mitra 表示； Luta Security 首席执行官 Katie Moussouris； 网络安全资深人士 Wendy Nather 将研究随着人工智能扮演更自主的角色，企业所需的基础设施。 对于构建企业人工智能的创始人来说，这是一个了解当创新满足您希望作为客户的组织的安全要求时会发生什么的机会。 为企业客户构建人工智能？ 更接近产品和部署之间的安全要求。 在 9 月 25 日之前获得 Disrupt 通行证，最多可节省 200 美元。 4. 构建人工智能系统，避免失败 在现实世界中运行的人工智能提高了风险。 错误不会停留在屏幕上； 它会影响车辆、飞机、工业系统和关键任务。 在现实世界的人工智能舞台上，Shield AI首席技术官Nathan Michael； 通用汽车机器人战略总监 Mikell Taylor； Waabi 创始人兼首席执行官 Raquel Urtasun 将从国防和自主系统的角度来探讨硬技术创始人面临的最棘手的问题之一：如何知道自主系统何时足够安全，可以部署？ “在不允许失败的情况下构建人工智能系统”中的对话将涉及创建安全文化、测试和验证人工智能、克服监管障碍以及建立在失败后果严重时能够赢得信任的公司。 当失败不再是一种选择时，测试就不能成为事后的想法。 了解自治领域的领导者如何在 Disrupt 中实现安全。 探索您的门票选择，在 9 月 25 日之前购买通票可节省高达 200 美元。 5. 机器人正在等待他们的 ChatGPT 时刻。 这就是阻碍 机器人存在数据问题。 他们无法访问有助于加速语言模型和自动驾驶汽车进步的大量训练数据。 这一差距是扩展物理人工智能的最大障碍之一。 在现实世界人工智能会议“机器人正在等待他们的 ChatGPT 时刻。这就是阻碍”中，Nvidia Inception 全球物理 AI 主管 Les Karpas 将探讨数据管道、模拟环境和基础模型如何帮助解决这个问题，以及如何构建、测试和部署功能更强大、更可靠的机器人。</p><p>对于物理人工智能领域的创始人来说，本次会议解决了一个大问题：机器人技术如何才能达到自己的 ChatGPT 时刻并赢得将这些系统投入现实世界所需的信任？ 深入了解什么可以帮助机器人技术清除下一个大障碍。 立即注册 Disrupt，在价格上涨之前可节省高达 200 美元。 五次会议。 每个人工智能创始人都需要回答的一个问题。 人们可以信任你正在构建的东西吗？ 这五场对话是 10 月 13 日至 15 日在旧金山 Moscone West 举行的 Disrupt 大会上 200 多场会议的一部分，涵盖六个行业阶段、圆桌会议和分组讨论。 预计将有超过 10,000 名创始人、投资者、运营商和技术领导者，以及 250 多名演讲者、300 多家参展初创公司以及无数的社交会议。 您可以构建一个更智能的模型、一个更强大的代理，或者一个可以做以前没有人做过的事情的机器人。 但让客户足够信任并部署它可能是将其推向市场最困难的部分之一。 立即获得 Disrupt 通行证，并在 9 月 25 日晚上 11:59 之前节省高达 200 美元。 PT。 第二张票可节省 50%。 了解人工智能领导者如何应对突破性技术与现实世界采用之间的安全性和可靠性挑战。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/22/five-ai-safety-sessions-every-founder-should-have-on-their-techcrunch-disrupt-2026-agenda/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">05</span> Anthropic：未来几周将推出 Claude Sonnet 5.5 与 Claude Haiku 5.5 两款大模型</h3><p class="card-meta">科技与 AI · ReadHub · 2026-09-23 01:10<span class="chip chip-accent">重点</span></p><p class="card-summary">Anthropic 表示 Claude Opus 5.5 已在所有平台上线，多数任务性能与 Claude Fable 5.1 相当，运行成本比 Opus 5…</p><p class="card-impact"><span class="label">影响</span> 围绕anthropic/claude，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>Anthropic：未来几周将推出 Claude Sonnet 5.5 与 Claude Haiku 5.5 两款大模型 6 小时前 Anthropic 表示 Claude Opus 5.5 已在所有平台上线，多数任务性能与 Claude Fable 5.1 相当，运行成本比 Opus 5 低 40%，定价为每百万输入 token 收费 4 美元，每百万输出 token 收费 20 美元，未来几周还将推出 Claude Sonnet 5.5 与 Claude Haiku 5.5 两款大模型。 话题追踪 查看更多 专业版功能 体验专业版特色功能，拓展更丰富、更全面的相关内容。</p></div><p class="fulltext-src"><a href="https://readhub.cn/topic/8wdeRD41UKq" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">06</span> Claude Opus 5.5 发布：多数任务追平 Fable 5.1，典型成本降 40%</h3><p class="card-meta">科技与 AI · ReadHub · 2026-09-23 01:40<span class="chip chip-accent">重点</span></p><p class="card-summary">Anthropic 推出 Claude 5.5 系列首个模型 Claude Opus 5.5，其多数任务性能达 Fable 5.1 水平，典型工作负载成本较…</p><p class="card-impact"><span class="label">影响</span> 围绕anthropic/gpt，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>Claude Opus 5.5 发布：多数任务追平 Fable 5.1，典型成本降 40% Anthropic 推出 Claude 5.5 系列首个模型 Claude Opus 5.5，其多数任务性能达 Fable 5.1 水平，典型工作负载成本较 Opus 5 低 40%、输出速度快 30% 以上，API 调用及缓存读取价格均有明显下调。该模型编码评测表现提升显著，多项相关评测得分高于 GPT-6 Astra，单题成本远低于后者，但在 AutomationBench、Terminal-Bench-Science 等项目上不及 Astra。这是 Anthropic 宣布放慢前沿模型推进后发布的首款模型，其自动化行为审计成绩为当前最佳，相关付费用户的五小时使用额度同步上调，后续还将推出 Sonnet 5.5 和 Haiku 5.5。</p></div><p class="fulltext-src"><a href="https://readhub.cn/topic/8wdemyg8D7R" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">07</span> Qualcomm launches two new smartphone chips with emphasis on AI</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-23 04:00<span class="chip chip-accent">重点</span></p><p class="card-summary">Qualcomm said that its new top chip can run 30B mixture-of-expert model locally.</p><p class="card-impact"><span class="label">影响</span> 围绕ai/chip，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>高通今天发布了两款旗舰智能手机处理器，名为 Snapdragon 8 Elite Gen 6 和 Snapdragon 8 Elite Extreme Gen 6，重点是促进更好的人工智能功能。 在年度 Snapdragon 峰会上，高通表示，新芯片可以帮助改善人工智能代理的个性化。 这些芯片具有新的传感中枢，可以运行多达 2 亿个参数的小型模型。 借助新的传感中心，智能手机可以在本地运行个人抄写员并区分说话者。 此外，它还可以根据您的使用情况构建内存，为自动化任务提供更好的建议。 该公司表示，可以通过新芯片运行完整的语音输入和语音输出代理。 Snapdragon 8 Elite Gen 6 具有新的加速器元件，旨在以更高效的方式运行模型。 高端Extreme版本可以在本地运行300亿参数的专家混合（MoE）模型。 这意味着虽然整体模型大小为 30B，但该模型仅针对特定任务激活一定数量的参数。 相比之下，在 6 月份的全球开发者大会 (WWDC) 上，苹果发布了一个包含 200 亿参数的专家混合模型，这是其第三代基础模型中最先进的模型。 新的高通CPU还为相机提供像素级控制，以促进更专业的体验，同时改进稳定性和运动理解。 Extreme版本可支持8K 60fps和4K240超高清慢动作视频录制。 它还支持新的高级专业视频 (APV) 编解码器以实现专业级录制。 更重要的是，这两款芯片都可以使用人工智能来增强声音并降低噪音。 此外，它还具有高通公司的新语音气泡技术，可以隔离用户在通话过程中的噪音。 在此次活动中，摩托罗拉宣布推出搭载 Snapdragon Gen 8 Elite Extreme Gen 6 的 Motorola Signature 27 智能手机，将于今年某个时候全面上市。 高通已经开发了 40 多种 AI 设备，但仍然相信很多人会使用手机来实现 AI，而不是其他专用设备。 过去，联合创始人 Carl Pei 从未暗示过这种趋势，而最近，苹果新任首席执行官 John Ternus 在本月初的 iPhone Duo 发布会上强化了同样的想法。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/22/qualcomm-launches-two-new-smartphone-chips-with-emphasis-on-ai/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">08</span> TechCrunch Founder Summit’s agenda revealed: Unlock fundraising, hiring, and AI insights in Boston on November 4</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-23 07:21<span class="chip chip-accent">重点</span></p><p class="card-summary">Founders shouldn&#x27;t have to learn the hardest lessons the hardest way. TechCrunc…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>11 月 4 日，TechCrunch 创始人峰会将在波士顿 SoWa 发电站举办为期一天的重要创业速成课程。 创始人不应该以最艰难的方式学习最艰难的教训，而这次活动的目的是让创办公司的挑战变得更容易，让创业的高潮变得更大。 您无需进行数月的反复试验，而是可以直接接触已经向您发出了您现在面临的电话的投资者和创始人。 我们正在谈论从筹款和招聘到人工智能战略以及在您的类别中名列前茅的一切。 不要相信我们的话。 在下面探索我们为创始人峰会计划的演讲者和会议的完整议程，并锁定您在活动中的位置。 所有门票均以您能看到的最低价格出售，所以现在是采取行动的最佳时机。 TechCrunch 创始人峰会官方议程揭晓 事不宜迟，这是官方议程。 在活动议程页面上了解每个会议和演讲者。 筹集资金的新规则 筹款从来都不是一件容易的事，但策略却在不断变化。 Underscore 合伙人布莱恩·德瓦尼 (Brian Devaney) 将详细分析投资者现在正在寻找什么、创始人如何在拥挤的市场中脱颖而出，以及创始人经常在哪些方面失去影响力而不自知。 期待对当今的融资环境进行坦诚的审视，从第一次检查到条款清单，以及可能导致一轮融资成败的错误。 首席执行官的工作从未变得如此轻松 头衔可能保持不变，但工作内容会随着公司发展的每个阶段而变化。 HubSpot 联合创始人兼红杉资本合伙人布莱恩·哈里根 (Brian Halligan) 将分享他在通过快速增长、艰难决策和不断革新来建设和咨询初创公司过程中学到的经验教训。 本次会议探讨创始人如何发展成为首席执行官，避免常见的领导陷阱，并建立能够在早期蓬勃发展的公司。 从第一天起就为人工智能而打造 添加人工智能功能是一回事。 建立一家人工智能本土公司完全是另一回事。 7AI 联合创始人兼首席执行官 Lior Div 将探讨当人工智能成为初创公司的基础而不是产品增强时会发生什么变化。 从团队结构和产品开发到运营和进入市场策略，本次会议探讨了创始人在人工智能时代进行建设时应该重新思考的问题。 并非每一美元都是平等的 筹集资金通常被视为一个里程碑，但选择合适的投资者可以在资金到达很久之后塑造公司的未来。 在为 Cogent Security 筹集了 1100 万美元的融资后，联合创始人兼首席执行官 Vineet Edupuganti 亲身体验了帮助合作伙伴与代价高昂的干扰之间的区别。 本次会议探讨创始人在构建股权结构表时应如何评估投资者、进行权衡并超越估值进行思考。</p><p>如何识别“山中之王”公司——定义类别获胜者的隐藏信号 解决世界上最大的挑战需要创新，但只有某些公司才能真正成为工业规模的类别定义赢家。 在本次会议中，TDK Ventures 投资总监 Tina Tosukhowong 解析了该公司的“King of the Hill”框架：最佳投资者根据经济性、可扩展性和商业时机来评估公司的严格流程。 通过现实世界的例子，包括蒂娜对裂变和融合的探索，与会者将学习可操作的框架，用于评估创业准备情况，绘制竞争格局，以及确定时机、人才和技术何时协调。 你的公司就是你雇佣的人 早期的招聘决策可以定义初创公司的文化、速度和执行能力。 NEA 合伙人 Melissa Taunton 将分享与创始人在快速增长和不确定时期组建团队时合作的经验教训。 从确定合适的早期员工到避免常见的招聘错误，本次会议探讨了创始人如何建立具有弹性、适应性强并为未来做好准备的组织。 波士顿创始人剧本 硅谷成为头条新闻，但蔡斯·加巴里诺 (Chase Garbarino) 十多年来一直在波士顿悄悄打造行业定义公司。 作为 HqO 的联合创始人兼首席执行官，他已从投资者那里筹集了 2 亿美元，并在无需改变地理位置的情况下将业务扩展到 30 多个国家。 他将详细分析在未编写创业手册的地方进行建设的真正优点和缺点，以及主要中心之外的每个创始人都应该知道的内容。 在扩大规模之前找到适合市场的产品 每个创始人都希望产品与市场契合，但知道何时真正找到它要复杂得多。 Bessemer Venture Partners 合伙人 Kent Bennett 将阐述创始人如何验证需求、构建能够回答正确问题的 MVP，并避免在基本面到位之前进行扩展。 本次会议探讨了重要的信号、误导性的指标，以及将持久的公司与昂贵的实验区分开来的决策。 创始人峰会会议结束后会发生什么 节目安排是 TechCrunch 创始人峰会价值的重要组成部分，但并不是全部。 您还将有机会与那些与您有着相同融资决策和招聘电话的创始人进行交流，然后与那些已经经历过这些经历的人建立联系。 或者更好的是……那些资助那些经历过创业困境的人的人。</p><p>TechCrunch 创始人峰会上充满讨论的一天变成了数月的行动，我们渴望您在 11 月 4 日加入我们和波士顿创业社区的其他成员。立即注册以节省门票并加入终极创始人的训练营。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/22/techcrunch-founder-summits-agenda-revealed-unlock-fundraising-hiring-and-ai-insights-in-boston-on-november-4/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://platform.theverge.com/wp-content/uploads/sites/2/2026/09/qualcomm-snapdragon-8-elite-gen-6-and-extreme.jpg?quality=90&amp;#038;strip=all&amp;#038;crop=0,0,100,100" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">09</span> Qualcomm’s Snapdragon 8 Elite Gen 6 comes in an Extreme version too</h3><p class="card-meta">科技与 AI · The Verge · 2026-09-23 04:00<span class="chip chip-accent">重点</span></p><p class="card-summary">Qualcomm has announced the Snapdragon 8 Elite Gen 6, this year joined by the 8…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/chip，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>高通已经发布了 Snapdragon 8 Elite Gen 6，今年又推出了 8 Elite Extreme Gen 6。 该公司将这两款新手机芯片描述为旗舰产品，规格差异相对较小，主要限于 Extreme 型号上改进的人工智能处理、视频捕捉和游戏性能。 高通 Snapdragon 8 Elite Gen 6 也有 Extreme 版本 今年有两款旗舰 Snapdragon 芯片，但祝你能找到差异。 这两款第六代芯片均采用 2nm 工艺打造，有很多共同点，包括调制解调器、显示规格、安全功能、GPS 以及内存和存储支持。 高通不再发布其芯片中核心的详细细分，但给出的 CPU 详细信息是相同的，有两个主频高达 5GHz 的大核心和六个主频高达 4GHz 的高性能核心。 尽管如此，Extreme 被描述为在 CPU、GPU 和 NPU 方面具有稍微优越的性能。 有些差异更为明显。 8 Elite Extreme 能够驱动卓越的视频拍摄，包括 60fps 的 8K、240fps 的 4K，并支持高级专业视频 (APV) 编解码器。 NPU 更大的共享内存池也应该会在 Extreme 芯片上推动更快、更高效的 AI 性能，而 GPU 中的 AI 专用矩阵核心（加上更多内存）应该会在使用 AI 功能时略微提升游戏性能。 由于核心性能看似相似，至 Extreme 芯片的提升相对较小，因此看看制造商将哪些芯片用于哪些手机将会很有趣。 摩托罗拉率先加入，确认其新发布的 Signature 27 旗舰产品将使用 Extreme 芯片。 高通宣布，Vivo、小米、Oppo、荣耀、iQoo、努比亚、一加、Redmi、Redmagic和中兴通讯也将采用这两款芯片。 这两款 8 Elite Gen 6 芯片是高通首款 2nm 芯片，与苹果的 A20 Pro 和联发科的天玑 9600 Pro 一起，为智能手机带来了新的芯片规模。</p></div><p class="fulltext-src"><a href="https://www.theverge.com/gadgets/998842/qualcomm-snapdragon-8-elite-extreme-gen-6" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">10</span> OpenAI launches GPT-6 Sol and Luna, boasting lower cost and fewer mistakes</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-23 02:00<span class="chip chip-accent">重点</span></p><p class="card-summary">OpenAI is launching two new models, which it says are cut from the same cloth a…</p><p class="card-impact"><span class="label">影响</span> 围绕openai/gpt，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>本月早些时候，OpenAI 推出了 GPT-6 Astra，并称其为迄今为止最强大、功能最强大的模型，也是适用于计算机工作和编码等各种活动的“世界最佳模型”。 现在，该实验室正在通过较小的 Sol 和 Luna 模型的更新版本来扩展 GPT-6 一代。 该公司写道：“GPT-6 Astra 引入了新一代智能；这些模型通过使智能更加高效和易于访问来扩展其优势。” Sol 和 Luna 系列的首批模型于今年早些时候推出，代表了 OpenAI 模型层次结构中的不同层级。 Sol 专为编码等复杂任务而设计，而 OpenAI 表示 Luna 更适合文书工作——“目标明确的大批量任务，例如总结文档、提取信息或回答快速问题。” OpenAI 还强调效率和可承受性的大幅提高——最值得注意的是，API 访问价格大幅下降。 6 系列型号的售价仅为 5.6 系列 Sol 和 Luna 的一半，OpenAI 将价格下降归因于缓存和推理的改进。 OpenAI 还声称，其最新模型能够更好地生成事实上准确的答案，并指出它们在编码时的错误率较低。 公告中写道：“我们的内部事实评估基于去识别化的现实世界对话，用户通过我们的模型标记了错误，GPT-6 Sol 的错误数量约为其前身的一半，以低得多的成本达到了 Astra 级别的可靠性。” 正如 OpenAI 新模型发布的典型情况一样，该公司声称其最新产品优于其主要竞争对手 Anthropic。 该公司一再声称 GPT-6 Sol 和 Luna 处理任务的能力比 Anthropic 的顶级模型（例如 Fable 和 Opus）要好得多。 值得注意的是，Anthropic 在 OpenAI 发布前 90 分钟发布了 Opus 5.5 新版本，反映出两家公司之间的激烈竞争。 新版本的 Sol 和 Luna 现在可在 ChatGPT Work 和 Codex 中为大多数付费帐户以及 ChatGPT API 提供，而 Luna 将在桌面应用程序中为 Free 和 Go 用户提供。 OpenAI 预计全天逐步将模型推出到 ChatGPT（应用程序和网站）。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/22/openai-launches-gpt-6-sol-and-luna/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">11</span> Snorkel AI triples valuation to $3.5B as demand for AI training data booms</h3><p class="card-meta">科技与 AI · TechCrunch · 2026-09-23 05:56<span class="chip chip-accent">重点</span></p><p class="card-summary">The seven-year-old startup has raised a $350 million Series E to fuel its data-…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>Snorkel AI 是一家帮助人工智能实验室和企业构建训练数据集和模拟环境的初创公司，已以 35 亿美元的估值筹集了 3.5 亿美元的 E 轮融资。 新一轮融资由 Insight Partners 和 S32 领投，这家成立 7 年的初创公司的估值几乎是 17 个月前 D 轮融资 1 亿美元时估值 13 亿美元的三倍。 Addition、Lightspeed、Greylock、GV 和 Wells Fargo 等现有投资者也参与了本轮融资。 虽然 Snorkel 最初提供数据标签自动化软件，但去年它转向为客户提供完整的数据集，这种产品被称为“数据即服务”。 Snorkel 并不是纯粹作为人类专家市场运营，而是依靠混合方法，使用其软件和模型与主题专家一起综合生成数据。 Snorkel 表示，其目前的年化收入运行率为 3.75 亿美元，比过去 12 个月增长了 18 倍。 这种增长是由人工智能实验室对高端训练数据永不满足的需求推动的。 其他将自己定位为人工智能数据实验室的数据公司也出现了类似的爆炸式增长。 Mercor 的年化总收入已攀升至 20 亿美元，Handshake 今年早些时候达到了 10 亿美元的里程碑，TechCrunch 报道称 Micro1 的规模已扩大至 5 亿美元。 由于这些公司将大约 60% 到 70% 的收入直接支付给从事相关工作的领域专家，因此值得注意的是，他们的实际年净收入远低于这些标题总收入。 该公司表示，鉴于 Snorkel 销售的是强化学习 (RL) 环境和完整的数据集，而不是人力，因此向其人类专家支付的费用计入其销售商品成本，而不是产生头条新闻的年化收入数据。 Snorkel 联合创始人兼首席执行官 Alex Ratner 及其团队在斯坦福大学人工智能实验室经过四年的研究，于 2019 年推出商业版。</p></div><p class="fulltext-src"><a href="https://techcrunch.com/2026/09/22/snorkel-ai-triples-valuation-to-3-5b-as-demand-for-ai-training-data-booms/" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/de91/live/e1c3c1e0-b6b3-11f1-a430-4d16ee157c41.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">12</span> A new skyline of data centres is rising from the rolling plains of rural China</h3><p class="card-meta">科技与 AI · BBC Technology · 2026-09-23 06:04<span class="chip chip-accent">重点</span></p><p class="card-summary">Potato farmers rub shoulders with rows of gleaming new data centres as Trump an…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 在内蒙古广阔的草原上，农民们正在与新邻居一起采摘饱满的土豆：巨大的矩形块将为中国的人工智能平台提供动力。 拥有草原和火山的乌兰察布不太可能是一个数字前沿。 多年来，它一直是中国官方的“马铃薯之都”。 但现在，随着唐纳德·特朗普和中国国家主席习近平会面讨论人工智能安全等问题，它的油田也成为了大量数据中心的建筑工地。 数百名戴着黄色头盔的工人搬运重型设备进入建筑工地，焊接火花从金属脚手架上飞溅而出。 在他们上方，巨大的起重机精确地移动以建造屋顶，而人们则在梯子上保持平衡以抹灰砖块。 “这就是中国速度。”一位工人开玩笑说。 “一个基础设施狂人”，他这样描述自己的国家，并笑着走开。 “每年都有一个阶段。这是第二阶段。”一位电气工程师解释道。 “之后还会有更多阶段。” 人工智能是中国与美国竞争的核心，其关键在于数据中心内部的计算能力。 对于中国共产党来说，这些建筑对于国家的经济和国家安全至关重要。 一旦完成，他们将帮助推动其使命，即到 2030 年将人工智能嵌入 90% 的行业和社会。 中国不只是建设基础设施。 它还创造了一个人才库：年轻的工程师和研究人员现在将自己的国家视为一个充满机遇的地方，部分原因是与美国的紧张关系和特朗普对移民的限制使美国梦变质。 “前往美国的学生和研究人员越来越少，而从美国返回中国的学生和研究人员越来越多。这一点非常明显，”中国科学技术大学的张杰克说。 他本人在美国耶鲁大学、英国剑桥大学学习后被高水平项目录取。 “我想将我在实验室所做的一些人工智能工作应用于人类健康和医学。这需要更多的资源、更多的人员，有时还需要更多的政府支持，而这些在海外可能很难获得。” 中国不断扩大的人工智能能力是美国表示不想暂停人工智能发展的原因之一，尽管行业内部强烈警告该技术发展得太快。 “谁赢得了人工智能，谁就获胜了，”特朗普总统上周表示。 人工智能公司 Anthropic 的首席执行官达里奥·阿莫代 (Dario Amodei) 呼吁维持美国主导的向中国出售先进芯片和设备的禁令，同时警告称，中国的主导将“对美国和世界构成严重危险”。</p><p>这不是习近平周三抵达华盛顿时希望听到的。 官方媒体《环球时报》与北京方面呼应，驳斥了美国的担忧，称其为“遏制”中国崛起的“冷战剧本”的一部分。</p><p>但中国不仅仅专注于追赶美国。</p><p>它还在宣传一种替代模型。 习近平本人鼓励中国人工智能公司开发更实惠的开源模型，让个人、公司和国家可以根据自己的意愿对其进行修改。</p><p>它还将中国模型与美国模型进行比较，其中包括 OpenAI 和 Anthropic 在内的开发人员使用封闭模型方法，并且其设计元素是保密的。</p><p>北京支持他们的做法的原因之一是，这种做法对他们来说效果很好。 通过共享技术，中国人工智能公司能够快速创新。</p><p>这帮助中国克服了最大的挑战之一：缺乏先进的芯片，这将有助于释放更大的计算能力。</p><p>但北京方面也希望在制定人工智能规则方面拥有更大的发言权。 习近平多次呼吁加强监管并建立可供其他国家遵循的全球框架。</p><p>随着对人工智能安全的呼声日益高涨，本周在白宫举行的峰会显得尤为重要。 双方能否在人工智能监管方面进行合作？ 关于经济放缓的说法是否现实？</p><p>在乌兰察布这样中国正在形成人工智能雄心的地方，情况显然并非如此。</p><p>中国正在人口稀少的省份为华为、字节跳动、DeepSeek建设数百个数据中心：北部的乌兰察布、宁夏和甘肃，西南部的贵州。</p><p>中国已经在这些地区建立了巨大的可再生能源——风能和太阳能——土地更便宜，天气凉爽，因此对水的需求较少。</p><p>这并不意味着没有担忧或缺点。 中国希望到 2030 年其大部分数据中心都采用绿色能源，但部分电网仍由煤电供电。 内蒙古干旱地区的供水仍然是一个令人担忧的问题。</p><p>整个村庄都被搬迁了，但很难确定具体人数或居民获得的补偿。 这是一个很少有人会讨论的话题，因为过于公开地表达担忧可能是危险的。</p><p>“这些大数据与普通人完全无关，”一位当地人在镜头外匿名说道。 “它给我们带来了什么好处？”</p><p>他说很少有当地人在那里找到工作。 其他人告诉我们，他们担心他们的土地会被征用，他们将无法再以务农为生。</p><p>但也有乐观主义者，比如一名男子告诉我们他姓张，他站在数据中心附近田地里的土豆采摘工旁边。</p><p>“中国现在处于世界前列，”他说，并补充说他的孩子们已经成功在那里找到了工作。</p><p>“现在不像20世纪60年代那样比较落后。中国现在做得很好，无论是经济发展还是其他领域，都做得很好。” 调查似乎表明，与许多其他国家相比，几乎没有人反对人工智能或其广泛采用，但在如此严格的审查环境下很难评估这些数字。 北京方面已经非常明确地表示，它将人工智能视为劳动力老龄化的解决方案，并正在迅速实现制造和生产的自动化。 这引发了人们对失业的焦虑，而失业又是难以衡量的。 但这个国家每年培养大约 500 万科学技术毕业生，而美国大约有 50 万。 随着越来越多的人留在中国，他们看到了不断发展的创新生态系统。 27 岁的人工智能开发人员党荣浩就职于一家领先的科技公司，他表示中国校园正变得更加开放，使他能够在上海的基地与世界各地的研究人员进行交流。 “我看到了人工智能与核聚变、人工智能与天体物理学、人工智能与新材料、人工智能与新药开发相结合的研究。我认为我们正在进入一个美好的时代。” 即便如此，一些人认为中国仍然奖励顺从而不是挑战。 “它没有我希望的那么开放，”清华大学统计与数据科学系教授刘军说。 他曾就读于哈佛大学和斯坦福大学。 “我一直鼓励这里的学生提出更多问题，挑战更多，但这很难改变。我认为部分是文化，部分是制度。” 远离刘教授和其他人在人工智能前沿争论的实验室，许多中国人仍在努力应对更紧迫的经济问题：经济低迷、青年失业率上升、支出低迷和房价暴跌。 在农村地区，人口老龄化也日益引起人们的关注。 “大数据之类的东西……很好，但这与我无关，”内蒙古的一位农民一边说，一边推着一辆推车检查他的羊。 他说他对人工智能没有用处。 他甚至几乎不使用互联网。 他的手机屏幕被砸碎了，wifi来自一个袖珍适配器，他每月只需支付 40 多元。 “对我来说并没有真正发生任何变化。我不知道未来，”他说。 这种怀疑可能成为对北京的挑战。 这里和这个国家其他地方正在发生巨大的变化，但很难知道有多少人像他们的领导人一样对这个充满科技的未来进行投资。</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cm5ydz4kl65ro?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/d1ba/live/c4418760-b64a-11f1-bc1f-3f186ca4140c.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">13</span> Rare look at the remote engine rooms powering China&#x27;s AI ambitions</h3><p class="card-meta">科技与 AI · BBC Technology · 2026-09-23 06:03<span class="chip chip-accent">重点</span></p><p class="card-summary">The BBC is in Inner Mongolia where dozen of Chinese data centres are being cons…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能改变产品路线、评测基准或开发者工具选择</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>罕见地看到为中国人工智能雄心提供动力的远程机房</p><p>BBC 的劳拉·比克 (Laura Bicker) 在内蒙古正在建设数十个中国数据中心，中国的目标是在人工智能领域引领世界。</p><p>在习近平和唐纳德·特朗普本周晚些时候在华盛顿举行会晤之前，她解释了中美两国人民对数据中心行业的态度有何不同。</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/videos/cwe8ejvv0leno?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article></section><section class="section" id="sec-research"><h2>前沿 AI 研究</h2><article class="card card-ai"><div class="card-body"><h3 class="card-title"><span class="rank ai-id">AI-01</span> METR — Summary of METR&#x27;s predeployment evaluation of Claude Opus 5.5 September 22, 2026 A summary of METR&#x27;s independent, predeployment evaluation of Claude Opus 5.5 Read more <span class="chip">新发布</span></h3><p class="card-meta">2026-09-22 · Benchmark / Evaluation</p><p class="label">核心结论</p><ol class="conclusions"><li>A summary of METR&#x27;s independent, predeployment evaluation of Claude Opus 5.5</li></ol><p class="card-why"><span class="label">为什么重要</span> 来自METR官方页面；含评测/基准相关关键词；类型启发式=Benchmark / Evaluation</p><p class="card-impact"><span class="label">影响</span> 可能影响模型对比与选型基准</p><p class="card-meta"><span class="label">证据属性</span> 独立评测</p><p class="card-meta"><span class="label">可信度与局限</span> 独立评测来源页面提取；仍需核对原文方法与样本，脚本未做独立复核</p><p class="read-more"><a href="https://metr.org/blog/2026-09-22-claude-opus-5-5/" rel="noopener noreferrer">官方链接</a></p></div></article><article class="card card-ai"><div class="card-body"><h3 class="card-title"><span class="rank ai-id">AI-02</span> METR — March 21, 2024 <span class="chip">新发布</span></h3><p class="card-meta">2026-09-17 · Safety / Alignment</p><p class="label">核心结论</p><ol class="conclusions"><li>详见原文，脚本未能提取结构化结论</li></ol><p class="card-why"><span class="label">为什么重要</span> 来自METR官方页面；涉及安全/对齐信号；类型启发式=Safety / Alignment</p><p class="card-impact"><span class="label">影响</span> 可能影响模型部署策略与合规讨论</p><p class="card-meta"><span class="label">证据属性</span> 独立评测</p><p class="card-meta"><span class="label">可信度与局限</span> 独立评测来源页面提取；仍需核对原文方法与样本，脚本未做独立复核</p><p class="read-more"><a href="https://time.com/6958868/artificial-intelligence-safety-evaluations-risks/" rel="noopener noreferrer">官方链接</a></p></div></article></section><section class="section" id="sec-市场"><h2>市场与产业</h2><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/9282/live/a5ccbcd0-b660-11f1-b1d1-571ed4d7ff2c.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">14</span> Europe&#x27;s car makers are in crisis. Will the threat of war rescue them?</h3><p class="card-meta">市场与产业 · BBC Business · 2026-09-23 07:11<span class="chip chip-accent">重点</span></p><p class="card-summary">Auto executives across Europe hope rearmament can help them flex their industri…</p><p class="card-impact"><span class="label">影响</span> 围绕war，可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>它是绿色的、鼓鼓的、令人生畏的。 福特的最新车型看起来像是一辆经过绿巨人浩克改造的皮卡车。 基于其广受欢迎的 Ranger 系列，这辆停在福特达根纳姆工厂前门外的强大车辆可以承载 2 吨负载，最多牵引 4 吨，并且还承载着仍然在这里制造发动机的 2,000 名劳动力的希望。 在工厂内部，为这头迷彩巨兽提供动力的 3 升柴油发动机沿着生产线缓缓前行，在过去十年里，该生产线的产量从每年 90,000 台发动机减少到一半左右。 福特希望转向军用车辆能够帮助填补该公司英国老板所说的自汽车发明以来最具挑战性的环境所造成的空白。 曾经强大的欧洲汽车工业现在开始显得微不足道，并希望随着欧洲重新武装而激增的国防预算可以帮助其再次展示其工业实力。 福特是与国防专家通用动力公司和里卡多公司成立的合资企业的一部分，该企业正在竞标国防部 (MoD) 的一份合同，该合同将在未来五到七年内供应 9,000 辆汽车，以取代陆军老化的路虎车队。 福特英国公司董事长丽莎布兰金表示，这是一个展示他们快速响应国防需求能力的机会：“作为制造商，你会关注每一个出现在你面前的机会，这是一个我们很乐意利用的绝佳机会。” 这并不是福特第一次忙于国防工作。 第二次世界大战之前，福特位于伦敦东部达根纳姆的工厂是欧洲最大的汽车工厂。 战争爆发后，民用汽车组装完全停止，工厂全部转为军用生产。 1939 年至 1945 年间，达根纳姆工厂为盟军战争生产了 360,000 辆汽车。 曼彻斯特的福特工人生产了 34,000 台劳斯莱斯设计的 Merlin 发动机，为喷火式战斗机和飓风战斗机提供动力。 八十年后，英国和欧洲汽车工业希望战争引擎能够帮助抵御一位供应商告诉英国广播公司的“最终衰退”。 面对俄罗斯的威胁和美国不愿成为欧洲的保护者，欧洲感到有必要投入数千亿美元增加国防开支，受到中国竞争对手商业攻击的汽车制造商已经注意到了这一点。 那么欧洲的重整军备能否拯救面临危机的汽车工业和供应链呢？ 转向防守 福特并不是唯一一家将国防视为增长型行业的汽车公司，并且可以利用欧洲各地汽车工厂日益增长的产能过剩。</p><p>法国汽车制造商雷诺与国防巨头泰雷兹签署了一项生产军用无人机的战略协议，目标是每月产量高达 1,000 架。 法国军方和军备总局希望利用雷诺的大规模生产能力来绕过传统的、速度较慢的国防供应链。 与此同时，大众汽车已同意出售位于德国西部奥斯纳布吕克的一家未充分利用的工厂，该工厂将成为与以色列国防投资者合资的军事制造中心。 生产路虎的捷豹路虎 (JLR) 也在竞标与福特相同的合同，因为陆军将在 2030 年退役现有的路虎车队。捷豹路虎还成立了一个新的专门业务部门，以支持其全球军事野心。 汽车制造商和贸易商协会 (SMMT) 贸易协会的迈克·霍斯 (Mike Hawes) 表示，将未充分利用的汽车制造产能转向国防是有意义的。 英国汽车工业及其供应商严重依赖几家大型制造商——桑德兰的日产汽车、德比郡的丰田汽车、牛津郡的宝马汽车，以及其中产量最大的汽车制造商捷豹路虎，其位于中部和默西塞德郡的多个工厂。 霍斯表示，供应链非常脆弱。 “过去八九年里，英国汽车产量一直在下降，”他说。 “我们的产能可能只有 10 年前的一半。现在，这显然会对供应链造成影响，因为他们不再生产相同数量的零部件。所以他们有能力。他们可能也非常依赖于某个特定的制造商。” 因此，他们将欢迎“扩大客户群并有可能进入国防领域的机会”，他说。 就在两周前，捷豹路虎宣布将从其 30,000 名英国员工中裁员 4,000 人，以降低成本以保持与国际（尤其是中国）竞争对手的竞争力。 为捷豹路虎供应冷却系统组件的 Evtec 公司的戴夫·罗伯茨 (Dave Roberts) 对此表示担忧。 “捷豹路虎是英国汽车制造领域的关键人物，”他说。 “它是将整个行业凝聚在一起的粘合剂。因为请记住，当你为捷豹路虎生产销量时，它们的销量明显高于英国任何其他汽车制造商。 “如果他们受到影响，连锁反应就会在供应链中蔓延得更深。” 本周早些时候，捷豹路虎主要供应商敦促政府帮助汽车制造商进军航空航天和国防领域，警告英国大规模汽车产量面临长期下滑。 在致首相、财政大臣兼西米德兰兹郡市长理查德·帕克的公开信中，行业领袖认为英国的汽车供应链“并未衰退”，而是“处于错误的市场”。</p><p>这封信由代表拥有超过 8,600 名直接员工的企业的高管以及代表约 75,000 名工人的英国金属成型联合会签署。 这封信的签署者表示，此次裁员是英国汽车供应链中“第一个明显的裂缝”，该供应链支撑着约183,000个制造业岗位。 在整个欧洲，该行业正面临着 ACEA 汽车工业制造商协会总干事 Sigrid de Vries 所说的“一场完美风暴”。 汽车制造商正花费数十亿美元转向电动汽车，并坚称政府对电动汽车的销售目标超过了消费者的需求。 人们购买的电动汽车越来越多地来自该行业最大的新威胁——中国。 中国综合症 2000 年代初期，西方公司将中国视为一片充满机遇的土地。 该国快速增长的中产阶级拥有大量资金，并且对汽车（包括最赚钱的高档车型）有着看似永无止境的胃口。 这是一项利润丰厚的业务——中国市场一度占大众汽车利润的一半。 然而，这种情况并没有持续多久。 中国希望建立本土汽车工业，并投入了大量的国家资金，使该国成为包括电动汽车在内的高科技行业的领导者。 如今，中国市场国内外品牌林立，竞争激烈。 中国汽车制造商已将注意力集中在国外市场，并利用向电动汽车的转型作为获得市场份额的途径。 比亚迪、奇瑞和吉利等公司正在大举进军欧洲。 对于欧洲品牌来说，这一切发生的时机再糟糕不过了。 在他们大力投资生产电动汽车（EV）之后，他们失去了来自中国的稳定利润，而中国竞争对手在自己的地盘上出现了。 但电动汽车销量的增长速度并没有达到预期。 高管们承认，他们一直在努力跟上中国叛乱分子的低生产成本和发展速度。 结果是，欧洲制造商现在急于削减成本，同时想知道如何处理那些能够生产比销售量多数百万辆汽车的昂贵工厂。 大众汽车已经宣布计划在未来几年内裁员 10 万人。 虽然一旦关闭德国工厂是不可想象的，但该公司现在已经关闭了德累斯顿的一家工厂，并可能关闭另外四家工厂。 其中包括位于茨维考的一个工厂，大众在那里花费了超过......</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/c6vgyq598k9po?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/dd34/live/958ea3f0-b69d-11f1-b1d1-571ed4d7ff2c.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">15</span> Watch: Trump floats rebranding artificial intelligence as super intelligence</h3><p class="card-meta">市场与产业 · BBC Business · 2026-09-22 23:53</p><p class="card-summary">&quot;The use of the word artificial makes it sound fake,&quot; he said told the UN. &quot;It&#x27;…</p><p class="card-impact"><span class="label">影响</span> 围绕ai，可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>观看：特朗普将人工智能重新命名为超级智能</p><p>唐纳德·特朗普热衷于打造品牌，在演讲中他给人工智能起了一个新名字：超级智能。</p><p>“使用人工这个词听起来很假，”他说。 “这不是假的，它实际上很神奇。但我们必须小心，”他补充道。 “欢迎来到超级智能的新世界——SI，”他接着说道。</p><p>特朗普此前曾表示，谁赢得人工智能，谁就获胜，他坚决反对监管。 但这使他与这里的许多人产生分歧。</p><p>问题是外交的缓慢步伐能否跟上人工智能的快速发展。</p><p>在这里关注现场报道。</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/videos/c8n5d9x10v14o?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/bf88/live/3e21a580-b699-11f1-bc1f-3f186ca4140c.png" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">16</span> &#x27;I don&#x27;t have a buoyancy aid&#x27;: Living without the Bank of Mum and Dad</h3><p class="card-meta">市场与产业 · BBC Business · 2026-09-23 07:20</p><p class="card-summary">Three 20-somethings tell BBC News how they are navigating life without parental…</p><p class="card-impact"><span class="label">影响</span> 可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 对于许多年轻人来说，买房甚至搬进出租屋是一个越来越不切实际的梦想。 今年夏天，BBC Your Voice 透露，超过 40% 的 25 岁年轻人现在与父母住在一起。 数十名年轻人告诉我们，他们不得不依靠所谓的父母银行来帮助支付房租、账单和其他生活费用。 但如果您不能依靠家人的帮助会怎样？ 公民咨询中心表示，越来越多的人在没有父母支持的情况下难以负担房租和食物等日常必需品。 三名女性告诉我们，在没有安全网的情况下，她们是如何度过生活的。 “我想要独立……所以当你遇到这种事情时，就像碰壁一样” 埃莉诺·贝尔 (Eleanor Bell)，23 岁，来自约克郡东区，拥有一流学位，但正在努力寻找工作 埃莉诺·贝尔现年23岁，但在10岁的时候就受到了照顾。她在学校努力学习，取得了优异的成绩，并获得了中央兰开夏大学的一流学位。 两年前毕业后，她认为竞争环境会更加公平。 还没有。 埃莉诺说，她申请的工作多得数不过来，而且还经历过几次不成功的面试。 她目前住在南约克郡佩尼斯通郊外男友的家里，这有助于降低生活成本，但农村地区让没有驾驶执照的人找工作变得更加困难。 “我认识很多人，他们之所以能找到工作，是因为他们的父母在他们之前曾在那里工作过。” 当她看到 BBC 一篇关于现在有多少年轻人与父母住在一起的文章时，她联系了。 “我想这让我有点难过。我想和父母住在一起……但这让我想到像我这样的人，那些没有这些的人，他们在做什么？他们在哪里？他们必须依靠谁？ 埃莉诺告诉英国广播公司：“就像每个 20 多岁的人都必须踩水一样，但我却没有得到浮力辅助。” 官方数据显示，英格兰 19 至 21 岁的护理离开者中有 39% 没有接受教育、就业或培训，而年轻人的总体比例约为 13%。 “我想要独立，所以当你遇到这种事情时，就像碰壁一样。” 对于埃莉诺来说，她缺少的不仅仅是经济支持和栖身之所。 “你没有人抱着你，然后说，‘看，我也做了同样的事情，但别担心’……我认为缺乏准备确实会影响你，”她解释道。 “我不太知道该怎么办，这就是我的感觉，只是有点失落。 我又回到了黑暗中，没有手电筒之类的东西，这就是感觉。” “我不买任何奢侈品，我很少做任何有趣的事情”</p><p>Sam Barrett，24 岁，来自桑德兰，正在兼职学习。 她辞去了全职工作来照顾妈妈 在桑德兰，24 岁的萨姆·巴雷特 (Sam Barrett) 感到沮丧，因为其他同龄人都享有她无法获得的经济支持。 为了照顾妈妈，她辞去了酒店业的全职工作，正在兼职学习健康和社会护理，但她表示，职业津贴和通用信贷不能支付她的主要开支。 “进来的不多，作为一名护理人员你只能得到这么多。我不买任何奢侈品，我很少做任何有趣的事情，”她说。 她的妈妈会尽可能提供经济上的帮助，但没有太多钱可以花，萨姆说她意识到了这一点。 “在我的成长过程中，看到其他人比我拥有巨大的优势，我一直觉得有点不公平。就像很多父母会说的那样，‘这是你上驾驶课的钱，这是你的车’，但我不能这么做，”她说。 萨姆很生气像她这样的护理人员没有得到更多的报酬。 “我通过照顾我的妈妈来节省政府的钱。政府没有采取任何措施来帮助你，他们基本上只是说负债累累。” “我的父母在经济上陷入困境，就像我一样，就像其他人一样” 23 岁的埃兹吉·波拉特 (Ezgi Polat) 来自剑桥郡，一年前失业，很快就拖欠房租和账单 最近，Citizens Advice 委托对 5,500 多人进行了一项调查，结果显示，36% 的成年人表示他们至少拖欠了一项账单，但对于 20 多岁的人来说，这一数字攀升至 57%。 埃兹吉·波拉特就是其中之一。 这位来自剑桥郡拉姆齐的 23 岁女孩 12 个月前失业，她的家人无法提供帮助，所以她很快就拖欠了房租和账单。 “我的父母和我一样，和其他人一样，在经济上陷入困境……我拖欠了自己的钱，欠了很多债，因为我无力承担——当时 300 英镑还不足以支付我的任何账单。” 她当地的巴士服务被取消，导致前往就业中心变得越来越困难，因此她的福利也被削减。 她每月收到 360 英镑的通用信贷，但租金为 460 英镑，加上水电费、市政税和生活费用，她的总债务飙升至约 4,000 英镑。 在向公民咨询中心寻求帮助后，她拖欠的房租在三个月前被市议会清偿了，并且她同意在还款计划中每月向电力和自来水公司支付 200 英镑。 她很高兴现在能在仓库找到工作，感觉生活又回到正轨了，但这并不是一条容易的路。 “很多老年人觉得我们不够雄心勃勃，或者我们不够努力，但他们会惊讶地发现有这么多人如此渴望工作，如此渴望支持，但却无处可求助，”她说。</p><p>最新的政府数据显示，目前有近百万年轻人没有就业、教育或培训。 一位政府发言人表示：“我们决心为每个邮政编码的年轻人重拾希望并提供机会。这就是为什么我们要投资 25 亿英镑，通过更多学徒、工作补助和培训为年轻人创造赚钱或学习的机会。对于那些第一次搬出的人，我们的《租户权利法案》为租户提供了更多权利和保护，防止租金过度上涨。” 但公民咨询公司(Citizens Advice)政策主管卢克·杨(Luke Young)认为，年轻人陷入了成本上升和就业市场困难的困境。 “对于现在的年轻人来说，那些确实得到家庭和其他网络经济支持的人和那些没有家庭和其他网络经济支持的人之间的差距越来越大。没有更广泛支持网络的年轻人正在感到失望。” 补充报道：亚当·克拉克森和埃利奥特·戴迪</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/c8dx5p7gd4e9o?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/1e08/live/faec7d00-b6be-11f1-9432-8739e6adbfdf.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">17</span> IMF tells advanced economies to &#x27;bring debt down&#x27; as borrowing costs rise</h3><p class="card-meta">市场与产业 · BBC Business · 2026-09-23 07:01</p><p class="card-summary">In an interview with the BBC, Kristalina Georgieva says economic shocks had pus…</p><p class="card-impact"><span class="label">影响</span> 可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 国际货币基金组织（IMF）总裁警告说，在政府利息成本连续数周不断上升后，包括英国和美国在内的世界发达经济体需要削减借贷并降低债务水平。 克里斯塔利娜·格奥尔基耶娃(Kristalina Georgieva)在接受独家采访时表示，全球经济冲击“将债务水平推高，就像不上天堂的楼梯一样”，但各国政府“没有采取任何行动来控制服务成本”。 “现在是采取行动的时候了，”她说，并补充说政客们需要“勇气”来采取必要的措施。 此次干预是在政府借贷成本飙升之际进行的，原因是战争扰乱了石油供应，从而加剧了通货膨胀。 在英国首相安迪·伯纳姆下个月公布第一份预算之前，全球借贷成本上升对英国政府造成了打击，人们对潜在的税收和支出政策的猜测不断增加。 最新数据显示，8 月份借款（税收收入与政府支出之间的差额）为 183 亿英镑（244 亿美元），几乎比上年增加五分之一，也高于官方预测。 与此同时，本月债务利息是自 1997 年有月度记录以来的最高 8 月份数字。 借贷成本上升也打击了全球最大经济体美国，其债务规模已超过 40 万亿美元。 这一数额在十年内翻了一番，引发了国内外的担忧。 格奥尔基耶娃在联合国大会期间表示，国际货币基金组织向发达经济体传达的信息是，虽然存在政府无法控制的经济因素，但它们确实可以控制国内政策。 她表示：“必须做这两件事：降低债务水平，将财政整顿作为优先事项，并确保央行履行其稳定价格的职责。” “鼓起勇气采取必要措施的重要性怎么强调都不为过。这些措施在政治上是艰难的，但却是必要的。” 当被具体问及英国与其他主要经济体相比较高的利息成本时，格奥尔基耶娃表示，其立场与其他国家“并没有太大不同”。 她指出，在降低债务方面采取了“相当一致的行动”，并赞扬了规划和住房改革，并补充说，发达经济体“没有现金”来促进增长，因此不得不依靠改革来鼓励私营部门投资。 人工智能可能带来“金融稳定风险” 世界各国政府通过出售债券（本质上是借条）筹集资金，并向购买债券的投资基金支付利息作为回报。</p><p>对通胀侵蚀回报的担忧导致近几个月债券利率（即收益率）走高。</p><p>但还有其他因素推高收益率，包括大型科技公司寻求筹集巨额资金投资人工智能（AI）开发，导致债券市场竞争加剧。</p><p>在人工智能方面，格奥尔基耶娃提到了最近对此类系统失去安全控制的担忧，以及债务水平，将其视为潜在的金融稳定问题。</p><p>她说：“如果我们看到更多人工智能自行其是的事件，那么我们可能会面临重大的金融稳定风险。”</p><p>国际货币基金组织总裁重申了该机构的评估，即全球经济受到两股“相反方向推动”的力量的影响——能源价格冲击和人工智能投资。</p><p>她表示，重要的是，海湾地区石油和天然气的低出口“以持久的方式恢复，能源供应冲击最终将成为过去”。</p><p>“这是走向正常化的非常重要的一步，”她说，但承认这还没有发生。</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cx305ymq4ldqo?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/e9f0/live/e15023e0-b684-11f1-97fb-8d66d3951490.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">18</span> New EU industry rules would damage UK, warns Burnham</h3><p class="card-meta">市场与产业 · BBC Business · 2026-09-23 05:18</p><p class="card-summary">The prime minister met the European Commission President during his visit to th…</p><p class="card-impact"><span class="label">影响</span> 可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表</p><p>安迪·伯纳姆在会见欧盟委员会主席乌苏拉·冯德莱恩时警告说，欧盟计划制定的帮助欧洲制造商的规则将损害英国。</p><p>这些提案旨在通过给予欧盟内部企业优先获得公共合同和补贴的方式，保护欧盟工业免受中国竞争对手的侵害。</p><p>首相表示，他担心英国工业和供应链可能受到影响，并在纽约联合国峰会期间与冯德莱恩会面时向她提出了这个话题。</p><p>伯纳姆在飞往美国的航班上发表讲话时还拒绝排除在工党下一份宣言中承诺重新加入欧盟的可能性，并表示这是“改天再说”的问题。</p><p>他表示，他的当务之急是重建与欧盟的关系，并达成一项能够提振英国经济的协议。</p><p>欧洲制造计划——正式名称为《工业加速器法案》(IAA)——尚未最终确定，但欧盟汽车行业呼吁英国加入，以防止其供应链中断。</p><p>据报道，围绕拟议计划的紧张局势进一步推迟了今年计划举行的欧盟-英国峰会，该峰会在凯尔·斯塔默爵士七月份辞去首相职务后就已被推迟。</p><p>伯纳姆说：“我们所采取的立场得到了成员国的大力支持，因为欧洲的观点不支持我们。</p><p>“我们都遭受了与其他国家相同的影响，特别是钢铁及其给欧洲和英国钢铁行业带来的问题。</p><p>“我们的论点是‘我们不是你们的敌人……我们不是问题’。欧洲制造正在处理一个不同的问题。</p><p>“我们的论点是‘让我们避免附带损害’。”</p><p>伯纳姆告诉记者，他自己稍后在联合国大会上的讲话将反思英国脱欧公投以来的十年，以及“当外部行为者试图操纵、歪曲事实、影响英国民主进程时，就会出现动荡”。</p><p>他说：“进入下一个十年，我们需要对此保持清醒的认识，并在挑战这一点时变得更强大、更主动。”</p><p>当被问及是否排除在下次大选时承诺重新加入欧盟时，伯纳姆表示：“我们目前的重点是英国与欧盟峰会，我们希望该峰会将于今年晚些时候举行。</p><p>“我的当务之急是在基尔（斯塔默）重建桥梁方面所做的出色工作的基础上再接再厉，因为这些桥梁在本世纪初就被破坏了。”</p><p>他补充道：“我们现在要做的就是进入下一个阶段，达成切实可行的协议，进一步提振英国经济，这些问题以及欧盟关于青年流动性的要求都是峰会的实质内容。”</p><p>他表示，有关重新加入欧盟的问题“改日再讨论”。</p><p>周一在布莱顿举行的自由民主党会议上，欧盟新任驻英国大使被问及英国是否可以重新加入欧盟或获得准成员资格。</p><p>尤卡·萨洛瓦拉表示：“大门是敞开的，但在深化与欧盟合作时，英国公众应该确定并决定其雄心勃勃的程度。”</p><p>去年九月，伯纳姆表示，他希望在有生之年看到英国重返欧盟。</p><p>今年早些时候，他表示英国脱欧一直是“破坏性的”，但“我们现在最不应该做的就是重新讨论这些论点”。</p><p>欧盟最近建议加拿大可能成为欧盟的第一个“准成员”。</p><p>当被问及这是否可以成为英国的一个选择时，伯纳姆说：“欧盟明确表示这对我们不开放。”</p><p>布莱恩·惠勒的补充报道</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cv2dwylkl7weo?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/6c38/live/f49ca2e0-b6c3-11f1-8a9f-c7141bd7738d.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">19</span> Trump says he would back ban on diesel exports</h3><p class="card-meta">市场与产业 · BBC Business · 2026-09-23 04:41</p><p class="card-summary">Republicans lawmakers have put pressure on the president to curb exports as die…</p><p class="card-impact"><span class="label">影响</span> 可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表</p><p>美国总统唐纳德·特朗普表示，他将支持停止美国柴油出口的提议，以降低加油站司机的价格。</p><p>在他发表上述言论之前，共和党议员在11月中期选举前向总统施压，要求其限制出口，因为美国柴油价格飙升至历史新高。</p><p>特朗普在联合国大会间隙发表讲话时表示，将国内供应保留在美国国内也可以缓解更广泛的汽油价格。</p><p>“我也呼吁过这一点。我说过我们不要发出柴油。我们生产大量柴油。这可能会对普通汽车汽油产生一点影响，”他说。</p><p>美国财政部长斯科特·贝森特(Scott Bessent)证实，官员们正在评估“全面或部分禁令是否有效”而不影响炼油厂产能。</p><p>根据美国汽车协会的数据，周二全国平均柴油价格超过每加仑 6.50 美元（4.87 英镑），创下新高。</p><p>中东冲突限制了全球石油供应，给油价带来压力。</p><p>柴油成本飙升在 11 月 3 日关键的中期选举之前引发了政治紧迫性，一些共和党人敦促政府限制燃料出口，以缓解选民的财务压力。</p><p>竞选爱荷华州参议员的共和党众议员阿什利·辛森(Ashley Hinson)周一表示，该州的消费者“受到挤压，不应该为加油站买单”。</p><p>周二在阿拉斯加，参议员丹·沙利文同样敦促“暂时停止美国柴油和出口”，以重建国内储备。</p><p>乌克兰针对俄罗斯能源设施的攻击已经削弱了该国的炼油能力，这加剧了全球市场的波动。</p><p>“这对俄罗斯人来说是一个严重打击，”特朗普周二在与乌克兰外长弗拉基米尔·泽伦斯基会面时表示。 “这也对柴油价格造成严重打击。”</p><p>特朗普确认，他将与乌克兰总统讨论袭击事件，以及通过谈判结束冲突的更广泛努力。 “我认为这将会发生，”他说。</p><p>近几个月来，基辅加强了对俄罗斯加工厂的无人机袭击，以切断克里姆林宫的主要战争资金来源。</p><p>由于俄罗斯是世界领先的柴油供应国之一，炼油能力的下降——加上莫斯科本身严格的出口禁令——严重挤压了全球储备。</p><p>虽然限制美国出口可能会给美国司机带来短期缓解，但禁令可能会带来推高国际价格的风险。</p><p>美国每天出口约 130 万桶柴油——近其炼油产量的四分之一。</p><p>削减这些运输量可能会给包括英国和荷兰在内的西方盟国的供应带来压力，这些国家一直依赖美国燃料来弥补对俄罗斯能源制裁造成的赤字。</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cmkg7560epw0o?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/ab1bbc029e0284bd5fe85ad5ceaa6752f6322e48/287_0_900_720/master/900.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=0bd392d0c2b20b35de3c6e155033c48a" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">20</span> Patrick Clancy interview on 60 Minutes fails to provide big ratings boost for CBS</h3><p class="card-meta">市场与产业 · Guardian Business · 2026-09-23 05:29</p><p class="card-summary">Amid show’s major overhaul by Bari Weiss, Sunday’s episode draws third-smallest…</p><p class="card-impact"><span class="label">影响</span> 可能影响相关板块估值与资本开支预期</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>根据周二公布的观众数据，《60 分钟》对林赛·克兰西前夫帕特里克·克兰西的重磅采访未能大幅提升周日节目的收视率。 周日晚上的这档新闻杂志节目平均吸引了 677 万观众，这是过去 25 年来每季第二集观众人数第三少的数字，这让巴里·韦斯 (Bari Weiss) 的首次亮相令人失望。 第59季于9月13日首播，收视人数较第58季大幅下降，收视人数为794万，而上季第一集的收视人数为1000万。 尽管哥伦比亚广播公司新闻将其称为本周收视率最高的非体育节目，并发表声明对该节目的内容表示满意，但该集是该节目在 21 世纪收视率最低的一季首秀。 该网络上周表示：“我们对本季首播中展示的出色新闻感到非常自豪，我们迫不及待地想在即将到来的周日为观众带来另一场精彩的节目。” 该剧 9 月 20 日的这一集勉强比上一季第二集（645 万名观众）略胜一筹，而且它很可能因为没有将 NFL 橄榄球作为所有市场的引导节目而受到损害。 但它的特色本应是一次吸引观众的采访，新任记者罗斯·杜塔特 (Ross Douthat) 与帕特里克·克兰西 (Patrick Clancy) 坐在一起，讲述了他的孩子被杀以及后果。 克兰西的新婚妻子、生育医生雷切尔·丹尼斯也接受了简短的采访。 消息人士称，为了认可这次采访的文化意义和对节目的重要性，韦斯参加了谈话。 该节目还包括记者诺拉·奥唐纳 (Norah O’Donnell) 报道的针对数据中心的抵制的及时片段，以及长期关注体育的记者乔恩·沃特海姆 (Jon Wertheim) 撰写的关于 20 世纪 80 年代被绑架的爱尔兰赛马谢尔加 (Shergar) 的侦探小说。 虽然杜塔特对克兰西的采访获得了普遍好评，但收视率显然没有达到哥伦比亚广播公司新闻高管所希望的水平。 该剧的首集还包含了一场轰动一时的采访，其中一名美国战斗机飞行员于四月在伊朗上空被击落。 《卫报》已联系哥伦比亚广播公司新闻了解周日的收视率。 对网络来说，积极的一面是，该集吸引了 1.792 亿次社交观看，超过了上周 1.167 亿次观看的记录。</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/us-news/2026/sep/22/60-minutes-patrick-clancy-cbs" rel="noopener noreferrer">查看原文</a></p></details></div></article></section><section class="section" id="sec-世界"><h2>世界与社会</h2><article class="card has-media"><figure class="card-media"><img src="https://global.unitednations.entermediadb.net/assets/mediadb/services/module/asset/downloads/preset/Collections/Production%20Library/2026/09/22-09-2026-UN-Photo-Guterres.jpg/image560x340cropped.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">21</span> Guterres: ‘Cracks have become canyons’ as world faces four tests of power</h3><p class="card-meta">世界与社会 · UN News · 2026-09-22 20:00<span class="chip chip-accent">重点</span></p><p class="card-summary">Humanity faces four defining “tests of power” – around war or peace, inequality…</p><p class="card-impact"><span class="label">影响</span> 围绕ai/war，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>古特雷斯：“裂缝已成为峡谷”，世界面临四次权力考验 联合国秘书长周二警告联合国大会，人类面临着四项决定性的“权力考验”——围绕战争还是和平、不平等、气候变化和人工智能——这将决定世界是走向合作新时代还是更深层次的分裂。 要点 - 联合国秘书长敦促在人工智能治理方面开展具有约束力的国际合作，警告绝不能将生死决定权交给机器 - 呼吁安理会改革，强调非洲常任理事国席位的缺失仍然是“无可辩解的” - 联合国历史上首次在高级领导层和工作人员中实现了全面的性别平等 在安东尼奥·古特雷斯担任联合国秘书长的任期还剩大约 100 天时，他发表了内容广泛的讲话，他将世界上最紧迫的危机不是孤立的问题，而是对如何行使权力和由谁行使权力的同一根本斗争的不同表达。 “最伟大的力量不是主宰的力量。而是建设一个适合每个人的未来的力量，”他在介绍本组织年度报告时说道。 在描述国际规范十年来不断受到侵蚀时 — — 从平民成为战争目标、人道主义工作者被杀害，到国际法被“抛弃”以及国家间信任的削弱 — — 他表示，权力本身正在以三种方式从根本上重塑： - 新国家权力的出现 - 权力从政府向私营公司和个人的重大转移 - 人工智能和自主武器在曾经由人类做出的决策中发挥着越来越重要的作用 “我们世界的断层线正在扩大，”他说。 “裂缝变成了峡谷。” 他并没有认为分裂是不可避免的，而是呼吁加强合作，建立一个建立在相互依存和共同规则基础上的真正的全球网络，同时警告不要陷入具有独立经济和安全体系的敌对集团，他近年来将这种情况称为“大断裂”。 看不到真正的停火 古特雷斯在谈到中东、乌克兰、苏丹和缅甸的一系列危机时表示，所谓的停火往往只不过是“小火”，平民继续为此付出代价。 他再次呼吁遵守国际法院有关加沙的命令，并警告说，以色列占领的约旦河西岸的定居点扩张可能会毁掉两国解决方案。 他还谴责俄罗斯全面入侵乌克兰，此举明显违反了《联合国宪章》。</p><p>他再次呼吁安理会进行改革，并指出，鉴于这个由 15 名成员组成的机构是在一个截然不同的地缘政治时代成立的，非洲常任理事国席位的持续缺失是“不公正和站不住脚的”。 “平等不是梦想； 这是一个决定” 他强调了创纪录的全球财富与仍然无法获得食物、清洁水、教育和医疗保健的数十亿人之间的差距，他表示，不平等不仅仅是一个经济问题，而且是一个关于机会、资源和自决权的问题。 他重申了他长期以来的观点，即国际金融体系让发展中国家深陷债务困境，同时又面临着它们未曾造成的气候灾难。 本着这一精神，他呼吁更快地减免债务、更大胆地设立多边开发银行以及更公平地获得国际货币基金组织（IMF）设立的特别提款权。 他特别关注性别不平等问题，并宣布联合国历史上首次在高级领导层、总部工作人员和专业角色中实现了全面的性别平等。 “平等不是梦想；而是一个决定，”他说，并引用联合国的进展作为根深蒂固的权力结构可以改变的证据。 双重挑战：气候和人工智能 关于气候变化，古特雷斯先生表示，这场危机是“最严重的代际权力失衡”，并警告说，升温几乎肯定会突破 1.5°C 的门槛。 他呼吁污染者“买单”，并要求发达国家将适应资金增加两倍，并指出，自俄罗斯入侵乌克兰以来，大型石油公司正在获得巨额利润，而针对发展中国家的全球适应资金仍只占其中的一小部分。 在谈到人工智能时，秘书长警告说，权力日益集中在数据、计算能力和算法上，其发展速度超过了人类的治理能力。 “危险不是技术，”他说。 “危险在于没有责任的技术。” 亡命之徒杀手机器人 联合国秘书长表示，必须建立人工智能的防护栏，并补充说，儿童绝不能成为不受监管系统的测试对象。 “生死攸关的决定决不能交给机器，”他警告说。 “杀手机器人在我们的未来中一定没有立足之地。” 为了解决这个问题，他呼吁建立一个具有独立监督的多边人工智能风险管理框架，并坚定地表示，儿童永远不能成为不受监管系统的测试对象，生死攸关的决定永远不能交给机器。 更强，而不是更弱 古特雷斯重申，和平、发展和人权是《联合国宪章》不可分割的支柱，反对任何认为尊严和权利可以与安全和机会相分离的观念。</p><p>80多年前，面对第二次世界大战战场上的全球灾难，联合国的成立是对希望的蔑视，是那些拒绝将未来交给恐惧的人们的行为，也是因为各国知道自己的未来是紧密相连的。</p><p>他承诺在余下的任期内发扬“决心精神”，即使在卸任秘书长职务后，他也将继续捍卫《联合国宪章》的价值观。</p><p>“世界不需要一个更弱的联合国，”他说。 “它需要一个足够强大的联合国来面对世界的现状，并有足够的决心来建设一个应有的世界。”</p></div><p class="fulltext-src"><a href="https://news.un.org/feed/view/en/story/2026/09/1168392" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/e10a40764805913e5df05ca0e83f6d195e7f184c/818_0_5269_4216/master/5269.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=c056e08efe30cbd608971f27dafd31bb" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">22</span> Kamala Harris returns to Michigan to campaign for Abdul El-Sayed for Senate</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-23 06:18</p><p class="card-summary">Former VP, who lost state to Trump in 2024 elections, is lending her popularity…</p><p class="card-impact"><span class="label">影响</span> 围绕election，可能牵动外交立场、制裁或援助节奏</p><div class="meta-block"><span class="label">另见</span><ul class="secondary"><li><a href="https://www.aljazeera.com/news/2026/9/22/kamala-harris-campaigns-with-abdul-el-sayed-to-unify-democratic-voters?traffic_source=rss" rel="noopener noreferrer">Al Jazeera</a> — Kamala Harris campaigns with Abdul El-Sayed to unify Democratic voters</li></ul></div><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>卡玛拉·哈里斯周二返回密歇根州为阿卜杜勒·赛义德竞选，将她在黑人选民中的受欢迎程度归功于一位进步的参议院提名人，她仍在努力团结因初选惨败而分裂的政党，而这位前副总统在该州输给了唐纳德·特朗普。 哈里斯与埃尔-赛义德一起出现在底特律的一家生育中心，利用一场关于黑人孕产妇健康的圆桌会议，将 11 月份与共和党人迈克·罗杰斯 (Mike Rogers) 的竞争描述为一场关于女性获得护理机会的斗争。 “医疗补助是美国最大的产妇护理资助者。唐纳德·特朗普将医疗补助资金削减了一万亿美元，”她说，并批评罗杰斯支持总统的议程。 哈里斯还批评特朗普政府停止资助其归类为与多样性相关的联邦研究经费，包括肌瘤研究，并表示参议院应该对白宫进行制衡。 “美国参议院应该成为遏制本届政府滥用职权的权宜之计，我建议你们，坐在我右边的那个人当选后将成为其中之一，”哈里斯向埃尔-赛义德点点头说道。 众人低声附和。 医生埃尔赛义德感谢哈里斯“提升了我们今天在这里讨论的问题”，并对她在这些问题上所做的工作表示感谢。 民主党参议员加里·彼得斯退休后，参议院席位空缺，要想获得参议院多数席位，必须保住这个席位。 但即使在密歇根州获胜，民主党也需要推翻至少四个共和党控制的席位，才能在特朗普执政的最后两年控制众议院。 支持全民医疗保健并在政党领导层中属于左翼的埃尔-赛义德在八月份以微弱优势击败了女众议员海莉·史蒂文斯，此前的初选导致主要选区出现分歧。 底特律的黑人选民是该州民主党联盟的支柱，他们倾向于支持史蒂文斯，罗杰斯也一直在该市向他们示好。 这次联合露面也掩盖了民主党之间的分歧。 埃尔-赛义德称以色列在加沙的军事行动是种族灭绝，这与拜登-哈里斯政府对以色列的军事支持截然不同，但这一立场使他与越来越多的选民保持一致。 昆尼皮亚克大学本月公布的一项民意调查显示，38%的选民更同情巴勒斯坦人，35%的选民更同情以色列人，这是自该大学2001年12月开始提出这一问题以来支持巴勒斯坦人的最高比例。</p><p>在拥有大量阿拉伯裔美国人社区的密歇根州，这种转变已经在投票箱中显现出来，而埃尔-赛义德就是其中的一部分。 2024年，他支持“不承诺”运动，敦促民主党人扣留对乔·拜登的初选投票，以抗议美国对以色列的军事援助。 同年晚些时候，当哈里斯取代拜登成为提名人时，他支持了她。 该运动的许多支持者并没有追随他，该州以微弱优势支持了特朗普。 此次访问之际，人们对哈里斯本人的政治野心进行了猜测，因为她正在考虑是否再次竞选白宫。 密歇根州将在民主党修改后的 2028 年初选日程上举行第五场竞选，哈里斯还计划在内华达州和佐治亚州进一步进行竞选活动。 在结束发言时，哈里斯敦促与会者提醒选民“他们在这次选举的结果中拥有权力和发言权，这将在很多方面直接影响他们的生活”。</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/us-news/2026/sep/22/kamala-harris-abdul-el-sayed-campaign-michigan" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/ea6d/live/eb5cde20-b6af-11f1-bc1f-3f186ca4140c.jpg" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">23</span> How Ceuta, football and Israel are shaping Morocco&#x27;s election</h3><p class="card-meta">世界与社会 · BBC World · 2026-09-23 04:59</p><p class="card-summary">Young voters are being courted with football slogans, promises of jobs and anti…</p><p class="card-impact"><span class="label">影响</span> 围绕election，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 在周三的议会选举之前，摩洛哥幻想破灭的年轻选民受到了病毒式传播的足球口号、提供一百万个就业机会的承诺以及反以色列的集会号召的欢迎。 然而，对于许多摩洛哥年轻人来说，政治仍然与现实严重脱节。 “我对这次选举不抱希望。我对我们的政治舞台感到羞耻。这完全是一场马戏表演，”居住在阿特拉斯地区的 32 岁环保活动人士西哈姆·阿泽罗尔 (Siham Azeroual) 告诉 BBC。 投票结果将决定下一届政府的组成，就在几周前，六万人冒着生命危险从这个北非国家穿越到西班牙飞地休达——这表明许多年轻人觉得自己在家乡缺乏机会。 摩洛哥实行君主立宪制，各政党争夺众议院（立法院）的 395 个席位。 然而，行政权力仍然与国王密切相关。 现年 63 岁的国王穆罕默德六世从选举中排名第一的政党中任命总理，同时还主持该国最重要的决策机构——部长会议。 此次活动也是在 2025 年 9 月爆发的 Z 世代抗议浪潮之后发起的，抗议浪潮涉及失业、医疗保健和生活成本。 示威者高喊“自由、尊严和社会正义”等口号，口号升级为“滚出阿克汉努什”，指的是现任总理阿齐兹·阿克汉努什。 骚乱后，超过 2,400 人面临起诉。 尽管遭到镇压，一些年轻的活动人士还是选择进入政治舞台。 29 岁的哈姆扎·埃尔·卡鲁比 (Hamza El Kharroubi) 在抗议期间短暂被捕。 他现在正在与鲜为人知的环境与可持续发展党一起竞选议会议员，该党有一个绿色议程。 “作为一个年轻人，我不抱太大希望。我加入这个政党是因为他们想要更多 Z 世代的面孔，并且他们允许我们自由地谈论我们的要求，”El Kharroubi 告诉 BBC。 他来自得土安，距离 Fnideq 海滩仅 34 公里（21 英里），那里是 7 月底开始向休达迁徙的浪潮。 约有 60,000 人穿越边境，其中既有摩洛哥人，也有其他国家的人。 近代史上最大规模的移民潮导致至少 100 人死亡。 “我们希望为穿越休达的遇难者家属伸张正义。我们希望为他们的家人提供赔偿，”埃尔·卡鲁比说。 他认为，这次穿越与经济困难和失业有着广泛的联系。 国际货币基金组织 (IMF) 估计去年总体失业率为 13%，而 15 岁至 24 岁的青年失业率达到 37.3%。</p><p>卡鲁比表示，他的目标不是与老牌重量级人物竞争，而是确保在议会中拥有发言权，以实现 2031 年的目标。 “作为年轻人，我们必须进入议会，因此到 2031 年，我们将拥有强有力的年轻政治家，他们可以竞争政府席位。” 摩洛哥皇家足球联合会主席、在财政部工作的资深政治家富齐·莱克亚 (Fouzi Lekjaa) 已成为该国最新的政治人物，也是一位绝对的重量级人物。 Lekjaa 因帮助阿特拉斯雄狮队（国家男子足球队）成为全球竞争者而受到赞誉，并于 7 月加入了中间派的真实性与现代性党 (Pam)。 他的竞选集会视频在这个与西班牙和葡萄牙共同主办下一届世界杯的足球狂热国家中疯传。 视频中，人群高呼“Sir”，在摩洛哥阿拉伯语中意为“Go”，这是摩洛哥历史性的 2022 年世界杯的标志性口号，当时摩洛哥成为第一支进入半决赛的阿拉伯和非洲球队。 莱克亚承诺让摩洛哥在教育和医疗保健方面名列世界第六，以与男足的国际足联排名相匹配。 帕姆正在与其他 26 个政党竞争，其中包括总理阿汉努什领导的全国独立人士联盟 (RNI)。 在竞选连任时，RNI 再次承诺到 2031 年创造 100 万个就业机会。 摩洛哥政策分析研究所（MIPA）的政治专家拉希德·奥拉兹（Rachid Aourraz）仍然对这一承诺持怀疑态度。 奥拉兹告诉英国广播公司：“‘一百万个就业机会’的口号已成为一个被过度使用的选举口号。也有人讨论提高最低工资，但拟议的方案无法承受结构性无法创造稳定的净就业机会的情况。” 他补充说，主要政党“不是在替代模式上竞争”，而是在如何实施皇家愿景制定的公共政策上进行竞争。 同样寻求政治回归的还有伊斯兰正义与发展党（PJD）——利用反以色列情绪来吸引选民。 根据美国斡旋的《亚伯拉罕协议》，摩洛哥与其他几个阿拉伯国家于 2020 年 12 月与以色列实现了关系正常化。 由民粹主义前总理阿卜杜利拉·本基拉内 (Abdelilah Benkirane) 领导的 PJD 正在大力宣传其承诺终止与以色列的外交关系。 他表示，关系正常化是他的政党在 2016 年至 2021 年间领导政府所犯的一个“错误”。 加沙战争期间，双边关系受到打击，首都拉巴特每周都会发生反对以色列外交存在的抗议活动。 冲突期间，以色列联络处关闭，两国之间的直航航班暂停。</p><p>然而，尽管亲巴勒斯坦抗议活动如潮水般涌来，数万人走上街头，在战争最激烈的时候点燃以色列国旗，但本月早些时候宣布，以色列和摩洛哥已同意在各自国家开设正式大使馆。</p><p>此前，两国高级外交官与美国驻联合国大使举行了会晤。</p><p>“我们必须大声疾呼，”本基拉内在马拉喀什的一次竞选集会上对支持者说。</p><p>“如果我们努力工作，国王将关闭以色列大使馆。国王不喜欢对抗自己的人民，”他补充道，并警告“以色列和犹太复国主义在摩洛哥的危险”。</p><p>我认为年轻人应该关注微观层面：帮助建立社区并与人们建立联系，然后跻身高层，而不是竞选公职。”</p><p>摩洛哥总人口约 3880 万，其中一半以上年龄在 35 岁以下，但在超过 1580 万登记选民中，只有 4% 年龄在 18 岁至 24 岁之间。</p><p>“我不太关注这些活动，但我注意到了和往常一样的面孔，”居住在加拿大的 27 岁摩洛哥人希巴 (Hiba) 说，她不愿透露自己的姓氏。</p><p>她住在蒙特利尔，根据 2016 年人口普查，那里有大约 104,000 名摩洛哥侨民。</p><p>去年的许多 Z 世代抗议活动在国外更为激烈，年轻的摩洛哥人能够表达他们的愤怒，而不必担心受到影响。</p><p>Hiba 是蒙特利尔数次 Z 世代抗议活动的联合组织者，她表示，如果她能在摩洛哥找到代理人，她会考虑投票——海外侨民可以通过这种方式投票。</p><p>“Z 世代的抗议并没有白费。 我们取得了一些成就。 至少现在我们在国家电视台上看到更多与年轻人的辩论，”她说。</p><p>环保活动家艾泽鲁尔对此表示同意。</p><p>但经历过 2011 年 2 月 20 日修改宪法的运动和最近的 Z 世代运动后，她认为变革必须来自多方面的方法。</p><p>“我认为年轻人应该关注微观层面，而不是竞选公职、帮助建立社区、与人们建立联系，然后跻身高层，”她说。</p><p>尽管没有完全相信任何政治竞选活动，但她表示她将前往当地投票站投票。</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/c8r4v7n6py97o?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">24</span> US signs ‘tremendous’ security deal with Denmark and Greenland</h3><p class="card-meta">世界与社会 · Al Jazeera · 2026-09-23 05:11</p><p class="card-summary">Trump and leaders of Greenland and Denmark have signed a deal allowing an expan…</p><p class="card-impact"><span class="label">影响</span> 围绕security，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>美国与丹麦和格陵兰岛签署“巨大”安全协议 美国总统唐纳德·特朗普与格陵兰岛和丹麦总理签署了一项协议，允许美国扩大在格陵兰岛的军事存在，同时将该岛置于丹麦主权之下。 该协议是在特朗普几个月来推动吞并该领土之后达成的。</p></div><p class="fulltext-src"><a href="https://www.aljazeera.com/video/newsfeed/2026/9/22/us-signs-tremendous-security-deal-with-denmark-and-greenland?traffic_source=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/d86db91f83c79dc9d05cf6ef49d1cc5f71a34dd2/228_0_4043_3235/master/4043.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=d0d73349e704dfb9692a650388eb338f" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">25</span> Middle East crisis: Trump says Iran will make a deal after US midterms – as it happened</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-23 03:09</p><p class="card-summary">This live blog is now closed. Tehran appears to have relaxed its preconditions…</p><p class="card-impact"><span class="label">影响</span> 围绕war，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>唐纳德·特朗普呼吁各国团结起来孤立德黑兰并压低全球能源价格，同时他对其政府的外交政策和打击伊朗的决定进行了好战的辩护。 美国总统周二在联合国大会上发表讲话时表示：“我呼吁所有国家帮助实施对伊朗的完全经济孤立。” “如果我们团结一致，我们很快就会看到一个没有过去 51 年伊朗恐怖威胁的世界……石油价格将暴跌，甚至低于冲突开始时的水平。” 在此之际，许多美国盟友都在抱怨他的美国执政期间能源价格飙升和国际局势日益不稳定。 特朗普在讲话中重申了“消灭”伊朗的威胁，自2月份美国和以色列发动联合打击以来，他已多次发出这一威胁。 “我要做出一个重大决定：是否与伊朗达成协议，让他们重建并创建一个比以往任何时候都更伟大的国家，”他说。 “或者我应该迅速消灭伊斯兰共和国，不给他们杀害或摧毁人民和大陆的机会？” 特朗普否认他面临结束战争的政治压力，并表示即将到来的美国中期选举绝对不会影响他围绕冲突的决策。 他还否认美国缺少关键弹药（“我们拥有的弹药比我们想象的还要多”）。 由于中东持续冲突导致柴油价格飙升，特朗普还表示支持柴油禁令。 当在与乌克兰总统泽连斯基会面时被问及这个问题时，特朗普说：“我也呼吁过这一点。我说过我们不要发出柴油。我们生产大量柴油。这可能会对普通汽车汽油产生一点影响。” 与此同时，约旦国王阿卜杜拉二世向大会表示，全球对以色列的政治不作为是一种故意的“选择”，其结果是一个“不受限制的国家”。 他表示，阻止巴勒斯坦建国已成为以色列的坚定政策，以色列在被占领的约旦河西岸强迫巴勒斯坦人民流离失所是“战争罪”。 土耳其总统雷杰普·塔伊普·埃尔多安也谴责以色列在加沙的行动，他说加沙已经成为“我们这个时代最不人道、最可耻的集中营”。 他呼吁成员国“对以色列施加更大压力”以结束战争，并表达了对未来巴勒斯坦国的希望。</p><p>在联合国大会之外，伊朗革命卫队发言人侯赛因·莫赫比表示，如果美国对伊朗发动新的袭击，德黑兰将“毫无疑问地加强”反应。 莫赫比在接受法新社采访时表示：“如果他们鲁莽行事，历史重演，我们的抵抗无疑会加剧，我们所获得的经验将增强我们的抵抗力。这一次，我们将不仅仅是报复，我们将采取进攻姿态，美国将会为自己的行为后悔，遭受比以往任何时候都更大的羞辱。” 莫赫比表示，美国曾试图与警卫队建立联系，但遭到了拒绝。 莫赫比说：“美国人曾试图与我们联系，但我们拒绝任何此类接触。我们与敌人的交往——只要他们仍然敌对——就只能通过武器进行。”他补充说，外交事务由伊朗外交部负责。 据路透社报道，俄罗斯总统弗拉基米尔·普京今天与沙特王储穆罕默德·本·萨勒曼通了电话。 据克里姆林宫称，他们讨论了海湾地区的安全局势以及保持重要水道开放的必要性。 加沙卫生部在最新更新中表示，自去年 10 月以色列和哈马斯签署所谓的“停火”协议以来，至少有 1,399 人在以色列袭击中丧生。 哈马斯指责以色列违反停火协议，破坏美国为结束加沙战争而实施的更广泛计划的努力，其中包括以色列从加沙地带撤军和解除哈马斯武装。 以色列称哈马斯一直违反该协议。 安迪·伯纳姆在与唐纳德·特朗普首次会面之前表示，英国同意向沙特阿拉伯提供防御性空中支援，以帮助打击胡塞武装分子并恢复中东稳定，同时降低国内生活成本。 首相表示，他已同意为沙特飞机提供空中加油的请求，以保卫能源基础设施免受伊朗支持的叛乱分子的侵害，并帮助保持石油从海湾流出，以缓解全球经济动荡。 美国和伊朗重新努力解决霍尔木兹海峡控制权争端之际，有报道称沙特阿拉伯袭击也门胡塞武装控制的地区。 胡塞武装官员向隶属于伊朗支持的民兵组织的萨巴通讯社表示，最新的报道称，沙特阿拉伯袭击了也门西北部的一所监狱，造成九名被拘留者死亡。 据《纽约时报》报道，几周来，唐纳德·特朗普对于是否应沙特阿拉伯请求军事援助打击胡塞武装的呼吁采取行动一直犹豫不决。 据报道，周三，总统会见了顾问，并表示他不赞成罢工。</p><p>伊朗国家航空公司表示，在美国对伊朗航空业加强制裁的前一天，尚未收到任何为邻国提供服务的禁令。 该公司在国家通讯社伊朗伊斯兰共和国通讯社发表的一份声明中表示，“伊朗航空尚未收到土耳其、阿塞拜疆共和国或伊拉克民航当局关于停止或暂停飞往伊斯坦布尔、巴库和纳杰夫的航班的任何通知或官方指示。” 由于中东冲突导致柴油价格飙升，特朗普表示支持柴油禁令。 当在与乌克兰总统泽伦斯基会面时被问及这个问题时，特朗普说：“我也呼吁过这一点。我说过我们不要发出柴油。我们生产大量柴油。这可能会对普通汽车汽油产生一点影响。” 美国财政部长斯科特·贝森特补充说，华盛顿正在研究“就整体炼油能力而言是否可行，以及全面或部分禁令是否有效”。 这是我的同事安德鲁·罗斯关于唐纳德·特朗普呼吁各国团结起来孤立德黑兰并压低全球能源价格的报告，他在早些时候的联合国演讲中为其政府的外交政策和打击伊朗的决定进行了好战的辩护。 约旦国王阿卜杜拉表示，世界对以色列不采取行动是一种“选择”，其在约旦河西岸的行为是“战争罪” 约旦国王阿卜杜拉二世早些时候在大会上发表讲话时表示，对巴勒斯坦领土的占领是世界上持续时间最长的占领之一，这提出了一个基本问题：“[国际]法律到底有什么价值？如果我们不指出其违法行为，我们如何执行它？” “几十年来，我一直站在大会面前，警告巴以冲突得不到解决的危险，”他在半岛电视台援引的评论中说道。 “但国际社会选择管理冲突，而不是对抗冲突。” “以色列的每一次新的侵犯行为都被视为暂时的，”他说，“直到暂时的变成了永久性的，永久性的变成了政策。” 他说，阻止巴勒斯坦建国已成为以色列的坚定政策。 它是用水泥固定在地面上的。 本届政府一直在加速定居点和土地征用，但很久以前就开始了。 自《奥斯陆协议》以来，地图一片一片地变化，一个又一个定居点发生了变化。 他说，将巴勒斯坦人挤入加沙三分之一的地区“不能再被视为临时军事措施或战争的后果”。 当我们认清事情的本来面目时，问责就开始了：试图抹去巴勒斯坦人的生活并在加沙强加新的领土现实。 他说，这种情况正在被占领的西巴发生……</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/world/live/2026/sep/22/middle-east-iran-irgc-donald-trump-mahmoud-mahmoud-pezeshkian-abbas-araqchi-unga-latest-news-updates" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">26</span> Is Ethiopia heading towards renewed civil war?</h3><p class="card-meta">世界与社会 · Al Jazeera · 2026-09-23 02:51</p><p class="card-summary">Seven armed groups announce alliance to topple government.</p><p class="card-impact"><span class="label">影响</span> 围绕war，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>七个武装团体宣布结盟推翻政府。</p><p>尽管达成了数十年的和平协议和停火，埃塞俄比亚的武装团体和军队仍在继续相互争斗。 现在，其中一些前竞争对手已经结成联盟，以推翻亚的斯亚贝巴政府。</p><p>他们警告埃塞俄比亚正处于分裂的边缘，并指责总理阿比·艾哈迈德。 阿比说，该国可以保卫自己，但埃塞俄比亚人担心他们可能处于另一场内战的边缘。</p><p>那么，这些在政治和意识形态上存在深刻分歧的昔日对手能否实现他们的共同目标呢？</p><p>主持人：</p><p>罗布·马西森</p><p>嘉宾：</p><p>Samuel Getachew – 专门研究埃塞俄比亚事务的政治评论员</p><p>Ngala Chome – 非洲之角分析师</p><p>Kjetil Tronvoll – 奥斯陆新大学学院和平与冲突研究教授</p></div><p class="fulltext-src"><a href="https://www.aljazeera.com/video/inside-story/2026/9/22/is-ethiopia-heading-towards-renewed-civil-war?traffic_source=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card"><div class="card-body"><h3 class="card-title"><span class="rank">27</span> Qatar’s emir urges diplomacy as Gulf at ‘one of the most dangerous phases’</h3><p class="card-meta">世界与社会 · Al Jazeera · 2026-09-23 02:48</p><p class="card-summary">Sheikh Tamim says years of delayed diplomacy led to the US-Israel war on Iran.</p><p class="card-impact"><span class="label">影响</span> 围绕war，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>卡塔尔埃米尔谢赫塔米姆·本·哈马德·阿勒萨尼在联合国大会上表示，由于美以对伊朗的战争，海湾地区正在经历“最危险的阶段之一”，“可以通过外交手段解决”。</p><p>谢赫塔米姆周二重申卡塔尔作为“值得信赖的调解人”的角色，表示外交将带来持久的解决方案，确保包括伊朗在内的整个地区的安全。</p><p>推荐故事</p><p>4 项清单</p><p>- 2026 年第 4 届联合国大会清单 1：联合国能阻止战争吗？</p><p>- 4 个“战争罪”中的第 2 个：约旦国王猛烈抨击以色列西岸扩张</p><p>- list 3 of 4 埃尔多安在联合国激烈讲话中抨击以色列的“种族灭绝心态”</p><p>- 4个名单中的第4个卢拉警告联合国不要外国干涉巴西选举</p><p>谢赫塔米姆在翻译中表示：“我们仍然相信，海湾危机可以通过外交手段解决，通过重新开放霍尔木兹海峡进行海上航行，以避免战争。”</p><p>他说，卡塔尔正在“竭尽全力通过外交手段解决该地区的冲突”，但仍“坚定不移”捍卫其领土和主权。</p><p>谢赫塔米姆讲话后不久，美国总统唐纳德·特朗普表示，官员们与伊朗代表团举行了“非常好的”三小时会议。 会前，特朗普在联合国演讲中重申要“消灭”伊朗。</p><p>谢赫塔米姆表示，对伊朗的战争是推迟外交决议的“多年累积的结果”，并呼吁建立“集体安全的区域体系”。</p><p>“如果没有这样的系统，战争就有可能爆发，”他说。</p><p>谢赫塔米姆谴责以色列对被占领的约旦河西岸和加沙地带的“侵略”，称袭击已扩大到邻国，“影响了整个地区的安全”。</p><p>他说：“只要巴勒斯坦仍处于困境，就谈不上公正的国际秩序。” “加沙发生的事情从各个意义上来说都是种族灭绝。”</p><p>谢赫塔米姆表达了卡塔尔对黎巴嫩、苏丹和利比亚的支持，呼吁维护国家主权。</p><p>他说：“我们支持联合国旨在以联合国推动的全国对话成果为基础，达成全面政治解决方案的努力，以维护也门的统一和主权，实现安全与稳定。”</p><p>威胁生命线</p><p>此次演讲发表之际，持续近七个月的战争日益威胁着海湾地区的经济命脉，美国和伊朗对霍尔木兹海峡的油轮和其他船只进行攻击。</p><p>9月，沙特阿拉伯在遭到从伊拉克发射的无人机袭击后关闭了重要的东西方石油管道。</p><p>与此同时，胡塞武装向关键的曼德海峡推进领土后，也门爆发了新一轮战斗。</p><p>2月28日，在伊朗核计划谈判期间，美国和以色列对伊朗发动袭击，导致伊朗最高领导人、其他高级官员和数十名平民死亡，战争由此爆发。</p><p>伊朗的回应是在海湾地区发动袭击，包括阿拉伯联合酋长国、科威特、卡塔尔、阿曼和巴林。</p></div><p class="fulltext-src"><a href="https://www.aljazeera.com/news/2026/9/22/qatars-emir-urges-diplomacy-as-gulf-at-one-of-the-most-dangerous?traffic_source=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/97eb/live/8e6f0380-b5ee-11f1-aff1-eb6baa3fda4f.png" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">28</span> US judge blocks deportation of DoorDash driver shot by ICE</h3><p class="card-meta">世界与社会 · BBC World · 2026-09-23 07:36</p><p class="card-summary">The delivery driver was transferred from a hospital to a detention centre after…</p><p class="card-impact"><span class="label">影响</span> 可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>- 已发表 一名委内瑞拉男子的律师表示，一名美国法官暂时阻止了将他驱逐出境，该男子在德克萨斯州被移民人员枪杀。 28 岁的威尔伯·拉斐尔·加塞斯·佩雷斯 (Wilber Rafael Garces Perez) 的律师称，他背部中弹，目前被关押在拘留中心。 克林顿任命的法官奥兰多·加西亚 (Orlando Garcia) 安排下周为加塞斯·佩雷斯 (Garces Perez) 亲自出庭举行听证会。 美国国土安全部（DHS）在一份声明中表示，一名“非法外国人”成为了有针对性的车辆拦截对象，但否认了他没有得到充分医疗护理的说法。 几个月前，一名美国移民和海关执法局（ICE）官员在休斯敦开枪打死了一名男子。 加塞斯·佩雷斯的移民律师凯特·林肯-戈德芬奇已向联邦提起诉讼，要求颁发临时限制令，以防止他被驱逐出境。 她说，由于法官命令她的当事人于 9 月 30 日亲自出庭，因此在此之前他不能被驱逐出境。 林肯-金翅奇在社交媒体上写道：“目前，在他的案件继续推进期间，我们已经暂时阻止了他的驱逐出境。” “这是重要的一步，但我们的工作还没有结束，”她写道。 “威尔伯仍然需要适当的医疗护理，我们将继续努力保护他的权利。” 林肯-金芬奇说，枪声导致他的锁骨骨折，他身上绑着吊带，同时感到“明显肿胀和疼痛”。 她说，他失去行动能力的原因或程度尚未确定。 德克萨斯州美国检察官办公室发言人拒绝对此案发表评论。 周二，国土安全部反驳了围绕所发生事件的“虚假叙述”，指责庇护城市和媒体“散布谎言”，并劝阻人们抵抗警察和逃避逮捕。 国土安全部部长马克韦恩·穆林 (Markwayne Mullin) 在给 BBC 的一份声明中表示：“与他们的说法相反，此人是一名非法外国人，没有在这里的合法身份，但却获得了他一生中所接受过的最好的医疗护理。” 国土安全部表示，这名男子（他们没有透露姓名）是“有针对性的车辆拦截的目标”，他的工作许可证去年到期。 马林说：“再多的诽谤和虚假叙述也不会阻碍 ICE 履行其职责，将危险的非法外国人赶出我们的社区，让美国再次安全。” 没有参与这起事件的奥斯汀警察局周二发布了行车记录仪和随身摄像机的镜头，显示其警员在现场。</p><p>它没有显示枪击事件，但在行车记录仪的一段视频中可以听到几声枪响，而另一段视频则显示警察走近加塞斯·佩雷斯的汽车并拘留了他。 有一次，加塞斯·佩雷斯 (Garces Perez) 的 T 恤被剪断，露出了他背后似乎中了一枪的痕迹。 林肯-金翅雀此前告诉英国广播公司，加塞斯·佩雷斯在拘留设施中无法移动手臂后，于周一晚上被送回医院。 他在那里接受了治疗，随后被送回拘留所。 她说，尽管他受伤了，但他说，在转移过程中，他被戴上手铐，脚踝被铐住，腰上拴着链子，并受到粗暴对待。 林肯-金翅奇补充说，拘留人员取消了他的通讯权限，并将他从医务室转移到一个带有平坦、不可调节床的隔离房间。 国土安全部在周二的声明中表示，加塞斯·佩雷斯“全天候”接受医疗护理，并否认他没有接受止痛药并被迫睡在地板上的说法。 国土安全部表示：“这名外星人从医院出院，几个小时后就到达了拘留所，他睡在床上。” 德克萨斯州民主党议员华金·卡斯特罗周二要求释放这名委内瑞拉国民。 地方和州官员已推动对周日下午发生的枪击事件进行独立调查。 几小时后，数十名抗议者聚集在现场，其中一些人挥舞着墨西哥和危地马拉的国旗，举着标语，要求 ICE 离开该市。 国土安全部周二表示，ICE“不会放慢脚步，也不会离开奥斯汀”。 该男子的律师告诉美国媒体，他当时正在使用 DoorDash 送货，这时一辆没有标记的黑色卡车从他的汽车侧面擦过。 她说，他不知道这辆卡车是一辆内燃车辆，所以掉头了。 据律师称，在特工下车开枪射杀他之前，他的汽车再次被击中。</p></div><p class="fulltext-src"><a href="https://www.bbc.co.uk/news/articles/cr6241825757o?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/54a6390419207d61bd14505b111e99319e182071/0_0_5322_4258/master/5322.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=971e6c7b5a2e0f7e4abdaf5c23e4b22e" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">29</span> Cost of raising two children in Australia has risen 134% in two decades, study says</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-23 03:00</p><p class="card-summary">Parenting advocate Georgie Dent says rising childcare cost has pushed the overa…</p><p class="card-impact"><span class="label">影响</span> 围绕research，可能牵动外交立场、制裁或援助节奏</p><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>最新研究显示，澳大利亚家庭抚养两个或更多孩子的成本已上升至每年至少 36,500 澳元，维持一个家庭所需的资金在 20 年内增加了 134%。 倡导组织 The Parenthood 周三发布的数据显示，同期家庭收入仅增长了 102%，育儿费用占当今生孩子总费用的 33%。 根据 Connell Griffin 公司的分析，2003 年这一数字为 27%。 Parenthood 首席执行官 Georgie Dent 将于周三在堪培拉的国家新闻俱乐部发表讲话，他表示，在为人父母的头五年里，生孩子会使澳大利亚女性的收入平均减少 55%。 她会说，在当前的经济形势下，家庭需要两份收入才能维持生计，即使父母双方都有工作，他们的家庭预算也没有多少喘息的空间。 “对于许多家庭来说，这感觉就像一场残酷的打地鼠游戏，”登特说。 “对于那些想要抚养和养家糊口的幼儿的父母来说，一个最大的障碍是：幼儿教育和保育。 “太多人面临着不可能的困境。 他们无法获得它，他们负担不起，或者他们无法信任可用的东西。 人们没有意识到这一点：家庭拥有的选择很大程度上取决于市场提供的东西。” 登特将呼吁政府采取政策途径，将目前由纳税人支付的 26 周的带薪育儿假增加到 52 周，并为父亲和伴侣提供有意义的育儿假。 她将推动工党实现全民儿童保育体系的政策愿望，提供高薪工人和费用控制，并成立一个新的国家委员会。 周一的代际报告显示，40 年后澳大利亚死亡人数将首次超过出生人数。 预计到 2065-66 年，澳大利亚的生育率将从 2030-31 年每名妇女生育 1.5 个孩子降至 1.34。 50 年来，生育率一直低于每名妇女生育 2.1 个孩子的替代率，导致 2065-66 年人口预计减少 170 万，预计中位年龄增加 1.7 岁。 报告发现，造成这种现象的原因是复杂的经济、社会和文化因素，包括避孕药具的普及、花在教育、职业发展上的时间更长、与父母同住的时间更长，以及延迟建立伴侣关系和生育孩子。 周二，财政部长吉姆·查尔默斯 (Jim Chalmers) 在澳大利亚卫报每周的澳大利亚政治播客中表示，政府仍然致力于在澳大利亚建立全民儿童保育系统。</p><p>安东尼·阿尔博内塞希望这项改革成为他政治遗产的一部分，政府已委托德勤咨询公司帮助设计一个通用系统。</p><p>其关于政策“路径”的报告将及时提交给下次选举。</p><p>“这仍然是我们的雄心，”查尔默斯说。 “你不会从零到 100。我们一直将其视为一系列步骤。”</p><p>他指出，政府为期三天的儿童保育资金保证以及在交通不便的地区建立儿童保育中心的 10 亿美元计划是重要举措。</p><p>查尔默斯说：“政府仍然希望尽可能地实现普及。”</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/australia-news/2026/sep/23/cost-of-raising-two-children-in-australia-has-risen-134-in-two-decades-study-says" rel="noopener noreferrer">查看原文</a></p></details></div></article><article class="card has-media"><figure class="card-media"><img src="https://i.guim.co.uk/img/media/fec21ff9823021bcdda79255837000ad9f664613/91_0_3008_2406/master/3008.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=bab8aee34d4adbd95fcf68800ab39f18" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('figure').style.display='none'"></figure><div class="card-body"><h3 class="card-title"><span class="rank">30</span> EU removes two oligarchs from Russia sanctions list as deadline looms</h3><p class="card-meta">世界与社会 · Guardian World · 2026-09-23 02:07</p><p class="card-summary">Alisher Usmanov and Mikhail Fridman delisted in what Ireland’s EU presidency ca…</p><p class="card-impact"><span class="label">影响</span> 围绕war，可能牵动外交立场、制裁或援助节奏</p><div class="meta-block"><span class="label">另见</span><ul class="secondary"><li><a href="https://www.bbc.co.uk/news/articles/c6dj4k98107do?at_medium=RSS&amp;at_campaign=rss" rel="noopener noreferrer">BBC World</a> — Ukraine anger as EU removes Russian oligarchs from sanctions list</li></ul></div><details class="fulltext"><summary aria-label="展开全文"><span class="expand-mark" aria-hidden="true">﹀</span></summary><div class="fulltext-body"><p>欧盟已同意将两名俄罗斯亿万富翁阿利舍尔·乌斯马诺夫和米哈伊尔·弗里德曼从制裁名单中删除，同时在未来三年内延长对近 3000 名被控支持乌克兰战争的个人和公司的限制。 随着周二末保留俄罗斯黑名单的最后期限临近，欧盟 27 个成员国找到了一项妥协方案，将这两个寡头除名，尽管很少有国家希望这一结果。 欧盟制裁必须获得一致批准。 本月，法国以“国家安全”为由要求将俄罗斯乌兹别克斯坦公民乌斯马诺夫从名单中删除，此举令欧盟各国政府感到震惊和愤怒，据报道，该协议指的是涉及法国国民和阿塞拜疆的囚犯交换协议。 卢森堡随后要求对俄罗斯-以色列巨头弗里德曼给予同样的待遇，弗里德曼正在起诉卢森堡大公国，要求冻结其资产，要求赔偿 160 亿美元（120 亿英镑）。 这些豁免激怒了许多欧盟国家，他们认为这开了一个不好的先例，允许成员国为了维护国家利益而削弱制裁。 乌克兰批评将这些人从制裁名单中删除是不可接受的。 该决定公布后不久，乌克兰总统弗拉基米尔·泽伦斯基在社交媒体上写道：“制裁名单上的名字绝非偶然：每一个名字都代表了这场战争开始并持续至今的一个原因。” 乌克兰外交部长安德里·西比哈 (Andrii Sybiha) 称 X 的这一决定“可耻且不合理”。“莫斯科正在庆祝，因为它得到了它想要的东西：有罪不罚的感觉、欧盟的耻辱以及欧洲人之间的分裂，”他补充道。 为了实现许多欧盟成员国不喜欢的制裁措施，建议将制裁期限延长 36 个月，而不是通常的 6 个月。 促成此次谈判的爱尔兰欧盟轮值主席国发言人表示，欧盟已达成“一项艰难的妥协”。 他们表示：“到目前为止，这些清单已经每六个月进行一次审查和评估；今天决定每 36 个月更新一次，这增强了欧盟制裁框架的持久性和可预测性。” 预计本周早些时候会做出决定，但面临 10 月 3 日议会选举的拉脱维亚政府于周一在最后一刻宣布反对除名。 拉脱维亚总理安德里斯·库尔伯格周一深夜表示，他无法接受拟议的妥协方案，并指示其外交部长与巴黎和布鲁塞尔进行谈判，以找到解决方案。</p><p>外交官们表示，拉脱维亚最终同意对两次除名投弃权票。 黑名单包括俄罗斯总统弗拉基米尔·普京、外交部长谢尔盖·拉夫罗夫以及杜马代表、该国主要银行、能源公司和军工联合体。 欧盟高级官员承诺下个月向各国外交部长提交约 1,600 项新任命，其中包括参与俄罗斯军事工业联合体的个人和实体。 但继 7 月份就欧盟第 21 轮制裁达成的曲折协议之后发生的最新僵局表明，这一进程可能会很困难。</p></div><p class="fulltext-src"><a href="https://www.theguardian.com/world/2026/sep/22/eu-removes-oligarchs-from-russia-sanctions-list-as-deadline-looms" rel="noopener noreferrer">查看原文</a></p></details></div></article></section><section class="section" id="sec-延伸"><h2>延伸关注</h2><p class="empty">本日无条目</p></section>
+<details class="footer-notes"><summary>采集说明</summary><ul class="notes-list"><li>覆盖窗口：09-22 08:05–09-23 08:05</li><li>未扩展：严格约 24h 窗口</li><li>生成时间：2026-09-23T08:05:02.548296+08:00</li><li>严格 24h 内且时间戳可靠条目：281；时间戳不可靠：75</li><li>事件簇数：337；入选独立事件：30</li><li>失败来源：无</li><li>源状态汇总：ok=20 fail=0</li></ul></details>
+</main>
+</body>
+</html>
